@@ -2,48 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
-import 'Screen/Homepage.dart';
-import 'Util/Global.dart';
-import 'Util/BaseState.dart';
+import '../Util/Global.dart';
+import '../Util/BaseState.dart';
 
 final router = Router();
-void main() {
-  runApp(EasyLocalization(
-      supportedLocales: [
-        Locale('en', 'US'),
-        Locale('zh', 'CN'),
-        Locale('zh', 'HK')
-      ],
-      path: 'assets/translations', // <-- change patch to your
-      fallbackLocale: Locale('en', 'US'),
-      child: MyApp()));
-}
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'HKU',
-      theme: ThemeData(
-        primaryColor: Global.mainColor,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(),
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class Test extends StatefulWidget {
+  Test({Key key, this.title}) : super(key: key);
   final String title;
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _TestState createState() => _TestState();
 }
 
-class _MyHomePageState extends BaseState<MyHomePage> {
+class _TestState extends BaseState<Test> {
   @override
   Widget header() {
     return FractionallySizedBox(
@@ -96,13 +67,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
         body: Column(children: [
       Flexible(child: header()),
       SizedBox(
-        height: resposiveSize(context, 48.0),
-      ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: resposiveSize(context, 24.0)),
-        child: standardEditText("User Code"),
-      ),
-      SizedBox(
         height: 48,
       ),
       Padding(
@@ -111,10 +75,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
       ),
       Text(context.locale.toString()),
       RaisedButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Test()));
-        },
+        onPressed: () {},
         child: Text('Disabled Button',
             style: TextStyle(fontSize: resposiveSize(context, 20.0))),
       ),
