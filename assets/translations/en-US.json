@@ -5,5 +5,13 @@
   "Safety Office": "Safety Office",
   "Chemical Waste": "Chemical Waste",
   "Dangerous Goods": "Dangerous Goods",
-  "Liquid Nitrogen": "Liquid Nitrogen"
+  "Liquid Nitrogen": "Liquid Nitrogen",
+  "Information": "Information",
+  "Order": "Order",
+  "Detail": "Detail",
+  "Ref No.": "Ref No.",
+  "PO Date": "PO Date",
+  "Department": "Department",
+  "Requested By": "Requested By",
+  "Account": "Account By"
 }

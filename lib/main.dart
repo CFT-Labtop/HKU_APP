@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
 import 'Screen/Homepage.dart';
 import 'Screen/AllOrder.dart';
+import 'Screen/OrderDetail.dart';
 import 'Util/Global.dart';
 import 'Widget/StandardEditText.dart';
 
@@ -98,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
               RaisedButton.icon(
                 onPressed: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AllOrder()));
+                      MaterialPageRoute(builder: (context) => OrderDetail()));
                 },
                 color: Colors.white,
                 icon: Icon(Icons.send),
