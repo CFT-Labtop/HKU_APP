@@ -1,10 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:hku_app/Util/BaseResponse.dart';
-import 'dart:convert';
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import '../Util/Global.dart';
-import 'package:dio/dio.dart';
 
 import '../Model/Dangerous_Goods_Order.dart';
 import '../Model/Dangerous_Goods_Order_Detail.dart';
@@ -28,6 +27,8 @@ class OrderDetail extends StatefulWidget {
 }
 
 class _OrderDetail extends State<OrderDetail> {
+  File _image;
+  final picker = ImagePicker();
   String orderType = "Dangerous_Goods_Order";
   String orderDeatiType = "Dangerous_Goods_Order_Detail";
   String orderIDType = "ID_dangerous_goods_order";
@@ -35,6 +36,19 @@ class _OrderDetail extends State<OrderDetail> {
   int orderID = 5243;
   Dangerous_Goods_Order _information;
   List<Dangerous_Goods_Order_Detail> _detail;
+  bool isLoading = true;
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +58,7 @@ class _OrderDetail extends State<OrderDetail> {
       "column": orderIDType,
       "value": orderID
     }).then((value) {
-      print("Finished");
+      isLoading = false;
       _information = new Dangerous_Goods_Order(value.data["Information"]);
       _detail = value.data["Detail"].map<Dangerous_Goods_Order_Detail>((f) {
         return new Dangerous_Goods_Order_Detail(f);
@@ -81,7 +95,7 @@ class _OrderDetail extends State<OrderDetail> {
         appBar: AppBar(
           title: Text(orderType),
         ),
-        body: ListView(
+        body: (isLoading)?SizedBox(): ListView(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(Global.responsiveSize(context, 8)),
@@ -116,9 +130,16 @@ class _OrderDetail extends State<OrderDetail> {
                 ),
               )),
             ),
-            RaisedButton(
-              onPressed: () {},
-            )
+            Column(children: [
+              RawMaterialButton(
+                onPressed: getImage,
+                child: Center(
+                  child: _image == null
+                      ? Text('No image selected.')
+                      : Image.file(_image),
+                ),
+              )
+            ])
           ],
         ));
   }

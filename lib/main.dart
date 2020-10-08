@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
               RaisedButton.icon(
                 onPressed: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => OrderDetail()));
+                      MaterialPageRoute(builder: (context) => AllOrder()));
                 },
                 color: Colors.white,
                 icon: Icon(Icons.send),
