@@ -5,7 +5,6 @@ import '../Util/Global.dart';
 import '../Widget/StandardEditText.dart';
 import '../Widget/StandardGridViewBox.dart';
 
-final router = Router();
 
 class AllOrder extends StatefulWidget {
   AllOrder({Key key, this.title}) : super(key: key);

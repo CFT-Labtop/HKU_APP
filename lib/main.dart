@@ -7,7 +7,6 @@ import 'Screen/AllOrder.dart';
 import 'Util/Global.dart';
 import 'Widget/StandardEditText.dart';
 
-final router = Router();
 void main() {
   runApp(EasyLocalization(
       supportedLocales: [

@@ -4,7 +4,6 @@ import 'package:fluro/fluro.dart';
 import '../Util/Global.dart';
 import '../Widget/StandardEditText.dart';
 
-final router = Router();
 
 class Test extends StatefulWidget {
   Test({Key key, this.title}) : super(key: key);
