@@ -26,9 +26,16 @@ dependencies:
     
   dio: ^3.0.10
   fluro: ^1.6.3 
+<<<<<<< HEAD
   flutter_slidable: ^0.5.7
   easy_localization: ^2.3.3
     
+=======
+  unicorndial: "^1.1.5"
+  camera: ^0.5.8+7
+  path_provider: ^1.6.18 
+  path: ^1.7.0
+>>>>>>> e86d9cf23be0f2b44f87f30850982a7c34d0f149
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
