@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'dart:io';
 import '../Util/Global.dart';
 import 'package:dio/dio.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../Model/Dangerous_Goods_Order.dart';
 import '../Model/Dangerous_Goods_Order_Detail.dart';
@@ -36,18 +35,6 @@ class _OrderDetail extends State<OrderDetail> {
   int orderID = 5243;
   Dangerous_Goods_Order _information;
   List<Dangerous_Goods_Order_Detail> _detail;
-
-  File imageFile;
-  final picker = ImagePicker();
-
-  Future openGallary() async {
-    var picture = await picker.getImage(source: ImageSource.gallery);
-    this.setState(() {
-      imageFile = File(picture.path);
-    });
-    Navigator.pop(context);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -129,6 +116,9 @@ class _OrderDetail extends State<OrderDetail> {
                 ),
               )),
             ),
+            RaisedButton(
+              onPressed: () {},
+            )
           ],
         ));
   }
