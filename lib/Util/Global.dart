@@ -15,7 +15,8 @@ class Global {
   static double smallPadRate = 1.2;
   static double padRate = 1.5;
   // static String baseEntry = "http://10.66.10.126:8087/hku_api/index.php";
-  static String baseURL = "https://192.168.1.9/hku_api/index.php?ACTION=";
+  // static String baseURL = "https://192.168.1.9/hku_api/index.php?ACTION=";
+  static String baseURL = "http://192.168.1.15/hku_api/index.php?ACTION=";
   static double responsiveSize(BuildContext context, double size) {
     double screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth <= smallPadSize)
