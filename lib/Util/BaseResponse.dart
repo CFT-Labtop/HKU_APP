@@ -4,7 +4,7 @@ class BaseResponse {
   int code;
   String message;
   String errorMessage;
-  Map<String, dynamic> data;
+  dynamic data;
 
   BaseResponse(String value) {
     Map<String, dynamic> result = jsonDecode(value);

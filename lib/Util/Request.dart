@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+
+import 'Global.dart';
 
 class Request {
   String baseURL;
@@ -12,21 +15,45 @@ class Request {
   factory Request.init(String url) {
     _request.baseURL = url;
     _request.dio = new Dio();
-    (_request.dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-      client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    (_request.dio.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
       return client;
     };
-    _request.dio.options.connectTimeout = 5000;
+    _request.dio.options.connectTimeout = 30000;
     _request.dio.options.receiveTimeout = 3000;
     return _request;
   }
   factory Request() => _request;
 
-  Future<BaseResponse> get({String action, Map<String, dynamic> queryParameters = const {}}) async {
-    try{
-      Response response = await this.dio.get(this.baseURL + action, queryParameters: queryParameters);
+  Future<BaseResponse> run(context,{String action,
+      Map<String, dynamic> queryParameters = const {},
+      isDismissible = false,
+      VoidCallback onDissmissPress}) async {
+    ProgressDialog pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: isDismissible);
+    try {
+      await pr.show();
+      BaseResponse res =
+          await this.get(action: action, queryParameters: queryParameters);
+      await pr.hide();
+      return res;
+    } catch (e) {
+      await pr.hide();
+      Global.showAlertDialog(context, e.error);
+      throw e;
+    }
+  }
+
+  Future<BaseResponse> get(
+      {String action, Map<String, dynamic> queryParameters = const {}}) async {
+    try {
+      Response response = await this
+          .dio
+          .get(this.baseURL + action, queryParameters: queryParameters);
       return BaseResponse(response.data);
-    }catch(e){
+    } on DioError catch(e) {
       throw e;
     }
   }

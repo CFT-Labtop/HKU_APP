@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:hku_app/Util/Request.dart';
+import 'package:hku_app/Util/Global.dart';
+import 'package:hku_app/Util/Routes.dart';
 import 'package:hku_app/Widget/StandardEditText.dart';
-import '../Util/Global.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -32,7 +33,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
+      body: SafeArea(
+        bottom: false,
+        child: Container(
             color: Global.mainColor,
             child: Column(children: [
               Flexible(child: header()),
@@ -58,12 +61,11 @@ class _LoginPageState extends State<LoginPage> {
                     focusedOutlineColor: Global.outlineColor),
               ),
               SizedBox(
-                height: 24,
+                height: Global.responsiveSize(context, 24.0),
               ),
               RaisedButton.icon(
                 onPressed: () async {
-                  // Routes.goToPage(context, Pages.AllOrder);
-                  await Request().get(action: "get_Account_all");
+                  Routes.goToPage(context, Pages.AllOrder);
                 },
                 color: Colors.white,
                 icon: Icon(Icons.send),
@@ -73,6 +75,8 @@ class _LoginPageState extends State<LoginPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
               ),
-            ])));
+            ])),
+      ),
+    );
   }
 }

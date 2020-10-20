@@ -2,15 +2,21 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
+import 'package:hive/hive.dart';
+import 'package:hku_app/Model/person.dart';
 import 'package:hku_app/Screen/LoginPage.dart';
-import 'Util/Config.dart';
-import 'Util/Global.dart';
-import 'Util/Request.dart';
-import 'Util/Routes.dart';
-void main() {
+import 'package:hku_app/Util/Config.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hku_app/Util/Global.dart';
+import 'package:hku_app/Util/Request.dart';
+import 'package:hku_app/Util/Routes.dart';
+Future<void> main() async {
   final router = new FluroRouter();
   Routes.configureRoutes(router);
   Request.init(Config.baseURL);
+  await Hive.initFlutter();
+  Hive.registerAdapter(PersonAdapter()); 
   runApp(EasyLocalization(
       supportedLocales: [
         Locale('en', 'US'),
