@@ -17,10 +17,7 @@ class AllOrder extends StatefulWidget {
 class _AllOrder extends State<AllOrder> {
   DeliveryType currentType = DeliveryType.ChemicalWaste;
   String currentSelectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  @override
-  void initState() {
-    super.initState();
-  }
+
   Widget _dateSelectField() {
     return RawMaterialButton(
       onPressed: () {
@@ -105,13 +102,15 @@ class _AllOrder extends State<AllOrder> {
           _dateSelectField(),
           BaseFutureBuilder(
             future: Request().get(action: "mobile_duty_sheet", queryParameters: {"date": this.currentSelectedDate}),
+            loadingChild: Expanded(child: BaseTable(BaseDataBase().getAll<Dangerous_Goods_Order>().where((element) => element.status == 0 && DateFormat('yyyy-MM-dd').format(element.po_date) == currentSelectedDate).toList())),
             onSuccessCallback: (response){
               List<Dangerous_Goods_Order> dangerous_goods_order_list  = response.data["Dangerous_Goods_Order"].map<Dangerous_Goods_Order>((f) {return new Dangerous_Goods_Order.fromJSON(f);}).toList();
-              dangerous_goods_order_list.forEach((element) {
+              dangerous_goods_order_list.where((element) => element.status == 0).forEach((element) {
                 BaseDataBase().add<Dangerous_Goods_Order>(element);
               });
+                return Expanded(child: BaseTable(dangerous_goods_order_list));
             },
-            child: Expanded(child: BaseTable())),
+          ),
         ],
       ),
     );

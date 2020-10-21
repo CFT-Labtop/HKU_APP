@@ -14,7 +14,6 @@ Future<void> main() async {
   Routes.configureRoutes(router);
   Request.init(Config.baseURL);
   await BaseDataBase().init();
-  BaseDataBase().add<Dangerous_Goods_Order>(Dangerous_Goods_Order(ID: 1, department_name: "Testing"));
   runApp(EasyLocalization(
       supportedLocales: [
         Locale('en', 'US'),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
-import 'package:hku_app/Screen/AllOrder.dart';
 import 'package:hku_app/Screen/OrderDetail.dart';
 import 'package:hku_app/Util/Global.dart';
+import 'package:easy_localization/easy_localization.dart';
 
+//TODO Componentize
 class BaseTable extends StatefulWidget {
   int sortIndex;
   List<SortStatus> sortStatusList = [
@@ -12,29 +13,15 @@ class BaseTable extends StatefulWidget {
     SortStatus.DESCENDINNG,
     SortStatus.DESCENDINNG
   ];
-  BaseTable({Key key, this.sortIndex = 0}) : super(key: key);
+  List<Dangerous_Goods_Order> data = [];
+  BaseTable(data, {Key key, this.sortIndex = 0})
+      : data = data,
+        super(key: key);
   @override
   _BaseTableState createState() => _BaseTableState();
 }
 
 class _BaseTableState extends State<BaseTable> {
-  List<Dangerous_Goods_Order> items = [
-    // new Dangerous_Goods_Order({
-    //   "ref_no": "DGO-005276",
-    //   "department_name": "Mechanical Engineering",
-    //   "building": "HW G14"
-    // }),
-    // new Dangerous_Goods_Order({
-    //   "ref_no": "DGO-005254",
-    //   "department_name": "SBMS Anatomy",
-    //   "building": "FMB L1-18Ax"
-    // }),
-    // new Dangerous_Goods_Order({
-    //   "ref_no": "DGO-005262",
-    //   "department_name": "Medicine",
-    //   "building": "QMH Prof Blk 317"
-    // }),
-  ];
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,7 +30,7 @@ class _BaseTableState extends State<BaseTable> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             HeaderCell(
-              title: "Ref-no",
+              title: "Ref-no".tr(),
               isSortIndex: (widget.sortIndex == 0),
               sortStatus: widget.sortStatusList[0],
               columnIndex: 0,
@@ -51,23 +38,33 @@ class _BaseTableState extends State<BaseTable> {
                 setState(() {
                   widget.sortIndex = columnIndex;
                   widget.sortStatusList[columnIndex] = sortStatus;
+                  if (widget.sortStatusList[columnIndex] ==
+                      SortStatus.ASCENDINNG)
+                    widget.data.sort((a, b) => (b.ref_no).compareTo(a.ref_no));
+                  else
+                    widget.data.sort((a, b) => (a.ref_no).compareTo(b.ref_no));
                 });
               },
             ),
             HeaderCell(
-              title: "Department",
+              title: "Department".tr(),
               columnIndex: 1,
               sortStatus: widget.sortStatusList[1],
               onPressed: (columnIndex, sortStatus) {
                 setState(() {
                   widget.sortIndex = columnIndex;
                   widget.sortStatusList[columnIndex] = sortStatus;
+                  if (widget.sortStatusList[columnIndex] ==
+                      SortStatus.ASCENDINNG)
+                    widget.data.sort((a, b) => (b.department_name).compareTo(a.department_name));
+                  else
+                    widget.data.sort((a, b) => (a.department_name).compareTo(b.department_name));
                 });
               },
               isSortIndex: (widget.sortIndex == 1),
             ),
             HeaderCell(
-              title: "Building",
+              title: "Building".tr(),
               sortStatus: widget.sortStatusList[2],
               isSortIndex: (widget.sortIndex == 2),
               onPressed: (columnIndex, sortStatus) {
@@ -82,13 +79,13 @@ class _BaseTableState extends State<BaseTable> {
         ),
         Expanded(
           child: new ListView.builder(
-            itemCount: items.length,
+            itemCount: widget.data.length,
             itemBuilder: (context, index) {
               return RawMaterialButton(
-                onPressed: () { 
+                onPressed: () {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => OrderDetail()));
-                 },
+                },
                 child: Slidable(
                   actionPane: SlidableDrawerActionPane(),
                   secondaryActions: <Widget>[
@@ -106,9 +103,9 @@ class _BaseTableState extends State<BaseTable> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      BaseTableCell(title: items[index].ref_no),
-                      BaseTableCell(title: items[index].department_name),
-                      BaseTableCell(title: items[index].building),
+                      BaseTableCell(title: widget.data[index].ID.toString()),
+                      BaseTableCell(title: widget.data[index].department_name),
+                      BaseTableCell(title: widget.data[index].building),
                     ],
                   ),
                 ),

@@ -16,7 +16,7 @@ class BaseDataBase<T extends BaseModel>{
    box_map["Dangerous_Goods_Order"] = await Hive.openBox("Dangerous_Goods_Order");
  }
 
- List<T> getAll<T extends BaseModel>(int ID){
+ List<T> getAll<T extends BaseModel>(){
    return box_map[T.toString()].values.toList().cast<T>();
  }
 
