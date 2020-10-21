@@ -1,10 +1,10 @@
 import 'package:hive/hive.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
-part 'Dangerous_Goods_Order.g.dart';
+part 'Liquid_Nitrogen_Order.g.dart';
 
-@HiveType(typeId: 2)
-class Dangerous_Goods_Order extends BaseModel {
+@HiveType(typeId: 6)
+class Liquid_Nitrogen_Order extends BaseModel {
   @HiveField(0)
   int ID;
   @HiveField(1)
@@ -14,42 +14,39 @@ class Dangerous_Goods_Order extends BaseModel {
   @HiveField(3)
   String ac_name;
   @HiveField(4)
-  int ID_department;
-  @HiveField(5)
   int hospital_price;
-  @HiveField(6)
+  @HiveField(5)
   String ref_no;
-  @HiveField(7)
+  @HiveField(6)
   DateTime po_date;
-  @HiveField(8)
+  @HiveField(7)
   String requested_by;
-  @HiveField(9)
+  @HiveField(8)
   String telephone_no;
-  @HiveField(10)
+  @HiveField(9)
   int ID_account;
-  @HiveField(11)
+  @HiveField(10)
   String ac_no;
-  @HiveField(12)
+  @HiveField(11)
   String user;
-  @HiveField(13)
+  @HiveField(12)
   String building;
+  @HiveField(13)
+  String delivered_by;
   @HiveField(14)
-  String issued_by;
-  @HiveField(15)
   int voucher;
-  @HiveField(16)
+  @HiveField(15)
   String remarks;
-  @HiveField(17)
+  @HiveField(16)
   int status;
-  @HiveField(18)
+  @HiveField(17)
   String dn_file_name;
 
-  Dangerous_Goods_Order(
+  Liquid_Nitrogen_Order(
       {int this.ID,
       String this.department_code,
       String this.department_name,
       String this.ac_name,
-      int this.ID_department,
       int this.hospital_price,
       String this.ref_no,
       DateTime this.po_date,
@@ -59,17 +56,16 @@ class Dangerous_Goods_Order extends BaseModel {
       String this.ac_no,
       String this.user,
       String this.building,
-      String this.issued_by,
+      String this.delivered_by,
       int this.voucher,
       String this.remarks,
       int this.status,
       String this.dn_file_name}) {}
 
-  Dangerous_Goods_Order.fromJSON(Map<String, dynamic> json) {
+  Liquid_Nitrogen_Order.fromJSON(Map<String, dynamic> json) {
     this.ID = json["ID"] ?? null;
     this.department_code = json["department_code"] ?? null;
     this.department_name = json["department_name"] ?? null;
-    this.ID_account = json["ID_account"] ?? null;
     this.ac_name = json["ac_name"] ?? null;
     this.hospital_price = json["hospital_price"] ?? null;
     this.ref_no = json["ref_no"] ?? null;
@@ -79,7 +75,7 @@ class Dangerous_Goods_Order extends BaseModel {
     this.ac_no = json["ac_no"] ?? null;
     this.user = json["user"] ?? null;
     this.building = json["building"] ?? null;
-    this.issued_by = json["issued_by"] ?? null;
+    this.delivered_by = json["delivered_by"] ?? null;
     this.voucher = json["voucher"] ?? null;
     this.remarks = json["remarks"] ?? null;
     this.status = json["status"] ?? null;

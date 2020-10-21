@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'Dangerous_Goods_Order.dart';
+part of 'Chemical_Waste_Order.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
