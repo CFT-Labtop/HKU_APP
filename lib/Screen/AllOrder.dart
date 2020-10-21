@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
+import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
+import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseFutureBuilder.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
@@ -96,7 +98,7 @@ class _AllOrder extends State<AllOrder> {
                     child: Icon(Icons.kitchen)))
           ]),
       appBar: AppBar(
-        title: Text(currentType.value),
+        title: Text(currentType.value, style: TextStyle(color: Colors.white),),
       ),
       body: Column(
         children: [
@@ -104,7 +106,10 @@ class _AllOrder extends State<AllOrder> {
           BaseFutureBuilder(
             future: Request().get(action: "mobile_duty_sheet", queryParameters: {"date": this.currentSelectedDate}),
             onSuccessCallback: (response){
-              print(response.data[0]);
+              List<Dangerous_Goods_Order> dangerous_goods_order_list  = response.data["Dangerous_Goods_Order"].map<Dangerous_Goods_Order>((f) {return new Dangerous_Goods_Order.fromJSON(f);}).toList();
+              dangerous_goods_order_list.forEach((element) {
+                BaseDataBase().add<Dangerous_Goods_Order>(element);
+              });
             },
             child: Expanded(child: BaseTable())),
         ],

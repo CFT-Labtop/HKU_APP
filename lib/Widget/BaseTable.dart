@@ -19,21 +19,21 @@ class BaseTable extends StatefulWidget {
 
 class _BaseTableState extends State<BaseTable> {
   List<Dangerous_Goods_Order> items = [
-    new Dangerous_Goods_Order({
-      "ref_no": "DGO-005276",
-      "department_name": "Mechanical Engineering",
-      "building": "HW G14"
-    }),
-    new Dangerous_Goods_Order({
-      "ref_no": "DGO-005254",
-      "department_name": "SBMS Anatomy",
-      "building": "FMB L1-18Ax"
-    }),
-    new Dangerous_Goods_Order({
-      "ref_no": "DGO-005262",
-      "department_name": "Medicine",
-      "building": "QMH Prof Blk 317"
-    }),
+    // new Dangerous_Goods_Order({
+    //   "ref_no": "DGO-005276",
+    //   "department_name": "Mechanical Engineering",
+    //   "building": "HW G14"
+    // }),
+    // new Dangerous_Goods_Order({
+    //   "ref_no": "DGO-005254",
+    //   "department_name": "SBMS Anatomy",
+    //   "building": "FMB L1-18Ax"
+    // }),
+    // new Dangerous_Goods_Order({
+    //   "ref_no": "DGO-005262",
+    //   "department_name": "Medicine",
+    //   "building": "QMH Prof Blk 317"
+    // }),
   ];
   @override
   Widget build(BuildContext context) {

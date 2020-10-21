@@ -162,31 +162,31 @@ class _OrderDetail extends State<OrderDetail> {
     //   _detail = value.data["Detail"].map<Dangerous_Goods_Order_Detail>((f) {
     //     return new Dangerous_Goods_Order_Detail(f);
     //   }).toList();
-    _information = new Dangerous_Goods_Order(testData["data"]["Information"]);
-    _detail = testData["data"]["Detail"].map<Dangerous_Goods_Order_Detail>((f) {
-      return new Dangerous_Goods_Order_Detail(f);
-    }).toList();
-    rowList = [];
-    rowList.add(header);
-    for (var i = 0; i < _detail.length; i++) {
-      rowList.add(Divider(
-        color: Colors.grey,
-        thickness: 0.5,
-      ));
-      rowList.add(Row(
-        children: [
-          Expanded(
-              child:
-                  Text(_detail[i].product_name, style: TextStyle(fontSize: 11))
-                      .tr()),
-          Expanded(
-              child: Text(_detail[i].quantity.toString(),
-                      style: TextStyle(fontSize: 11))
-                  .tr())
-        ],
-      ));
-    }
-    setState(() {});
+    // _information = new Dangerous_Goods_Order.fromJSON(testData["data"]["Information"]);
+    // _detail = testData["data"]["Detail"].map<Dangerous_Goods_Order_Detail>((f) {
+    //   return new Dangerous_Goods_Order_Detail(f);
+    // }).toList();
+    // rowList = [];
+    // rowList.add(header);
+    // for (var i = 0; i < _detail.length; i++) {
+    //   rowList.add(Divider(
+    //     color: Colors.grey,
+    //     thickness: 0.5,
+    //   ));
+    //   rowList.add(Row(
+    //     children: [
+    //       Expanded(
+    //           child:
+    //               Text(_detail[i].product_name, style: TextStyle(fontSize: 11))
+    //                   .tr()),
+    //       Expanded(
+    //           child: Text(_detail[i].quantity.toString(),
+    //                   style: TextStyle(fontSize: 11))
+    //               .tr())
+    //     ],
+    //   ));
+    // }
+    // setState(() {});
     // );
   }
 
@@ -209,8 +209,8 @@ class _OrderDetail extends State<OrderDetail> {
                       child: Column(
                         children: [
                           cardHeader(context, "Information", orderColor),
-                          halfRow("Ref. No.", _information.ref_no, "PO Date",
-                              _information.po_date.substring(0, 10)),
+                          // halfRow("Ref. No.", _information.ref_no, "PO Date",
+                          //     _information.po_date.substring(0, 10)),
                           halfRow("Department", _information.department_code,
                               "Requested By", _information.requested_by),
                           halfRow("Building", _information.building,

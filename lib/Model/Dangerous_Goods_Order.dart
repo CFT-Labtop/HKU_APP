@@ -1,33 +1,62 @@
-class Dangerous_Goods_Order {
-  String department_code;
-  String department_name;
-  int ID_account;
-  String ac_name;
-  int hospital_price;
-  String ref_no;
-  String po_date;
-  String requested_by;
-  String telephone_no;
-  String ac_no;
-  String user;
-  String building;
-  String issued_by;
-  int voucher;
-  String remarks;
-  int status;
-  // String dn_file_name;
-  String dn_file;
-  String modify_user;
-  int isDeleted;
+import 'package:hive/hive.dart';
+import 'package:hku_app/Util/BaseModel.dart';
 
-  Dangerous_Goods_Order(Map<String, dynamic> json) {
+part 'Dangerous_Goods_Order.g.dart';
+
+@HiveType(typeId : 2)
+class Dangerous_Goods_Order extends BaseModel {
+  @HiveField(0)
+  int ID;
+  @HiveField(1)
+  String department_code;
+  @HiveField(2)
+  String department_name;
+  @HiveField(3)
+  String ac_name;
+  @HiveField(4)
+  int ID_department;
+  @HiveField(5)
+  int hospital_price;
+  @HiveField(6)
+  String ref_no;
+  @HiveField(7)
+  DateTime po_date;
+  @HiveField(8)
+  String requested_by;
+  @HiveField(9)
+  String telephone_no;
+  @HiveField(10)
+  int ID_account;
+  @HiveField(11)
+  String ac_no;
+  @HiveField(12)
+  String user;
+  @HiveField(13)
+  String building;
+  @HiveField(14)
+  String issued_by;
+  @HiveField(15)
+  int voucher;
+  @HiveField(16)
+  String remarks;
+  @HiveField(17)
+  int status;
+  @HiveField(18)
+  String dn_file_name;
+
+  Dangerous_Goods_Order({int this.ID, String this.department_code, String this.department_name, String this.ac_name, int this.ID_department, int this.hospital_price, String this.ref_no, DateTime this.po_date, String this.requested_by, String this.telephone_no, int this.ID_account, String this.ac_no, String this.user, String this.building, String this.issued_by, int this.voucher, String this.remarks, int this.status, String this.dn_file_name}){
+
+  }
+
+  Dangerous_Goods_Order.fromJSON(Map<String, dynamic> json) {
+    this.ID = json["ID"]??null;
     this.department_code = json["department_code"]??null;
     this.department_name = json["department_name"]??null;
     this.ID_account = json["ID_account"]??null;
     this.ac_name = json["ac_name"]??null;
     this.hospital_price = json["hospital_price"]??null;
     this.ref_no = json["ref_no"]??null;
-    this.po_date = json["po_date"]??null;
+    this.po_date = DateTime.parse(json["po_date"])??null;
     this.requested_by = json["requested_by"]??null;
     this.telephone_no = json["telephone_no"]??null;
     this.ac_no = json["ac_no"]??null;
@@ -37,12 +66,6 @@ class Dangerous_Goods_Order {
     this.voucher = json["voucher"]??null;
     this.remarks = json["remarks"]??null;
     this.status = json["status"]??null;
-    this.dn_file = json["dn_file"]??null;
-    this.modify_user = json["modify_user"]??null;
-    this.isDeleted = json["isDeleted"]??null;
+    this.dn_file_name = json["dn_file"]??null;
   }
-
-  Map<String, dynamic> toJSON() {}
-
-  String toJSONString() {}
 }
