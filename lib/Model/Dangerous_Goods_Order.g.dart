@@ -35,7 +35,7 @@ class DangerousGoodsOrderAdapter extends TypeAdapter<Dangerous_Goods_Order> {
       voucher: fields[15] as int,
       remarks: fields[16] as String,
       status: fields[17] as int,
-      dn_file_name: fields[18] as String,
+      dn_file: fields[18] as String,
     );
   }
 
@@ -80,7 +80,7 @@ class DangerousGoodsOrderAdapter extends TypeAdapter<Dangerous_Goods_Order> {
       ..writeByte(17)
       ..write(obj.status)
       ..writeByte(18)
-      ..write(obj.dn_file_name);
+      ..write(obj.dn_file);
   }
 
   @override

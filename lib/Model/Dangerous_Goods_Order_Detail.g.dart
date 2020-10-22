@@ -34,7 +34,7 @@ class DangerousGoodsOrderDetailAdapter
       pickedQuantity: fields[13] as int,
       volume: fields[14] as double,
       unit: fields[15] as String,
-      amount: fields[16] as String,
+      amount: fields[16] as bool,
       product_brand: fields[17] as String,
     );
   }

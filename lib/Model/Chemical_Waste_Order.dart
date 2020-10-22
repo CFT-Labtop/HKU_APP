@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:hive/hive.dart';
-import 'package:hku_app/Model/OrderMixin.dart';
+import 'package:hku_app/Enums/DeliveryType.dart';
+import 'package:hku_app/Model/LocalPhoto.dart';
+import 'package:hku_app/Model/OrderInterface.dart';
+import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 part 'Chemical_Waste_Order.g.dart';
 
 @HiveType(typeId: 4)
-class Chemical_Waste_Order extends BaseModel with OrderMixin{
+class Chemical_Waste_Order extends BaseModel implements OrderInterface{
   @HiveField(0)
   int ID;
   @HiveField(1)
@@ -33,7 +38,7 @@ class Chemical_Waste_Order extends BaseModel with OrderMixin{
   @HiveField(12)
   int status;
   @HiveField(13)
-  String dn_file_name;
+  String dn_file;
 
   Chemical_Waste_Order(
       {int this.ID,
@@ -49,7 +54,10 @@ class Chemical_Waste_Order extends BaseModel with OrderMixin{
       String this.telephone_no,
       String this.remarks,
       int this.status,
-      String this.dn_file_name}) {}
+      String this.dn_file}) {}
+
+  @override
+  int getID() => this.ID;
 
   Chemical_Waste_Order.fromJSON(Map<String, dynamic> json) {
     this.ID = json["ID"] ?? null;
@@ -65,6 +73,49 @@ class Chemical_Waste_Order extends BaseModel with OrderMixin{
     this.telephone_no = json["telephone_no"] ?? null;
     this.remarks = json["remarks"] ?? null;
     this.status = json["status"] ?? null;
-    this.dn_file_name = json["dn_file_name"] ?? null;
+    this.dn_file = json["dn_file"] ?? null;
+  }
+
+  @override
+  String getBuilding() => this.location;
+
+  @override
+  String getDepartmentName() => this.department_name;
+
+  @override
+  String getRefNo()  => this.ref_no;
+
+  @override
+  DeliveryType getType() => DeliveryType.ChemicalWaste;
+
+  @override
+  String getAccountNumber()=> "";
+
+  @override
+  String getDepartmentCode() => this.department_code;
+
+  @override
+  DateTime getPODate() => this.po_date;
+
+  @override
+  String getRequestedBy() => this.requested_by;
+
+  @override
+  String getTelephone() => this.telephone_no;
+
+  @override
+  List<File> getDNLocal() {
+    try{
+      return BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.type == this.getType() && element.orderID == this.ID).photoList;
+    }catch(e){
+      print(e);
+    }
+  }
+
+  @override
+  List<File> updatePhotoList(List<File> fileList) {
+    LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.type == this.getType() && element.orderID == this.ID);
+    localPhoto.photoList = fileList;
+    localPhoto.save();
   }
 }

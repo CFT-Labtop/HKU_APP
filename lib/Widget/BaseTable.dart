@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:hku_app/Model/OrderMixin.dart';
+import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Screen/OrderDetail.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -13,8 +13,8 @@ class BaseTable extends StatefulWidget {
     SortStatus.DESCENDINNG,
     SortStatus.DESCENDINNG
   ];
-  List<OrderMixin> data = [];
-  void Function(OrderMixin data) onRowPress;
+  List<OrderInterface> data = [];
+  void Function(OrderInterface data) onRowPress;
   BaseTable(data, {Key key, this.sortIndex = 0, this.onRowPress})
       : data = data,
         super(key: key);
@@ -41,9 +41,9 @@ class _BaseTableState extends State<BaseTable> {
                   widget.sortStatusList[columnIndex] = sortStatus;
                   if (widget.sortStatusList[columnIndex] ==
                       SortStatus.ASCENDINNG)
-                    widget.data.sort((a, b) => (b.ref_no).compareTo(a.ref_no));
+                    widget.data.sort((a, b) => (b.getRefNo()).compareTo(a.getRefNo()));
                   else
-                    widget.data.sort((a, b) => (a.ref_no).compareTo(b.ref_no));
+                    widget.data.sort((a, b) => (a.getRefNo()).compareTo(b.getRefNo()));
                 });
               },
             ),
@@ -57,9 +57,9 @@ class _BaseTableState extends State<BaseTable> {
                   widget.sortStatusList[columnIndex] = sortStatus;
                   if (widget.sortStatusList[columnIndex] ==
                       SortStatus.ASCENDINNG)
-                    widget.data.sort((a, b) => (b.department_name).compareTo(a.department_name));
+                    widget.data.sort((a, b) => (b.getDepartmentName()).compareTo(a.getDepartmentName()));
                   else
-                    widget.data.sort((a, b) => (a.department_name).compareTo(b.department_name));
+                    widget.data.sort((a, b) => (a.getDepartmentName()).compareTo(b.getDepartmentName()));
                 });
               },
               isSortIndex: (widget.sortIndex == 1),
@@ -103,9 +103,9 @@ class _BaseTableState extends State<BaseTable> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      BaseTableCell(title: widget.data[index].ref_no),
-                      BaseTableCell(title: widget.data[index].department_name),
-                      BaseTableCell(title: widget.data[index].building),
+                      BaseTableCell(title: widget.data[index].getRefNo() ?? ""),
+                      BaseTableCell(title: widget.data[index].getDepartmentName() ?? ""),
+                      BaseTableCell(title: widget.data[index].getBuilding()?? ""),
                     ],
                   ),
                 ),

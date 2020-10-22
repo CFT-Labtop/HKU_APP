@@ -1,12 +1,13 @@
 import 'dart:ffi';
 
 import 'package:hive/hive.dart';
+import 'package:hku_app/Model/OrderDetailInterface.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 part 'Dangerous_Goods_Order_Detail.g.dart';
 
 @HiveType(typeId: 3)
-class Dangerous_Goods_Order_Detail extends BaseModel {
+class Dangerous_Goods_Order_Detail extends BaseModel implements OrderDetailInterface {
   @HiveField(0)
   int ID;
   @HiveField(1)
@@ -40,7 +41,7 @@ class Dangerous_Goods_Order_Detail extends BaseModel {
   @HiveField(15)
   String unit;
   @HiveField(16)
-  String amount;
+  bool amount;
   @HiveField(17)
   String product_brand;
 
@@ -61,13 +62,15 @@ class Dangerous_Goods_Order_Detail extends BaseModel {
       int this.pickedQuantity,
       double this.volume,
       String this.unit,
-      String this.amount,
+      bool this.amount,
       String this.product_brand}) {}
+  @override
+  int getID() => this.ID;
 
   Dangerous_Goods_Order_Detail.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
+    this.ID = json["ID"].toInt() ?? null;
     this.ID_dangerous_goods_order =
-        json["departmeID_dangerous_goods_ordernt_code"] ?? null;
+        json["ID_dangerous_goods_order"] ?? null;
     this.ID_dangerous_goods = json["ID_dangerous_goods"] ?? null;
     this.ID_stock_inventory = json["ID_stock_inventory"] ?? null;
     // this.ID_stock_inventory_detail = json["ID_stock_inventory_detail"] ?? null;
@@ -77,12 +80,18 @@ class Dangerous_Goods_Order_Detail extends BaseModel {
     this.rfid_code = json["rfid_code"] ?? null;
     this.pick_dept_code = json["pick_dept_code"] ?? null;
     this.product_name = json["product_name"] ?? null;
-    this.unit_price = json["unit_price"] ?? null;
-    this.quantity = json["quantity"] ?? null;
+    this.unit_price = json["unit_price"].toDouble() ?? null;
+    this.quantity = json["quantity"].toDouble() ?? null;
     this.pickedQuantity = json["pickedQuantity"] ?? null;
-    this.volume = json["volume"] ?? null;
+    this.volume = json["volume"].toDouble() ?? null;
     this.unit = json["unit"] ?? null;
-    this.amount = json["amount"] ?? null;
+    this.amount = json["amount"] == 1 ?true: false;
     this.product_brand = json["product_brand"] ?? null;
   }
+
+  @override
+  String getProductName() => this.product_name;
+
+  @override
+  double getQuantity() => this.quantity;
 }

@@ -34,7 +34,7 @@ class LiquidNitrogenOrderAdapter extends TypeAdapter<Liquid_Nitrogen_Order> {
       voucher: fields[14] as int,
       remarks: fields[15] as String,
       status: fields[16] as int,
-      dn_file_name: fields[17] as String,
+      dn_file: fields[17] as String,
     );
   }
 
@@ -77,7 +77,7 @@ class LiquidNitrogenOrderAdapter extends TypeAdapter<Liquid_Nitrogen_Order> {
       ..writeByte(16)
       ..write(obj.status)
       ..writeByte(17)
-      ..write(obj.dn_file_name);
+      ..write(obj.dn_file);
   }
 
   @override

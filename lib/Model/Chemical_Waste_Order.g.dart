@@ -30,7 +30,7 @@ class ChemicalWasteOrderAdapter extends TypeAdapter<Chemical_Waste_Order> {
       telephone_no: fields[10] as String,
       remarks: fields[11] as String,
       status: fields[12] as int,
-      dn_file_name: fields[13] as String,
+      dn_file: fields[13] as String,
     );
   }
 
@@ -65,7 +65,7 @@ class ChemicalWasteOrderAdapter extends TypeAdapter<Chemical_Waste_Order> {
       ..writeByte(12)
       ..write(obj.status)
       ..writeByte(13)
-      ..write(obj.dn_file_name);
+      ..write(obj.dn_file);
   }
 
   @override

@@ -1,10 +1,12 @@
 import 'package:hive/hive.dart';
+import 'package:hku_app/Model/OrderDetailInterface.dart';
+import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 part 'Chemical_Waste_Order_Detail.g.dart';
 
 @HiveType(typeId: 5)
-class Chemical_Waste_Order_Detail extends BaseModel {
+class Chemical_Waste_Order_Detail extends BaseModel implements OrderDetailInterface  {
   @HiveField(0)
   int ID;
   @HiveField(1)
@@ -28,6 +30,9 @@ class Chemical_Waste_Order_Detail extends BaseModel {
   @HiveField(10)
   String shortName;
 
+  @override
+  int getID() => this.ID;
+
   Chemical_Waste_Order_Detail(
       {int this.ID,
       int this.ID_chemical_waste_order,
@@ -45,6 +50,7 @@ class Chemical_Waste_Order_Detail extends BaseModel {
     this.ID = json["ID"] ?? null;
     this.ID_chemical_waste_order = json["ID_chemical_waste_order"] ?? null;
     this.waste_code = json["waste_code"] ?? null;
+    this.waste_type = json["waste_type"] ?? null;
     this.medical_waste = json["medical_waste"] ?? null;
     this.container_no = json["container_no"] ?? null;
     this.capacity = json["capacity"] ?? null;
@@ -53,4 +59,10 @@ class Chemical_Waste_Order_Detail extends BaseModel {
     this.collected_unit = json["collected_unit"] ?? null;
     this.shortName = json["shortName"] ?? null;
   }
+
+  @override
+  String getProductName() => this.waste_type;
+
+  @override
+  double getQuantity() => this.container_no.toDouble();
 }

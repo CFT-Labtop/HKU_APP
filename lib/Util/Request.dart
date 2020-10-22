@@ -57,4 +57,10 @@ class Request {
       throw e;
     }
   }
+
+  Future<BaseResponse> uploadDNPhoto({String action}) async{
+    Response response = await this
+        .dio
+        .post(this.baseURL + "upload_dn_file", data: {});
+  }
 }

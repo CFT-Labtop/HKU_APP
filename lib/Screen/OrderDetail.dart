@@ -2,48 +2,68 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:hku_app/Enums/DeliveryType.dart';
+import 'package:hku_app/Model/Chemical_Waste_Order.dart';
+import 'package:hku_app/Model/Chemical_Waste_Order_Detail.dart';
+import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
+import 'package:hku_app/Model/Dangerous_Goods_Order_Detail.dart';
+import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
+import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
+import 'package:hku_app/Model/OrderDetailInterface.dart';
+import 'package:hku_app/Model/OrderInterface.dart';
+import 'package:hku_app/Util/BaseDataBase.dart';
+import 'package:hku_app/Util/Global.dart';
 import 'package:image_picker/image_picker.dart';
-import '../Util/Global.dart';
-
-import '../Model/Dangerous_Goods_Order.dart';
-import '../Model/Dangerous_Goods_Order_Detail.dart';
-
-// void main() => runApp(
-//     new MaterialApp( debugShowCheckedModeBanner: false, home: OrderDetail()));
-void main() {
-  runApp(EasyLocalization(
-      supportedLocales: [
-        Locale('en', 'US'),
-        Locale('zh', 'CN'),
-        Locale('zh', 'HK')
-      ],
-      path: 'assets/translations', // <-- change patch to your
-      fallbackLocale: Locale('en', 'US'),
-      child: OrderDetail()));
-}
 
 class OrderDetail extends StatefulWidget {
+  int orderID;
+  DeliveryType type;
+
+  OrderDetail({Key key, this.orderID, this.type}) : super(key: key);
+
   _OrderDetail createState() => _OrderDetail();
 }
 
 class _OrderDetail extends State<OrderDetail> {
-  File _image;
+  List<File> imageList = [null, null, null];
+  OrderInterface orderData;
+  List<OrderDetailInterface> orderDetailList;
   final picker = ImagePicker();
-  String orderType = "Dangerous_Goods_Order";
-  String orderDeatiType = "Dangerous_Goods_Order_Detail";
-  String orderIDType = "ID_dangerous_goods_order";
-  Color orderColor = Colors.amberAccent;
-  int orderID = 5243;
-  Dangerous_Goods_Order _information;
-  List<Dangerous_Goods_Order_Detail> _detail;
 
-  Future getImage() async {
+  String orderTitle() {
+    return this.widget.type.value + " Order";
+  }
+
+  void initLocalPhoto(){
+
+  }
+
+  Widget imageBox(File file, int index){
+    return RawMaterialButton(
+      onPressed: (){
+        getImage(index);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Global.responsiveSize(context, 24.0)),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all()
+          ),
+          width: double.infinity,
+          height: Global.responsiveSize(context, 400.0),
+          child: file == null ? SizedBox(): Image.file(file, fit: BoxFit.cover,),
+        ),
+      ),
+    );
+    return Image.file(file);
+  }
+
+  Future getImage(int index) async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
+        imageList[index] = File(pickedFile.path);
+        orderData.updatePhotoList(imageList);
       }
     });
   }
@@ -51,175 +71,95 @@ class _OrderDetail extends State<OrderDetail> {
   @override
   void initState() {
     super.initState();
-    Map<String, dynamic> testData = {
-      "data": {
-        "Information": {
-          "ID_department": 9,
-          "department_code": "CON",
-          "department_name": "Clinical Oncology",
-          "ID_account": 113,
-          "ac_name": "Clinical Oncology - A/C 002",
-          "hospital_price": 0,
-          "ref_no": "DGO-005243",
-          "po_date": "2020-09-25 12:00:00",
-          "requested_by": "Michelle",
-          "telephone_no": "39176937",
-          "ac_no": "10212.292160000.921600.21600.400.01",
-          "user": "Michelle",
-          "building": "FMB L6-02",
-          "issued_by": "Priscilla",
-          "voucher": 0,
-          "remarks": "",
-          "status": 0,
-          "dn_file": "[]",
-          "modify_user": "admin",
-          "isDeleted": 0,
-          "createdDate": null,
-          "modifiedDate": null,
-          "ID": 5243
-        },
-        "Detail": [
-          {
-            "ID_dangerous_goods_order": 5243,
-            "ID_dangerous_goods": 47,
-            "ID_stock_inventory": 77,
-            "ID_stock_inventory_detail": [],
-            "pickedQuantity": 0,
-            "article_no": "20821",
-            "location": "CYM C08",
-            "shelf": "",
-            "rfid_code": null,
-            "pick_dept_code": "CONMG",
-            "product_name": "Ethanol Absolute AR",
-            "unit_price": 110,
-            "quantity": 4,
-            "volume": 2.5,
-            "unit": "L",
-            "amount": 0,
-            "product_brand": "VWR",
-            "createdDate": null,
-            "modifiedDate": null,
-            "ID": 9840,
-            "isDeleted": null
-          },
-          {
-            "ID_dangerous_goods_order": 5243,
-            "ID_dangerous_goods": 6,
-            "ID_stock_inventory": 67,
-            "ID_stock_inventory_detail": [],
-            "pickedQuantity": 0,
-            "article_no": "4341",
-            "location": "FMB N2",
-            "shelf": "",
-            "rfid_code": "353",
-            "pick_dept_code": "CONMG",
-            "product_name": "Xylene",
-            "unit_price": 145,
-            "quantity": 4,
-            "volume": 2.5,
-            "unit": "L",
-            "amount": 0,
-            "product_brand": "DUKSAN",
-            "createdDate": null,
-            "modifiedDate": null,
-            "ID": 9841,
-            "isDeleted": null
-          },
-          {
-            "ID_dangerous_goods_order": 5243,
-            "ID_dangerous_goods": 4,
-            "ID_stock_inventory": 1104,
-            "ID_stock_inventory_detail": [],
-            "pickedQuantity": 0,
-            "article_no": "E14583",
-            "location": "PC D",
-            "shelf": "",
-            "rfid_code": "777",
-            "pick_dept_code": "CONMG",
-            "product_name": "Ethanol 95%",
-            "unit_price": 700,
-            "quantity": 1,
-            "volume": 20,
-            "unit": "L",
-            "amount": 0,
-            "product_brand": "UC",
-            "createdDate": null,
-            "modifiedDate": null,
-            "ID": 9842,
-            "isDeleted": null
-          }
-        ]
-      }
-    };
-    // Global.requestGet("get_order_detail", {
-    //   "type": orderType,
-    //   "class": orderDeatiType,
-    //   "column": orderIDType,
-    //   "value": orderID
-    // }).then((value) {
-    //   isLoading = false;
-    //   _information = new Dangerous_Goods_Order(value.data["Information"]);
-    //   _detail = value.data["Detail"].map<Dangerous_Goods_Order_Detail>((f) {
-    //     return new Dangerous_Goods_Order_Detail(f);
-    //   }).toList();
-    // _information = new Dangerous_Goods_Order.fromJSON(testData["data"]["Information"]);
-    // _detail = testData["data"]["Detail"].map<Dangerous_Goods_Order_Detail>((f) {
-    //   return new Dangerous_Goods_Order_Detail(f);
-    // }).toList();
-    // rowList = [];
-    // rowList.add(header);
-    // for (var i = 0; i < _detail.length; i++) {
-    //   rowList.add(Divider(
-    //     color: Colors.grey,
-    //     thickness: 0.5,
-    //   ));
-    //   rowList.add(Row(
-    //     children: [
-    //       Expanded(
-    //           child:
-    //               Text(_detail[i].product_name, style: TextStyle(fontSize: 11))
-    //                   .tr()),
-    //       Expanded(
-    //           child: Text(_detail[i].quantity.toString(),
-    //                   style: TextStyle(fontSize: 11))
-    //               .tr())
-    //     ],
-    //   ));
-    // }
-    // setState(() {});
-    // );
+    switch (this.widget.type) {
+      case DeliveryType.ChemicalWaste:
+        this.orderData =
+            BaseDataBase().get<Chemical_Waste_Order>(this.widget.orderID);
+        this.orderDetailList = BaseDataBase()
+            .getAll<Chemical_Waste_Order_Detail>()
+            .where((element) =>
+                element.ID_chemical_waste_order == this.widget.orderID)
+            .toList()
+            .cast<OrderDetailInterface>();
+        break;
+      case DeliveryType.LiquidNitrogen:
+        this.orderData =
+            BaseDataBase().get<Liquid_Nitrogen_Order>(this.widget.orderID);
+        this.orderDetailList = BaseDataBase()
+            .getAll<Liquid_Nitrogen_Order_Detail>()
+            .where((element) =>
+                element.ID_liquid_nitrogen_order == this.widget.orderID)
+            .toList()
+            .cast<OrderDetailInterface>();
+        break;
+      case DeliveryType.DangerousGoods:
+        this.orderData =
+            BaseDataBase().get<Dangerous_Goods_Order>(this.widget.orderID);
+        this.orderDetailList = BaseDataBase()
+            .getAll<Dangerous_Goods_Order_Detail>()
+            .where((element) =>
+                element.ID_dangerous_goods_order == this.widget.orderID)
+            .toList()
+            .cast<OrderDetailInterface>();
+        break;
+    }
+    this.imageList = this.orderData.getDNLocal() ?? [null, null, null];
+  }
+
+  Widget orderDetailWidget() {
+    return Column(
+      children: [
+        cardHeader(context, "Detail".tr(), Colors.amberAccent),
+        Column(
+            children: this.orderDetailList.map((element) {
+          return Column(
+            children: [
+              halfRow("Product Name".tr(), element.getProductName() ?? "",
+                  "Quantity".tr(), element.getQuantity().toString() ?? ""),
+              Divider(
+                color: Colors.grey,
+                thickness: 0.5,
+              ),
+            ],
+          );
+        }).toList()),
+      ],
+    );
+  }
+
+  Widget orderInformationWidget() {
+    return Card(
+        child: Padding(
+      padding: EdgeInsets.all(Global.responsiveSize(context, 18)),
+      child: Column(
+        children: [
+          cardHeader(context, "Information".tr(), Colors.amberAccent),
+          halfRow("Ref. No.".tr(), this.orderData.getRefNo() ?? "", "PO Date",
+              Global.dateFormat(this.orderData.getPODate() ?? "")),
+          halfRow("Department".tr(), this.orderData.getDepartmentCode() ?? "",
+              "Requested By".tr(), this.orderData.getRequestedBy() ?? ""),
+          halfRow("Building".tr(), this.orderData.getBuilding() ?? "",
+              "Telephone".tr(), this.orderData.getTelephone() ?? ""),
+          halfRow("Account", this.orderData.getAccountNumber() ?? ""),
+        ],
+      ),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(orderType),
+          title: Text(orderTitle()),
         ),
         body: (false)
             ? SizedBox()
             : ListView(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.all(Global.responsiveSize(context, 8)),
-                    child: Card(
-                        child: Padding(
                       padding:
-                          EdgeInsets.all(Global.responsiveSize(context, 18)),
-                      child: Column(
-                        children: [
-                          cardHeader(context, "Information", orderColor),
-                          // halfRow("Ref. No.", _information.ref_no, "PO Date",
-                          //     _information.po_date.substring(0, 10)),
-                          halfRow("Department", _information.department_code,
-                              "Requested By", _information.requested_by),
-                          halfRow("Building", _information.building,
-                              "Telephone", _information.telephone_no),
-                          halfRow("Account", _information.ac_no),
-                        ],
-                      ),
-                    )),
-                  ),
+                          EdgeInsets.all(Global.responsiveSize(context, 8)),
+                      child: orderInformationWidget()),
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: Global.responsiveSize(context, 8)),
@@ -227,21 +167,17 @@ class _OrderDetail extends State<OrderDetail> {
                         child: Padding(
                       padding:
                           EdgeInsets.all(Global.responsiveSize(context, 18)),
-                      child: Column(
-                        children: [
-                          cardHeader(context, "Detail", orderColor),
-                          Column(children: rowList),
-                        ],
-                      ),
+                      child: orderDetailWidget(),
                     )),
                   ),
                   Column(children: [
-                    RawMaterialButton(
-                      onPressed: getImage,
-                      child: Center(
-                        child: _image == null
-                            ? Text('No image selected.')
-                            : Image.file(_image),
+                    Center(
+                      child: Column(
+                        children: List<Widget>.generate(3, (index) {
+                          if(imageList.asMap().containsKey(index))
+                            return imageBox(imageList[index], index);
+                          return imageBox(null, index);
+                        }),
                       ),
                     )
                   ])
@@ -288,17 +224,4 @@ class _OrderDetail extends State<OrderDetail> {
       ),
     ]);
   }
-
-  Row header = Row(
-    children: [
-      Expanded(
-          child: Text("Product Name",
-                  style: TextStyle(fontStyle: FontStyle.italic))
-              .tr()),
-      Expanded(
-          child: Text("Quantity", style: TextStyle(fontStyle: FontStyle.italic))
-              .tr())
-    ],
-  );
-  List<Widget> rowList = [];
 }

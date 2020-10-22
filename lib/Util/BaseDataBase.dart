@@ -6,6 +6,7 @@ import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
 import 'package:hku_app/Model/Dangerous_Goods_Order_Detail.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
+import 'package:hku_app/Model/LocalPhoto.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 class BaseDataBase<T extends BaseModel> {
@@ -23,6 +24,7 @@ class BaseDataBase<T extends BaseModel> {
     Hive.registerAdapter(LiquidNitrogenOrderDetailAdapter());
     Hive.registerAdapter(ChemicalWasteOrderAdapter());
     Hive.registerAdapter(ChemicalWasteOrderDetailAdapter());
+    Hive.registerAdapter(LocalPhotoAdapter());
     box_map["Dangerous_Goods_Order"] =
         await Hive.openBox("Dangerous_Goods_Order");
     box_map["Dangerous_Goods_Order_Detail"] =
@@ -35,6 +37,8 @@ class BaseDataBase<T extends BaseModel> {
         await Hive.openBox("Liquid_Nitrogen_Order");
     box_map["Liquid_Nitrogen_Order_Detail"] =
         await Hive.openBox("Liquid_Nitrogen_Order_Detail");
+    box_map["LocalPhoto"] =
+      await Hive.openBox("LocalPhoto");
   }
 
   List<T> getAll<T extends BaseModel>() {
@@ -46,7 +50,7 @@ class BaseDataBase<T extends BaseModel> {
   }
 
   void add<T extends BaseModel>(T model) {
-    box_map[T.toString()].put(model.ID, model);
+    box_map[T.toString()].put(model.getID(), model);
   }
 
   void save<T extends BaseModel>(T model) {
@@ -56,4 +60,6 @@ class BaseDataBase<T extends BaseModel> {
   void delete<T extends BaseModel>(T model) {
     model.delete();
   }
+
+
 }

@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
+import 'package:hku_app/Model/OrderDetailInterface.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 part 'Liquid_Nitrogen_Order_Detail.g.dart';
 
 @HiveType(typeId: 7)
-class Liquid_Nitrogen_Order_Detail extends BaseModel {
+class Liquid_Nitrogen_Order_Detail extends BaseModel implements OrderDetailInterface  {
   @HiveField(0)
   int ID;
   @HiveField(1)
@@ -19,6 +20,9 @@ class Liquid_Nitrogen_Order_Detail extends BaseModel {
   double unit_price;
   @HiveField(6)
   String stock_data_entered;
+
+  @override
+  int getID() => this.ID;
 
   Liquid_Nitrogen_Order_Detail(
       {int this.ID,
@@ -35,7 +39,13 @@ class Liquid_Nitrogen_Order_Detail extends BaseModel {
     this.article_no = json["ID_daarticle_nongerous_goods"] ?? null;
     this.product_name = json["product_name"] ?? null;
     this.volume = json["volume"] ?? null;
-    this.unit_price = json["unit_price"] ?? null;
+    this.unit_price = json["unit_price"].toDouble() ?? null;
     this.stock_data_entered = json["stock_data_entered"] ?? null;
   }
+
+  @override
+  String getProductName() => this.product_name;
+
+  @override
+  double getQuantity() => this.volume.toDouble();
 }

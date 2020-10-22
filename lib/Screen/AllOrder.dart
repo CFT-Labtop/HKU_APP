@@ -8,7 +8,7 @@ import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
 import 'package:hku_app/Model/Dangerous_Goods_Order_Detail.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
-import 'package:hku_app/Model/OrderMixin.dart';
+import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseFutureBuilder.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
@@ -25,7 +25,7 @@ class AllOrder extends StatefulWidget {
 class _AllOrder extends State<AllOrder> {
   DeliveryType currentType = DeliveryType.ChemicalWaste;
   DateTime currentSelectedDate = DateTime.now();
-
+  
   Widget _dateSelectField() {
     return RawMaterialButton(
       onPressed: () {
@@ -54,7 +54,7 @@ class _AllOrder extends State<AllOrder> {
 
   Widget orderTable(){
     return Expanded(child: BaseTable(getOrderByData(currentSelectedDate), onRowPress: (data){
-      Routes.goToPage(context, Pages.OrderDetail);
+      Routes.goToDetailPage(context, data.getID(), data.getType());
     },));
   }
 
@@ -112,7 +112,7 @@ class _AllOrder extends State<AllOrder> {
     });
   }
 
-  List<OrderMixin> getOrderByData(DateTime date){
+  List<OrderInterface> getOrderByData(DateTime date){
     switch(currentType){
       case DeliveryType.ChemicalWaste:
         return BaseDataBase().getAll<Chemical_Waste_Order>().where((element) => Global.dateFormat(element.po_date) == Global.dateFormat(this.currentSelectedDate)).toList();
@@ -176,7 +176,6 @@ class _AllOrder extends State<AllOrder> {
       appBar: AppBar(
         title: Text(
           currentType.value,
-          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Column(
