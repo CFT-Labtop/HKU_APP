@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:hive/hive.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
@@ -28,7 +30,7 @@ class Dangerous_Goods_Order_Detail extends BaseModel {
   @HiveField(10)
   String product_name;
   @HiveField(11)
-  String unit_price;
+  double unit_price;
   @HiveField(12)
   double quantity;
   @HiveField(13)
@@ -54,7 +56,7 @@ class Dangerous_Goods_Order_Detail extends BaseModel {
       String this.rfid_code,
       String this.pick_dept_code,
       String this.product_name,
-      String this.unit_price,
+      double this.unit_price,
       double this.quantity,
       int this.pickedQuantity,
       double this.volume,
@@ -68,7 +70,7 @@ class Dangerous_Goods_Order_Detail extends BaseModel {
         json["departmeID_dangerous_goods_ordernt_code"] ?? null;
     this.ID_dangerous_goods = json["ID_dangerous_goods"] ?? null;
     this.ID_stock_inventory = json["ID_stock_inventory"] ?? null;
-    this.ID_stock_inventory_detail = json["ID_stock_inventory_detail"] ?? null;
+    // this.ID_stock_inventory_detail = json["ID_stock_inventory_detail"] ?? null;
     this.article_no = json["article_no"] ?? null;
     this.location = json["location"] ?? null;
     this.shelf = json["shelf"] ?? null;

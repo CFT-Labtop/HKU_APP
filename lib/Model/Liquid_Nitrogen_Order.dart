@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
+import 'package:hku_app/Model/OrderMixin.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 part 'Liquid_Nitrogen_Order.g.dart';
 
 @HiveType(typeId: 6)
-class Liquid_Nitrogen_Order extends BaseModel {
+class Liquid_Nitrogen_Order extends BaseModel with OrderMixin {
   @HiveField(0)
   int ID;
   @HiveField(1)

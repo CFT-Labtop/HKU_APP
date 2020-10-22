@@ -3,7 +3,7 @@ import 'package:hku_app/Util/BaseResponse.dart';
 
 class BaseFutureBuilder extends StatelessWidget {
   final Future future;
-  final Widget loadingChild;
+  final Widget Function() loadingCallback;
   final Widget Function(BaseResponse response) onSuccessCallback;
   final Widget Function(Exception error) onErrorCallback;
   
@@ -11,7 +11,7 @@ class BaseFutureBuilder extends StatelessWidget {
   BaseFutureBuilder({
     Key key,
     @required this.future,
-    this.loadingChild,
+    this.loadingCallback,
     this.onSuccessCallback,
     this.onErrorCallback,
   }) : super(key: key);
@@ -20,11 +20,11 @@ class BaseFutureBuilder extends StatelessWidget {
     Widget loadingWidget = Center(child: CircularProgressIndicator());
     switch (snapshot.connectionState) {
       case ConnectionState.none:
-        return this.loadingChild?? loadingWidget;
+        return this.loadingCallback()?? loadingWidget;
       case ConnectionState.active:
-        return this.loadingChild?? loadingWidget;
+        return this.loadingCallback()?? loadingWidget;
       case ConnectionState.waiting:
-        return this.loadingChild?? loadingWidget;
+        return this.loadingCallback()?? loadingWidget;
       case ConnectionState.done:
         if (snapshot.hasError)
           return this.onErrorCallback(snapshot.error)??SizedBox;

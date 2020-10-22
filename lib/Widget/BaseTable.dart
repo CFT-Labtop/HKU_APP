@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
+import 'package:hku_app/Model/OrderMixin.dart';
 import 'package:hku_app/Screen/OrderDetail.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -13,8 +13,9 @@ class BaseTable extends StatefulWidget {
     SortStatus.DESCENDINNG,
     SortStatus.DESCENDINNG
   ];
-  List<Dangerous_Goods_Order> data = [];
-  BaseTable(data, {Key key, this.sortIndex = 0})
+  List<OrderMixin> data = [];
+  void Function(OrderMixin data) onRowPress;
+  BaseTable(data, {Key key, this.sortIndex = 0, this.onRowPress})
       : data = data,
         super(key: key);
   @override
@@ -83,8 +84,7 @@ class _BaseTableState extends State<BaseTable> {
             itemBuilder: (context, index) {
               return RawMaterialButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => OrderDetail()));
+                  this.widget.onRowPress(widget.data[index]);
                 },
                 child: Slidable(
                   actionPane: SlidableDrawerActionPane(),
@@ -103,7 +103,7 @@ class _BaseTableState extends State<BaseTable> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      BaseTableCell(title: widget.data[index].ID.toString()),
+                      BaseTableCell(title: widget.data[index].ref_no),
                       BaseTableCell(title: widget.data[index].department_name),
                       BaseTableCell(title: widget.data[index].building),
                     ],

@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
+import 'package:hku_app/Model/OrderMixin.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 part 'Chemical_Waste_Order.g.dart';
 
 @HiveType(typeId: 4)
-class Chemical_Waste_Order extends BaseModel {
+class Chemical_Waste_Order extends BaseModel with OrderMixin{
   @HiveField(0)
   int ID;
   @HiveField(1)

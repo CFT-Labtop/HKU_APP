@@ -17,6 +17,11 @@ class Routes {
         handler: Handler(handlerFunc: (context, params) => AllOrder()));
     Routes.router = router;
   }
+
+  static Future goToDetailPage(BuildContext context){
+    Routes.goToPage(context, Pages.OrderDetail);
+  }
+
   static Future goToPage(BuildContext context, Pages page,
       {TransitionType type, bool clear = false}) {
     router.navigateTo(context, page.toString(),
@@ -24,6 +29,7 @@ class Routes {
         replace: false,
         clearStack: clear);
   }
+  
 }
 
 enum Pages {

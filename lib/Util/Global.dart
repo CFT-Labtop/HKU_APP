@@ -21,6 +21,10 @@ class Global {
       return size * padRate;
   }
 
+  static String dateFormat(DateTime date){
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+
   static PlatformAlertDialog showAlertDialog(BuildContext context, String content) {
     showPlatformDialog(
       context: context,

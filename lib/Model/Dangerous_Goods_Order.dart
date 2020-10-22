@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
+import 'package:hku_app/Model/OrderMixin.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 part 'Dangerous_Goods_Order.g.dart';
 
 @HiveType(typeId: 2)
-class Dangerous_Goods_Order extends BaseModel {
+class Dangerous_Goods_Order extends BaseModel with OrderMixin {
   @HiveField(0)
   int ID;
   @HiveField(1)
