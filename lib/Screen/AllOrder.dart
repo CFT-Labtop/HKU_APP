@@ -58,7 +58,7 @@ class _AllOrder extends State<AllOrder> {
     },));
   }
 
-  void addOrderData(BaseResponse response) {
+  Future<void >addOrderData(BaseResponse response) async{
     List<Dangerous_Goods_Order> dangerous_goods_order_list =
         response.data["Dangerous_Goods_Order"].map<Dangerous_Goods_Order>((f) {
       return new Dangerous_Goods_Order.fromJSON(f);
@@ -88,8 +88,8 @@ class _AllOrder extends State<AllOrder> {
     }).toList();
     dangerous_goods_order_list
         .where((element) => element.status == 0)
-        .forEach((element) {
-      BaseDataBase().add<Dangerous_Goods_Order>(element);
+        .forEach((element) async {
+      await BaseDataBase().add<Dangerous_Goods_Order>(element);
     });
     liquid_nitrogen_order_list
         .where((element) => element.status == 0)
@@ -98,17 +98,17 @@ class _AllOrder extends State<AllOrder> {
     });
     chemical_waste_order_list
         .where((element) => element.status == 0)
-        .forEach((element) {
-      BaseDataBase().add<Chemical_Waste_Order>(element);
+        .forEach((element) async {
+      await BaseDataBase().add<Chemical_Waste_Order>(element);
     });
-    dangerous_goods_order_detail_list.forEach((element) {
-      BaseDataBase().add<Dangerous_Goods_Order_Detail>(element);
+    dangerous_goods_order_detail_list.forEach((element) async {
+      await BaseDataBase().add<Dangerous_Goods_Order_Detail>(element);
     });
-    liquid_nitrogen_order_detail_list.forEach((element) {
-      BaseDataBase().add<Liquid_Nitrogen_Order_Detail>(element);
+    liquid_nitrogen_order_detail_list.forEach((element) async {
+      await BaseDataBase().add<Liquid_Nitrogen_Order_Detail>(element);
     });
-    chemical_waste_order_detail_list.forEach((element) {
-      BaseDataBase().add<Chemical_Waste_Order_Detail>(element);
+    chemical_waste_order_detail_list.forEach((element) async {
+      await BaseDataBase().add<Chemical_Waste_Order_Detail>(element);
     });
   }
 
@@ -166,7 +166,6 @@ class _AllOrder extends State<AllOrder> {
                       setState(() {
                         currentType = DeliveryType.LiquidNitrogen;
                       });
-                      print(currentType);
                     },
                     heroTag: "Liquid Nitrogen".tr(),
                     backgroundColor: Colors.blueAccent,
@@ -188,6 +187,9 @@ class _AllOrder extends State<AllOrder> {
             },
             onSuccessCallback: (response) {
               addOrderData(response);
+              return orderTable();
+            },
+            onErrorCallback: (e){
               return orderTable();
             },
             

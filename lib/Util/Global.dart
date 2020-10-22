@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -11,6 +13,7 @@ class Global {
   static double phoneRate = 1;
   static double smallPadRate = 1.2;
   static double padRate = 1.5;
+
   static double responsiveSize(BuildContext context, double size) {
     double screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth <= smallPadSize)
@@ -21,29 +24,30 @@ class Global {
       return size * padRate;
   }
 
-  static String dateFormat(DateTime date){
+  static String dateFormat(DateTime date) {
     return DateFormat('yyyy-MM-dd').format(date);
   }
 
-  static PlatformAlertDialog showAlertDialog(BuildContext context, String content) {
+  static PlatformAlertDialog showAlertDialog(
+      BuildContext context, String content) {
     showPlatformDialog(
-      context: context,
-      builder: (_) => PlatformAlertDialog(
-        title: Text("Error").tr(),
-        content: Text(content).tr(),
-        actions: <Widget>[
-          PlatformDialogAction(
-            child: PlatformText('Dismiss'.tr()),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      )
-    );
+        context: context,
+        builder: (_) => PlatformAlertDialog(
+              title: Text("Error").tr(),
+              content: Text(content).tr(),
+              actions: <Widget>[
+                PlatformDialogAction(
+                  child: PlatformText('Dismiss'.tr()),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ));
   }
 
-  static PlatformAlertDialog showConfirmDialog(BuildContext context, {String title, String content, VoidCallback onPress}) {
+  static PlatformAlertDialog showConfirmDialog(BuildContext context,
+      {String title, String content, VoidCallback onPress}) {
     showPlatformDialog(
       context: context,
       builder: (_) => PlatformAlertDialog(
@@ -63,5 +67,14 @@ class Global {
         ],
       ),
     );
+  }
+
+  static String generateRandomString(int numCharacter) {
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random _rnd = Random();
+
+    return String.fromCharCodes(Iterable.generate(
+        numCharacter, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
   }
 }

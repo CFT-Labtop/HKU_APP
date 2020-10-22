@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:hku_app/Enums/DeliveryType.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -58,7 +59,25 @@ class Request {
     }
   }
 
-  Future<BaseResponse> uploadDNPhoto({String action}) async{
+  Future<BaseResponse> uploadDNPhoto({String action, int ID, DeliveryType type, String ref_no, List<File> fileList}) async{
+    String stringType;
+    switch(type){
+      case DeliveryType.ChemicalWaste:
+        stringType = "CWF";
+        break;
+      case DeliveryType.DangerousGoods:
+        stringType = "DGO";
+        break;
+      case DeliveryType.LiquidNitrogen:
+        stringType = "LNO";
+        break;
+    }
+    FormData data = FormData.fromMap({
+      "type": stringType,
+      "ID": ID,
+      "ref_no": ref_no,
+//      "file": await MultipartFile.fromFile(file.path, filename:fileName)
+    });
     Response response = await this
         .dio
         .post(this.baseURL + "upload_dn_file", data: {});

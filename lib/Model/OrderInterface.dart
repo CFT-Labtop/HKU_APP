@@ -13,6 +13,6 @@ abstract class OrderInterface{
   String getBuilding();
   int getID();
   DeliveryType getType();
-  List<File> getDNLocal();
-  void updatePhotoList(List<File> fileList);
+  Future<List<File>> getDNLocal();
+  Future<void> updatePhotoList(List<File> fileList);
 }

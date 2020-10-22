@@ -123,12 +123,18 @@ class Dangerous_Goods_Order extends BaseModel with OrderInterface {
   String getTelephone() => this.telephone_no;
 
   @override
-  List<File> getDNLocal() {
-    return BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.type == this.getType() && element.orderID == this.ID).photoList;
+  Future<List<File>> getDNLocal() async {
+    try{
+      return BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ID == this.getRefNo()).photoList;
+    }catch(e){
+      LocalPhoto localPhoto = new LocalPhoto(ID: LocalPhoto.getHighestID(), ref_no: this.getRefNo(), photoList:  [null, null, null], orderID: this.ID, type: DeliveryType.DangerousGoods.value);
+      await BaseDataBase().add<LocalPhoto>(localPhoto);
+      return localPhoto.photoList;
+    }
   }
 
   @override
-  List<File> updatePhotoList(List<File> fileList) {
+  Future<void> updatePhotoList(List<File> fileList) {
     LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.type == this.getType() && element.orderID == this.ID);
     localPhoto.photoList = fileList;
     localPhoto.save();

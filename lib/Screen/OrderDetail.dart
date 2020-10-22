@@ -34,14 +34,10 @@ class _OrderDetail extends State<OrderDetail> {
     return this.widget.type.value + " Order";
   }
 
-  void initLocalPhoto(){
-
-  }
-
   Widget imageBox(File file, int index){
     return RawMaterialButton(
-      onPressed: (){
-        getImage(index);
+      onPressed: () async{
+        await getImage(index);
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: Global.responsiveSize(context, 24.0)),
@@ -58,14 +54,11 @@ class _OrderDetail extends State<OrderDetail> {
     return Image.file(file);
   }
 
-  Future getImage(int index) async {
+  Future<void> getImage(int index) async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        imageList[index] = File(pickedFile.path);
-        orderData.updatePhotoList(imageList);
-      }
-    });
+    imageList[index] = File(pickedFile.path);
+    await orderData.updatePhotoList(imageList);
+    setState(() {});
   }
 
   @override
@@ -103,7 +96,10 @@ class _OrderDetail extends State<OrderDetail> {
             .cast<OrderDetailInterface>();
         break;
     }
-    this.imageList = this.orderData.getDNLocal() ?? [null, null, null];
+    this.orderData.getDNLocal().then((value){
+      this.imageList = value;
+      setState(() {});
+    });
   }
 
   Widget orderDetailWidget() {
@@ -173,11 +169,11 @@ class _OrderDetail extends State<OrderDetail> {
                   Column(children: [
                     Center(
                       child: Column(
-                        children: List<Widget>.generate(3, (index) {
-                          if(imageList.asMap().containsKey(index))
-                            return imageBox(imageList[index], index);
-                          return imageBox(null, index);
-                        }),
+                        children: [
+                          imageBox(imageList[0],0),
+                          imageBox(imageList[1],1),
+                          imageBox(imageList[2],2),
+                        ],
                       ),
                     )
                   ])

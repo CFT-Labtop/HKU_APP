@@ -6,6 +6,7 @@ import 'package:hku_app/Model/LocalPhoto.dart';
 import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:hku_app/Util/Global.dart';
 
 part 'Chemical_Waste_Order.g.dart';
 
@@ -104,18 +105,24 @@ class Chemical_Waste_Order extends BaseModel implements OrderInterface{
   String getTelephone() => this.telephone_no;
 
   @override
-  List<File> getDNLocal() {
+  Future<List<File>> getDNLocal() async {
     try{
-      return BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.type == this.getType() && element.orderID == this.ID).photoList;
+      return BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo()).photoList;
     }catch(e){
-      print(e);
+      LocalPhoto localPhoto = new LocalPhoto(ID: LocalPhoto.getHighestID(), ref_no: this.getRefNo(), photoList:  [null, null, null], orderID: this.ID, type: DeliveryType.ChemicalWaste.value);
+      await BaseDataBase().add<LocalPhoto>(localPhoto);
+      return localPhoto.photoList;
     }
   }
 
   @override
-  List<File> updatePhotoList(List<File> fileList) {
-    LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.type == this.getType() && element.orderID == this.ID);
-    localPhoto.photoList = fileList;
-    localPhoto.save();
+  Future<void> updatePhotoList(List<File> fileList) async{
+    try{
+      LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.ref_no);
+      localPhoto.photoList = fileList;
+      await localPhoto.save();
+    }catch(e){
+      print(e);
+    }
   }
 }

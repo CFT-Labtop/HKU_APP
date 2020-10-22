@@ -26,8 +26,8 @@ class BaseFutureBuilder extends StatelessWidget {
       case ConnectionState.waiting:
         return this.loadingCallback()?? loadingWidget;
       case ConnectionState.done:
-        if (snapshot.hasError && this.onErrorCallback != null)
-          return this.onErrorCallback(snapshot.error)??SizedBox;
+        if (snapshot.hasError)
+          return this.onErrorCallback(snapshot.error);
         else
           return this.onSuccessCallback(snapshot.data);
         break;

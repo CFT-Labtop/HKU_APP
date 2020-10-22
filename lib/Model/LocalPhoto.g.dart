@@ -18,16 +18,17 @@ class LocalPhotoAdapter extends TypeAdapter<LocalPhoto> {
     };
     return LocalPhoto(
       ID: fields[0] as int,
-      type: fields[1] as DeliveryType,
+      type: fields[1] as String,
       photoList: (fields[2] as List)?.cast<File>(),
       orderID: fields[3] as int,
+      ref_no: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, LocalPhoto obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.ID)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class LocalPhotoAdapter extends TypeAdapter<LocalPhoto> {
       ..writeByte(2)
       ..write(obj.photoList)
       ..writeByte(3)
-      ..write(obj.orderID);
+      ..write(obj.orderID)
+      ..writeByte(4)
+      ..write(obj.ref_no);
   }
 
   @override
