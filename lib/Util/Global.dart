@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Global {
   static const Color mainColor = Color.fromRGBO(0, 179, 141, 1);
@@ -67,6 +71,18 @@ class Global {
         ],
       ),
     );
+  }
+
+  static Future<File> createFileFromString(String encodedStr, String ext) async {
+    try{
+      Uint8List bytes = base64.decode(encodedStr);
+      String dir = (await getApplicationDocumentsDirectory()).path;
+      File file = File(
+          "$dir/" + DateTime.now().millisecondsSinceEpoch.toString() + "." + ext);
+      return await file.writeAsBytes(bytes);
+    }catch(e){
+      print(e);
+    }
   }
 
   static String generateRandomString(int numCharacter) {

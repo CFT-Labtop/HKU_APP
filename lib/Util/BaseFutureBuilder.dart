@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
 
@@ -5,7 +6,7 @@ class BaseFutureBuilder extends StatelessWidget {
   final Future future;
   final Widget Function() loadingCallback;
   final Widget Function(BaseResponse response) onSuccessCallback;
-  final Widget Function(Exception error) onErrorCallback;
+  final Widget Function(DioError error) onErrorCallback;
   
 
   BaseFutureBuilder({

@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
 import 'package:hku_app/Model/LocalPhoto.dart';
@@ -7,6 +11,7 @@ import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 import 'package:hku_app/Util/Global.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'Chemical_Waste_Order.g.dart';
 
@@ -107,19 +112,35 @@ class Chemical_Waste_Order extends BaseModel implements OrderInterface{
   @override
   Future<List<File>> getDNLocal() async {
     try{
-      return BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo()).photoList;
+      List<String> stringList = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo()).photoList;
+      List<File> result = [];
+      for(int i = 0; i < stringList.length; i++){
+        if(stringList[i] != null)
+          result.add(await Global.createFileFromString(stringList[i], "jpg"));
+        else
+          result.add(null);
+      }
+      return result;
     }catch(e){
       LocalPhoto localPhoto = new LocalPhoto(ID: LocalPhoto.getHighestID(), ref_no: this.getRefNo(), photoList:  [null, null, null], orderID: this.ID, type: DeliveryType.ChemicalWaste.value);
       await BaseDataBase().add<LocalPhoto>(localPhoto);
-      return localPhoto.photoList;
+      List<File> result = [];
+      for(int i = 0; i < localPhoto.photoList.length; i++){
+        result.add(await Global.createFileFromString(localPhoto.photoList[i], "jpg"));
+      }
+      return result;
     }
   }
 
   @override
   Future<void> updatePhotoList(List<File> fileList) async{
     try{
-      LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.ref_no);
-      localPhoto.photoList = fileList;
+      LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo());
+      localPhoto.photoList = fileList.map((e){
+        if(e == null)
+          return null;
+        return base64.encode(e.readAsBytesSync());
+      }).toList();
       await localPhoto.save();
     }catch(e){
       print(e);

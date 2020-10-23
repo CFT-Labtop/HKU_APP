@@ -15,7 +15,7 @@ class LocalPhoto extends BaseModel {
   @HiveField(1)
   String type;
   @HiveField(2)
-  List<File> photoList;
+  List<String> photoList;
   @HiveField(3)
   int orderID;
   @HiveField(4)
@@ -26,7 +26,7 @@ class LocalPhoto extends BaseModel {
 
   LocalPhoto({int this.ID,
     String this.type,
-    List<File> this.photoList,
+    List<String> this.photoList,
     int this.orderID,
     String this.ref_no,
   }) {}

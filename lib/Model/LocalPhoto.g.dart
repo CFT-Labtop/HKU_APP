@@ -19,7 +19,7 @@ class LocalPhotoAdapter extends TypeAdapter<LocalPhoto> {
     return LocalPhoto(
       ID: fields[0] as int,
       type: fields[1] as String,
-      photoList: (fields[2] as List)?.cast<File>(),
+      photoList: (fields[2] as List)?.cast<String>(),
       orderID: fields[3] as int,
       ref_no: fields[4] as String,
     );

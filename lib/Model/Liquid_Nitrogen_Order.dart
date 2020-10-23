@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:hive/hive.dart';
@@ -6,6 +7,7 @@ import 'package:hku_app/Model/LocalPhoto.dart';
 import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:hku_app/Util/Global.dart';
 
 part 'Liquid_Nitrogen_Order.g.dart';
 
@@ -47,28 +49,28 @@ class Liquid_Nitrogen_Order extends BaseModel implements OrderInterface {
   int status;
   @HiveField(17)
   String dn_file;
+
   @override
   int getID() => this.ID;
 
-  Liquid_Nitrogen_Order(
-      {int this.ID,
-      String this.department_code,
-      String this.department_name,
-      String this.ac_name,
-      int this.hospital_price,
-      String this.ref_no,
-      DateTime this.po_date,
-      String this.requested_by,
-      String this.telephone_no,
-      int this.ID_account,
-      String this.ac_no,
-      String this.user,
-      String this.building,
-      String this.delivered_by,
-      int this.voucher,
-      String this.remarks,
-      int this.status,
-      String this.dn_file}) {}
+  Liquid_Nitrogen_Order({int this.ID,
+    String this.department_code,
+    String this.department_name,
+    String this.ac_name,
+    int this.hospital_price,
+    String this.ref_no,
+    DateTime this.po_date,
+    String this.requested_by,
+    String this.telephone_no,
+    int this.ID_account,
+    String this.ac_no,
+    String this.user,
+    String this.building,
+    String this.delivered_by,
+    int this.voucher,
+    String this.remarks,
+    int this.status,
+    String this.dn_file}) {}
 
   Liquid_Nitrogen_Order.fromJSON(Map<String, dynamic> json) {
     this.ID = json["ID"] ?? null;
@@ -120,18 +122,38 @@ class Liquid_Nitrogen_Order extends BaseModel implements OrderInterface {
   @override
   Future<List<File>> getDNLocal() async {
     try{
-      return BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ID == this.getRefNo()).photoList;
+      List<String> stringList = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo()).photoList;
+      List<File> result = [];
+      for(int i = 0; i < stringList.length; i++){
+        if(stringList[i] != null)
+          result.add(await Global.createFileFromString(stringList[i], "jpg"));
+        else
+          result.add(null);
+      }
+      return result;
     }catch(e){
       LocalPhoto localPhoto = new LocalPhoto(ID: LocalPhoto.getHighestID(), ref_no: this.getRefNo(), photoList:  [null, null, null], orderID: this.ID, type: DeliveryType.LiquidNitrogen.value);
       await BaseDataBase().add<LocalPhoto>(localPhoto);
-      return localPhoto.photoList;
+      List<File> result = [];
+      for(int i = 0; i < localPhoto.photoList.length; i++){
+        result.add(await Global.createFileFromString(localPhoto.photoList[i], "jpg"));
+      }
+      return result;
     }
   }
 
   @override
-  Future<void> updatePhotoList(List<File> fileList) {
-    LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.type == this.getType() && element.orderID == this.ID);
-    localPhoto.photoList = fileList;
-    localPhoto.save();
+  Future<void> updatePhotoList(List<File> fileList) async{
+    try{
+      LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo());
+      localPhoto.photoList = fileList.map((e){
+        if(e == null)
+          return null;
+        return base64.encode(e.readAsBytesSync());
+      }).toList();
+      await localPhoto.save();
+    }catch(e){
+      print(e);
+    }
   }
 }

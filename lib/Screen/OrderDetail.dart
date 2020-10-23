@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
@@ -12,8 +13,11 @@ import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
 import 'package:hku_app/Model/OrderDetailInterface.dart';
 import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
+import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:hku_app/Util/Global.dart';
+import 'package:hku_app/Util/Request.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class OrderDetail extends StatefulWidget {
   int orderID;
@@ -96,6 +100,7 @@ class _OrderDetail extends State<OrderDetail> {
             .cast<OrderDetailInterface>();
         break;
     }
+
     this.orderData.getDNLocal().then((value){
       this.imageList = value;
       setState(() {});
@@ -147,6 +152,20 @@ class _OrderDetail extends State<OrderDetail> {
     return Scaffold(
         appBar: AppBar(
           title: Text(orderTitle()),
+          actions: [IconButton(icon: Icon(Icons.cloud_upload), onPressed: () async {
+            ProgressDialog pr = ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false);
+            try{
+              pr.show();
+              await Future.forEach(this.imageList, (element) async {
+                if(element != null)
+                  await Request().uploadDNPhoto(context, ID: this.orderData.getID(), type: this.orderData.getType(), ref_no: this.orderData.getRefNo(), seq: Global.generateRandomString(10), file: element);
+              });
+              pr.hide();
+            }on DioError catch(e){
+              pr.hide();
+              Global.showAlertDialog(context, e.message);
+            }
+          },)],
         ),
         body: (false)
             ? SizedBox()

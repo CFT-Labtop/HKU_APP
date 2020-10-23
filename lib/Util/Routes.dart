@@ -19,7 +19,7 @@ class Routes {
             case "DeliveryType.ChemicalWaste":
               type = DeliveryType.ChemicalWaste;
               break;
-            case "DeliveryType.ChemicalWaste":
+            case "DeliveryType.DangerousGoods":
               type = DeliveryType.DangerousGoods;
               break;
             case "DeliveryType.LiquidNitrogen":

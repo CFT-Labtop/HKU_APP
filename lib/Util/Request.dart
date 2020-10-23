@@ -12,7 +12,9 @@ class Request {
   String baseURL;
   Dio dio;
   static final Request _request = Request._internal();
+
   Request._internal();
+
   factory Request.init(String url) {
     _request.baseURL = url;
     _request.dio = new Dio();
@@ -26,9 +28,11 @@ class Request {
     _request.dio.options.receiveTimeout = 3000;
     return _request;
   }
+
   factory Request() => _request;
 
-  Future<BaseResponse> run(context,{String action,
+  Future<BaseResponse> run(context,
+      {String action,
       Map<String, dynamic> queryParameters = const {},
       isDismissible = false,
       VoidCallback onDissmissPress}) async {
@@ -54,14 +58,15 @@ class Request {
           .dio
           .get(this.baseURL + action, queryParameters: queryParameters);
       return BaseResponse(response.data);
-    } on DioError catch(e) {
+    } on DioError catch (e) {
       throw e;
     }
   }
 
-  Future<BaseResponse> uploadDNPhoto({String action, int ID, DeliveryType type, String ref_no, List<File> fileList}) async{
+  Future<BaseResponse> uploadDNPhoto(context,
+      {int ID, DeliveryType type, String ref_no, File file, String seq}) async {
     String stringType;
-    switch(type){
+    switch (type) {
       case DeliveryType.ChemicalWaste:
         stringType = "CWF";
         break;
@@ -72,14 +77,19 @@ class Request {
         stringType = "LNO";
         break;
     }
-    FormData data = FormData.fromMap({
-      "type": stringType,
-      "ID": ID,
-      "ref_no": ref_no,
-//      "file": await MultipartFile.fromFile(file.path, filename:fileName)
-    });
-    Response response = await this
-        .dio
-        .post(this.baseURL + "upload_dn_file", data: {});
+    FormData data = FormData.fromMap(
+        {"file": await MultipartFile.fromFile(file.path, filename: DateTime.now().millisecondsSinceEpoch.toString() + "_" + seq + ".jpg") });
+    try {
+      Response response = await this
+          .dio
+          .post(this.baseURL + "upload_dn_file", data: data, queryParameters: {
+        "type": stringType,
+        "ID": ID,
+        "ref_no": ref_no,
+      });
+      return BaseResponse(response.data);
+    } catch (e) {
+      throw e;
+    }
   }
 }
