@@ -33,13 +33,13 @@ class Routes {
     Routes.router = router;
   }
 
-  static Future goToDetailPage(BuildContext context, int orderID, DeliveryType type) {
+  static Future<void> goToDetailPage(BuildContext context, int orderID, DeliveryType type) async{
     String path = "/" + orderID.toString() + "/" + type.toString();
-    Routes.goToPage(context, Pages.OrderDetail, parameters: path);
+    await Routes.goToPage(context, Pages.OrderDetail, parameters: path);
   }
 
-  static Future goToPage(BuildContext context, Pages page,{TransitionType type, bool clear = false, String parameters = ""}) {
-    router.navigateTo(context, "/" + page.toString() + parameters,
+  static Future<void> goToPage(BuildContext context, Pages page,{TransitionType type, bool clear = false, String parameters = ""}) async{
+    await router.navigateTo(context, "/" + page.toString() + parameters,
         transition: type ?? TransitionType.native,
         replace: false,
         clearStack: clear);

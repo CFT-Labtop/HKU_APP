@@ -58,12 +58,26 @@ class Request {
           .dio
           .get(this.baseURL + action, queryParameters: queryParameters);
       return BaseResponse(response.data);
-    } on DioError catch (e) {
+    } catch (e) {
       throw e;
     }
   }
 
-  Future<BaseResponse> uploadDNPhoto(context,
+  Future<BaseResponse> post(
+      {String action, Map<String, dynamic> data = const {}}) async {
+    try {
+      Response response =
+          await this.dio.post(this.baseURL + action, data: data);
+      BaseResponse baseResponse = BaseResponse(response.data);
+      if (baseResponse.code != 200)
+        throw new Exception(baseResponse.errorMessage);
+      return baseResponse;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<BaseResponse> uploadDNPhoto(
       {int ID, DeliveryType type, String ref_no, File file, String seq}) async {
     String stringType;
     switch (type) {
@@ -77,8 +91,13 @@ class Request {
         stringType = "LNO";
         break;
     }
-    FormData data = FormData.fromMap(
-        {"file": await MultipartFile.fromFile(file.path, filename: DateTime.now().millisecondsSinceEpoch.toString() + "_" + seq + ".jpg") });
+    FormData data = FormData.fromMap({
+      "file": await MultipartFile.fromFile(file.path,
+          filename: DateTime.now().millisecondsSinceEpoch.toString() +
+              "_" +
+              seq +
+              ".jpg")
+    });
     try {
       Response response = await this
           .dio
@@ -87,7 +106,24 @@ class Request {
         "ID": ID,
         "ref_no": ref_no,
       });
-      return BaseResponse(response.data);
+
+      BaseResponse baseResponse = BaseResponse(response.data);
+      if (baseResponse.code != 200)
+        throw new Exception(baseResponse.errorMessage);
+      return baseResponse;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<BaseResponse> completeDelivery({int ID, DeliveryType type}) async {
+    try {
+      BaseResponse response = await this.post(action: "mobile_complete_delivery", data: {
+          "ID": ID,
+          "status": 1,
+          "type": type.value
+      });
+      return response;
     } catch (e) {
       throw e;
     }

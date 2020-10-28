@@ -53,8 +53,9 @@ class _AllOrder extends State<AllOrder> {
   }
 
   Widget orderTable(){
-    return Expanded(child: BaseTable(getOrderByData(currentSelectedDate), onRowPress: (data){
-      Routes.goToDetailPage(context, data.getID(), data.getType());
+    return Expanded(child: BaseTable(getOrderByData(currentSelectedDate), onRowPress: (data) async {
+      await Routes.goToDetailPage(context, data.getID(), data.getType());
+      setState(() {});
     },));
   }
 
@@ -192,7 +193,6 @@ class _AllOrder extends State<AllOrder> {
             onErrorCallback: (e){
               return orderTable();
             },
-            
           ),
         ],
       ),

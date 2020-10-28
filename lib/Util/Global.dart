@@ -33,11 +33,11 @@ class Global {
   }
 
   static PlatformAlertDialog showAlertDialog(
-      BuildContext context, String content) {
+      BuildContext context, String content, {String title}) {
     showPlatformDialog(
         context: context,
         builder: (_) => PlatformAlertDialog(
-              title: Text("Error").tr(),
+              title: Text(title??"Error").tr(),
               content: Text(content).tr(),
               actions: <Widget>[
                 PlatformDialogAction(
@@ -66,7 +66,10 @@ class Global {
           ),
           PlatformDialogAction(
             child: PlatformText('Confirm'.tr()),
-            onPressed: onPress,
+            onPressed: (){
+              Navigator.pop(context);
+              onPress();
+            },
           ),
         ],
       ),

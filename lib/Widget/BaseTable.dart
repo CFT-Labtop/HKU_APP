@@ -14,7 +14,7 @@ class BaseTable extends StatefulWidget {
     SortStatus.DESCENDINNG
   ];
   List<OrderInterface> data = [];
-  void Function(OrderInterface data) onRowPress;
+  Future<void> Function(OrderInterface data) onRowPress;
   BaseTable(data, {Key key, this.sortIndex = 0, this.onRowPress})
       : data = data,
         super(key: key);
@@ -35,7 +35,8 @@ class _BaseTableState extends State<BaseTable> {
               isSortIndex: (widget.sortIndex == 0),
               sortStatus: widget.sortStatusList[0],
               columnIndex: 0,
-              onPressed: (columnIndex, sortStatus) {
+              onPressed: (columnIndex, sortStatus)
+              {
                 setState(() {
                   widget.sortIndex = columnIndex;
                   widget.sortStatusList[columnIndex] = sortStatus;
@@ -83,8 +84,8 @@ class _BaseTableState extends State<BaseTable> {
             itemCount: widget.data.length,
             itemBuilder: (context, index) {
               return RawMaterialButton(
-                onPressed: () {
-                  this.widget.onRowPress(widget.data[index]);
+                onPressed: () async {
+                  await this.widget.onRowPress(widget.data[index]);
                 },
                 child: Slidable(
                   actionPane: SlidableDrawerActionPane(),

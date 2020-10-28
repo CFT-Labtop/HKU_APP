@@ -1,9 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
 import 'package:hku_app/Model/LocalPhoto.dart';
@@ -11,7 +7,6 @@ import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 import 'package:hku_app/Util/Global.dart';
-import 'package:path_provider/path_provider.dart';
 
 part 'Chemical_Waste_Order.g.dart';
 

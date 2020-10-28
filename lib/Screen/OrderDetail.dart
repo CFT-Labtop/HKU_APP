@@ -13,7 +13,6 @@ import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
 import 'package:hku_app/Model/OrderDetailInterface.dart';
 import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
-import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,20 +37,24 @@ class _OrderDetail extends State<OrderDetail> {
     return this.widget.type.value + " Order";
   }
 
-  Widget imageBox(File file, int index){
+  Widget imageBox(File file, int index) {
     return RawMaterialButton(
-      onPressed: () async{
+      onPressed: () async {
         await getImage(index);
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Global.responsiveSize(context, 24.0)),
+        padding: EdgeInsets.symmetric(
+            horizontal: Global.responsiveSize(context, 24.0)),
         child: Container(
-          decoration: BoxDecoration(
-            border: Border.all()
-          ),
+          decoration: BoxDecoration(border: Border.all()),
           width: double.infinity,
           height: Global.responsiveSize(context, 400.0),
-          child: file == null ? SizedBox(): Image.file(file, fit: BoxFit.cover,),
+          child: file == null
+              ? SizedBox()
+              : Image.file(
+                  file,
+                  fit: BoxFit.cover,
+                ),
         ),
       ),
     );
@@ -101,7 +104,7 @@ class _OrderDetail extends State<OrderDetail> {
         break;
     }
 
-    this.orderData.getDNLocal().then((value){
+    this.orderData.getDNLocal().then((value) {
       this.imageList = value;
       setState(() {});
     });
@@ -152,20 +155,57 @@ class _OrderDetail extends State<OrderDetail> {
     return Scaffold(
         appBar: AppBar(
           title: Text(orderTitle()),
-          actions: [IconButton(icon: Icon(Icons.cloud_upload), onPressed: () async {
-            ProgressDialog pr = ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false);
-            try{
-              pr.show();
-              await Future.forEach(this.imageList, (element) async {
-                if(element != null)
-                  await Request().uploadDNPhoto(context, ID: this.orderData.getID(), type: this.orderData.getType(), ref_no: this.orderData.getRefNo(), seq: Global.generateRandomString(10), file: element);
-              });
-              pr.hide();
-            }on DioError catch(e){
-              pr.hide();
-              Global.showAlertDialog(context, e.message);
-            }
-          },)],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.cloud_upload),
+              onPressed: () async {
+                print("ASDAS");
+                Global.showConfirmDialog(context, title: "Confirmation".tr(),
+                    content: "Confirm to complete?", onPress: () async {
+                  ProgressDialog pr = ProgressDialog(context,
+                      type: ProgressDialogType.Normal, isDismissible: false);
+                  try {
+                    pr.show();
+                    await Future.forEach(this.imageList, (element) async {
+                      if (element != null)
+                        await Request().uploadDNPhoto(
+                            ID: this.orderData.getID(),
+                            type: this.orderData.getType(),
+                            ref_no: this.orderData.getRefNo(),
+                            seq: Global.generateRandomString(10),
+                            file: element);
+                    });
+                    await Request().completeDelivery(
+                        ID: this.orderData.getID(),
+                        type: this.orderData.getType());
+                    switch (this.orderData.getType()) {
+                      case DeliveryType.ChemicalWaste:
+                        await BaseDataBase()
+                            .delete<Chemical_Waste_Order>(this.orderData);
+                        break;
+                      case DeliveryType.LiquidNitrogen:
+                        await BaseDataBase()
+                            .delete<Liquid_Nitrogen_Order>(this.orderData);
+                        break;
+                      case DeliveryType.DangerousGoods:
+                        await BaseDataBase()
+                            .delete<Dangerous_Goods_Order>(this.orderData);
+                        break;
+                    }
+                    pr.hide();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Text('Upload Successfully').tr(),
+                      duration: const Duration(seconds: 2),
+                    ));
+                    Navigator.pop(context);
+                  } catch (e) {
+                    pr.hide();
+                    Global.showAlertDialog(context, e.message);
+                  }
+                });
+              },
+            )
+          ],
         ),
         body: (false)
             ? SizedBox()
@@ -189,9 +229,9 @@ class _OrderDetail extends State<OrderDetail> {
                     Center(
                       child: Column(
                         children: [
-                          imageBox(imageList[0],0),
-                          imageBox(imageList[1],1),
-                          imageBox(imageList[2],2),
+                          imageBox(imageList[0], 0),
+                          imageBox(imageList[1], 1),
+                          imageBox(imageList[2], 2),
                         ],
                       ),
                     )
