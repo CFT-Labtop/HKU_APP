@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hku_app/Model/OrderInterface.dart';
-import 'package:hku_app/Screen/OrderDetail.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 //TODO Componentize
-class BaseTable extends StatefulWidget {
-  int sortIndex;
+ abstract class BaseTableTemp extends StatefulWidget {
+  List<OrderInterface> data = [];
+  Future<void> Function(OrderInterface data) onRowPress;
+  void test();
+  BaseTableTemp( this.data, {Key key, this.onRowPress})
+      :super(key: key);
+  @override
+  _BaseTableTempState createState() => _BaseTableTempState();
+}
+
+class _BaseTableTempState extends State<BaseTableTemp> {
   List<SortStatus> sortStatusList = [
     SortStatus.ASCENDINNG,
     SortStatus.DESCENDINNG,
     SortStatus.DESCENDINNG
   ];
-  List<OrderInterface> data = [];
-  Future<void> Function(OrderInterface data) onRowPress;
-  BaseTable(data, {Key key, this.sortIndex = 0, this.onRowPress})
-      : data = data,
-        super(key: key);
-  @override
-  _BaseTableState createState() => _BaseTableState();
-}
-
-class _BaseTableState extends State<BaseTable> {
+  int sortIndex;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -32,15 +31,16 @@ class _BaseTableState extends State<BaseTable> {
           children: [
             HeaderCell(
               title: "Ref-no".tr(),
-              isSortIndex: (widget.sortIndex == 0),
-              sortStatus: widget.sortStatusList[0],
+              isSortIndex: (sortIndex == 0),
+              sortStatus: sortStatusList[0],
               columnIndex: 0,
               onPressed: (columnIndex, sortStatus)
               {
+                widget.test();
                 setState(() {
-                  widget.sortIndex = columnIndex;
-                  widget.sortStatusList[columnIndex] = sortStatus;
-                  if (widget.sortStatusList[columnIndex] ==
+                  sortIndex = columnIndex;
+                  sortStatusList[columnIndex] = sortStatus;
+                  if (sortStatusList[columnIndex] ==
                       SortStatus.ASCENDINNG)
                     widget.data.sort((a, b) => (b.getRefNo()).compareTo(a.getRefNo()));
                   else
@@ -51,28 +51,28 @@ class _BaseTableState extends State<BaseTable> {
             HeaderCell(
               title: "Department".tr(),
               columnIndex: 1,
-              sortStatus: widget.sortStatusList[1],
+              sortStatus: sortStatusList[1],
               onPressed: (columnIndex, sortStatus) {
                 setState(() {
-                  widget.sortIndex = columnIndex;
-                  widget.sortStatusList[columnIndex] = sortStatus;
-                  if (widget.sortStatusList[columnIndex] ==
+                  sortIndex = columnIndex;
+                  sortStatusList[columnIndex] = sortStatus;
+                  if (sortStatusList[columnIndex] ==
                       SortStatus.ASCENDINNG)
                     widget.data.sort((a, b) => (b.getDepartmentName()).compareTo(a.getDepartmentName()));
                   else
                     widget.data.sort((a, b) => (a.getDepartmentName()).compareTo(b.getDepartmentName()));
                 });
               },
-              isSortIndex: (widget.sortIndex == 1),
+              isSortIndex: (sortIndex == 1),
             ),
             HeaderCell(
               title: "Building".tr(),
-              sortStatus: widget.sortStatusList[2],
-              isSortIndex: (widget.sortIndex == 2),
+              sortStatus: sortStatusList[2],
+              isSortIndex: (sortIndex == 2),
               onPressed: (columnIndex, sortStatus) {
                 setState(() {
-                  widget.sortIndex = columnIndex;
-                  widget.sortStatusList[columnIndex] = sortStatus;
+                  sortIndex = columnIndex;
+                  sortStatusList[columnIndex] = sortStatus;
                 });
               },
               columnIndex: 2,
@@ -92,9 +92,9 @@ class _BaseTableState extends State<BaseTable> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      BaseTableCell(title: widget.data[index].getRefNo() ?? ""),
-                      BaseTableCell(title: widget.data[index].getDepartmentName() ?? ""),
-                      BaseTableCell(title: widget.data[index].getBuilding()?? ""),
+                      BaseTableTempCell(title: widget.data[index].getRefNo() ?? ""),
+                      BaseTableTempCell(title: widget.data[index].getDepartmentName() ?? ""),
+                      BaseTableTempCell(title: widget.data[index].getBuilding()?? ""),
                     ],
                   ),
                 ),
@@ -115,11 +115,11 @@ class HeaderCell extends StatefulWidget {
   SortStatus sortStatus;
   HeaderCell(
       {Key key,
-      @required this.title,
-      @required this.onPressed,
-      this.sortStatus = SortStatus.ASCENDINNG,
-      this.columnIndex,
-      this.isSortIndex = false})
+        @required this.title,
+        @required this.onPressed,
+        this.sortStatus = SortStatus.ASCENDINNG,
+        this.columnIndex,
+        this.isSortIndex = false})
       : super(key: key);
 
   @override
@@ -153,11 +153,11 @@ class _HeaderCellState extends State<HeaderCell> {
               ),
               (this.widget.isSortIndex)
                   ? (this.widget.sortStatus == SortStatus.ASCENDINNG)
-                      ? Icon(
-                          Icons.keyboard_arrow_up,
-                          color: Colors.white,
-                        )
-                      : Icon(Icons.keyboard_arrow_down, color: Colors.white)
+                  ? Icon(
+                Icons.keyboard_arrow_up,
+                color: Colors.white,
+              )
+                  : Icon(Icons.keyboard_arrow_down, color: Colors.white)
                   : SizedBox()
             ],
           ),
@@ -167,9 +167,9 @@ class _HeaderCellState extends State<HeaderCell> {
   }
 }
 
-class BaseTableCell extends StatelessWidget {
+class BaseTableTempCell extends StatelessWidget {
   final String title;
-  BaseTableCell({Key key, @required this.title}) : super(key: key);
+  BaseTableTempCell({Key key, @required this.title}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return new Expanded(

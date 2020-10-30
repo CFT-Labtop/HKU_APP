@@ -11,7 +11,7 @@ import 'package:hku_app/Util/Global.dart';
 part 'Chemical_Waste_Order.g.dart';
 
 @HiveType(typeId: 4)
-class Chemical_Waste_Order extends BaseModel implements OrderInterface{
+class Chemical_Waste_Order extends BaseModel with OrderInterface{
   @HiveField(0)
   int ID;
   @HiveField(1)
@@ -136,9 +136,15 @@ class Chemical_Waste_Order extends BaseModel implements OrderInterface{
           return null;
         return base64.encode(e.readAsBytesSync());
       }).toList();
-      await localPhoto.save();
+      await BaseDataBase().save(localPhoto);
     }catch(e){
       print(e);
     }
+  }
+
+  @override
+  Future<void> deleteLocalPhoto() async{
+    LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo());
+    await BaseDataBase().delete<LocalPhoto>(localPhoto);
   }
 }

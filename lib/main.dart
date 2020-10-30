@@ -8,10 +8,10 @@ import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/Config.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
-import 'package:hku_app/Util/Routes.dart';
+import 'package:hku_app/Util/BaseRouter.dart';
 Future<void> main() async {
   final router = new FluroRouter();
-  Routes.configureRoutes(router);
+  BaseRouter.configureRoutes(router);
   Request.init(Config.baseURL);
   await BaseDataBase().init();
   runApp(EasyLocalization(
@@ -38,7 +38,7 @@ class RouterPage extends StatelessWidget{
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      onGenerateRoute: Routes.router.generator
+      onGenerateRoute: BaseRouter.router.generator
     );
   }
 }

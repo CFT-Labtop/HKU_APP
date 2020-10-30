@@ -161,4 +161,10 @@ class Dangerous_Goods_Order extends BaseModel with OrderInterface {
       print(e);
     }
   }
+
+  @override
+  Future<void> deleteLocalPhoto() async{
+    LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo());
+    await BaseDataBase().delete<LocalPhoto>(localPhoto);
+  }
 }

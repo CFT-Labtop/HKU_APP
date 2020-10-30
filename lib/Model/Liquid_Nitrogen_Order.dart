@@ -12,7 +12,7 @@ import 'package:hku_app/Util/Global.dart';
 part 'Liquid_Nitrogen_Order.g.dart';
 
 @HiveType(typeId: 6)
-class Liquid_Nitrogen_Order extends BaseModel implements OrderInterface {
+class Liquid_Nitrogen_Order extends BaseModel with OrderInterface {
   @HiveField(0)
   int ID;
   @HiveField(1)
@@ -155,5 +155,10 @@ class Liquid_Nitrogen_Order extends BaseModel implements OrderInterface {
     }catch(e){
       print(e);
     }
+  }
+  @override
+  Future<void> deleteLocalPhoto() async{
+    LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo());
+    await BaseDataBase().delete<LocalPhoto>(localPhoto);
   }
 }

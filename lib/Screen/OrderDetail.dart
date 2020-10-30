@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
@@ -15,6 +14,7 @@ import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
+import 'package:hku_app/Widget/StandardBox.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -111,11 +111,9 @@ class _OrderDetail extends State<OrderDetail> {
   }
 
   Widget orderDetailWidget() {
-    return Column(
-      children: [
-        cardHeader(context, "Detail".tr(), Colors.amberAccent),
-        Column(
-            children: this.orderDetailList.map((element) {
+    return StandardBox(
+        title: "Detail".tr(),
+        children: this.orderDetailList.map((element) {
           return Column(
             children: [
               halfRow("Product Name".tr(), element.getProductName() ?? "",
@@ -126,28 +124,22 @@ class _OrderDetail extends State<OrderDetail> {
               ),
             ],
           );
-        }).toList()),
-      ],
-    );
+        }).toList());
   }
 
   Widget orderInformationWidget() {
-    return Card(
-        child: Padding(
-      padding: EdgeInsets.all(Global.responsiveSize(context, 18)),
-      child: Column(
-        children: [
-          cardHeader(context, "Information".tr(), Colors.amberAccent),
-          halfRow("Ref. No.".tr(), this.orderData.getRefNo() ?? "", "PO Date",
-              Global.dateFormat(this.orderData.getPODate() ?? "")),
-          halfRow("Department".tr(), this.orderData.getDepartmentCode() ?? "",
-              "Requested By".tr(), this.orderData.getRequestedBy() ?? ""),
-          halfRow("Building".tr(), this.orderData.getBuilding() ?? "",
-              "Telephone".tr(), this.orderData.getTelephone() ?? ""),
-          halfRow("Account", this.orderData.getAccountNumber() ?? ""),
-        ],
-      ),
-    ));
+    return StandardBox(
+      title: "Information".tr(),
+      children: [
+        halfRow("Ref. No.".tr(), this.orderData.getRefNo() ?? "", "PO Date",
+            Global.dateFormat(this.orderData.getPODate() ?? "")),
+        halfRow("Department".tr(), this.orderData.getDepartmentCode() ?? "",
+            "Requested By".tr(), this.orderData.getRequestedBy() ?? ""),
+        halfRow("Building".tr(), this.orderData.getBuilding() ?? "",
+            "Telephone".tr(), this.orderData.getTelephone() ?? ""),
+        halfRow("Account", this.orderData.getAccountNumber() ?? ""),
+      ],
+    );
   }
 
   @override
@@ -159,13 +151,13 @@ class _OrderDetail extends State<OrderDetail> {
             IconButton(
               icon: Icon(Icons.cloud_upload),
               onPressed: () async {
-                print("ASDAS");
-                Global.showConfirmDialog(context, title: "Confirmation".tr(),
+                Global.showConfirmDialog(context,
+                    title: "Confirmation".tr(),
                     content: "Confirm to complete?", onPress: () async {
                   ProgressDialog pr = ProgressDialog(context,
                       type: ProgressDialogType.Normal, isDismissible: false);
                   try {
-                    pr.show();
+                    await pr.show();
                     await Future.forEach(this.imageList, (element) async {
                       if (element != null)
                         await Request().uploadDNPhoto(
@@ -180,26 +172,29 @@ class _OrderDetail extends State<OrderDetail> {
                         type: this.orderData.getType());
                     switch (this.orderData.getType()) {
                       case DeliveryType.ChemicalWaste:
+                        await this.orderData.deleteLocalPhoto();
                         await BaseDataBase()
                             .delete<Chemical_Waste_Order>(this.orderData);
                         break;
                       case DeliveryType.LiquidNitrogen:
+                        await this.orderData.deleteLocalPhoto();
                         await BaseDataBase()
                             .delete<Liquid_Nitrogen_Order>(this.orderData);
                         break;
                       case DeliveryType.DangerousGoods:
+                        await this.orderData.deleteLocalPhoto();
                         await BaseDataBase()
                             .delete<Dangerous_Goods_Order>(this.orderData);
                         break;
                     }
-                    pr.hide();
+                    await pr.hide();
+                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: const Text('Upload Successfully').tr(),
                       duration: const Duration(seconds: 2),
                     ));
-                    Navigator.pop(context);
                   } catch (e) {
-                    pr.hide();
+                    await pr.hide();
                     Global.showAlertDialog(context, e.message);
                   }
                 });
@@ -218,12 +213,7 @@ class _OrderDetail extends State<OrderDetail> {
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: Global.responsiveSize(context, 8)),
-                    child: Card(
-                        child: Padding(
-                      padding:
-                          EdgeInsets.all(Global.responsiveSize(context, 18)),
-                      child: orderDetailWidget(),
-                    )),
+                    child: orderDetailWidget(),
                   ),
                   Column(children: [
                     Center(

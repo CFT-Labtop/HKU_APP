@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:hku_app/Util/Global.dart';
-import 'package:hku_app/Util/Routes.dart';
+import 'package:hku_app/Util/BaseRouter.dart';
 import 'package:hku_app/Widget/StandardEditText.dart';
 
 
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.symmetric(
                       horizontal: Global.responsiveSize(context, 24.0)),
                   child: StandardEditText(
-                    title: "User Code",
+                    title: "User Code".tr(),
                     focusedOutlineColor: Global.outlineColor,
                   )),
               SizedBox(
@@ -56,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.symmetric(
                     horizontal: Global.responsiveSize(context, 24.0)),
                 child: StandardEditText(
-                    title: "Password",
+                    title: "Password".tr(),
                     obscureText: true,
                     focusedOutlineColor: Global.outlineColor),
               ),
@@ -65,11 +66,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               RaisedButton.icon(
                 onPressed: () async {
-                  Routes.goToPage(context, Pages.AllOrder);
+                  BaseRouter.goToPage(context, Pages.AllOrder);
                 },
                 color: Colors.white,
                 icon: Icon(Icons.send),
-                label: Text("LoginPage",
+                label: Text("Login".tr(),
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 shape: RoundedRectangleBorder(

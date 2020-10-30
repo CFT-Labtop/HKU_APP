@@ -5,8 +5,10 @@ import 'package:hku_app/Enums/DeliveryType.dart';
 import 'package:hku_app/Screen/AllOrder.dart';
 import 'package:hku_app/Screen/LoginPage.dart';
 import 'package:hku_app/Screen/OrderDetail.dart';
+import 'package:hku_app/Screen/QRCodeScanPage.dart';
+import 'package:hku_app/Screen/StockTakePage.dart';
 
-class Routes {
+class BaseRouter {
   static FluroRouter router;
   static void configureRoutes(FluroRouter router) {
     router.define("/" + Pages.LoginPage.toString(),
@@ -28,18 +30,19 @@ class Routes {
           }
           return  OrderDetail(orderID: orderID, type: type,);
         }));
-    router.define("/" + Pages.AllOrder.toString(),
-        handler: Handler(handlerFunc: (context, params) => AllOrder()));
-    Routes.router = router;
+    router.define("/" + Pages.AllOrder.toString(), handler: Handler(handlerFunc: (context, params) => AllOrder()));
+    router.define("/" + Pages.QRCodeScanPage.toString(), handler: Handler(handlerFunc: (context, params) => QRCodeScanPage()));
+    router.define("/" + Pages.StockTakePage.toString(), handler: Handler(handlerFunc: (context, params) => StockTakePage()));
+    BaseRouter.router = router;
   }
 
   static Future<void> goToDetailPage(BuildContext context, int orderID, DeliveryType type) async{
     String path = "/" + orderID.toString() + "/" + type.toString();
-    await Routes.goToPage(context, Pages.OrderDetail, parameters: path);
+    await BaseRouter.goToPage(context, Pages.OrderDetail, parameters: path);
   }
 
-  static Future<void> goToPage(BuildContext context, Pages page,{TransitionType type, bool clear = false, String parameters = ""}) async{
-    await router.navigateTo(context, "/" + page.toString() + parameters,
+  static Future<dynamic> goToPage(BuildContext context, Pages page,{TransitionType type, bool clear = false, String parameters = ""}) async{
+    return await router.navigateTo(context, "/" + page.toString() + parameters,
         transition: type ?? TransitionType.native,
         replace: false,
         clearStack: clear);
@@ -50,4 +53,6 @@ enum Pages {
   LoginPage,
   OrderDetail,
   AllOrder,
+  QRCodeScanPage,
+  StockTakePage
 }

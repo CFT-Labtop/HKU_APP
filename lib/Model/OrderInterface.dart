@@ -15,4 +15,6 @@ abstract class OrderInterface{
   DeliveryType getType();
   Future<List<File>> getDNLocal();
   Future<void> updatePhotoList(List<File> fileList);
+  Future<void> deleteLocalPhoto();
+
 }

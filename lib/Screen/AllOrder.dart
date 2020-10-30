@@ -14,8 +14,10 @@ import 'package:hku_app/Util/BaseFutureBuilder.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
-import 'package:hku_app/Util/Routes.dart';
+import 'package:hku_app/Util/BaseRouter.dart';
 import 'package:hku_app/Widget/BaseTable.dart';
+import 'package:hku_app/Widget/BaseTableTemp.dart';
+import 'package:hku_app/Widget/TestTable.dart';
 import 'package:hku_app/Widget/Unicorndial.dart';
 
 class AllOrder extends StatefulWidget {
@@ -25,7 +27,7 @@ class AllOrder extends StatefulWidget {
 class _AllOrder extends State<AllOrder> {
   DeliveryType currentType = DeliveryType.ChemicalWaste;
   DateTime currentSelectedDate = DateTime.now();
-  
+
   Widget _dateSelectField() {
     return RawMaterialButton(
       onPressed: () {
@@ -52,14 +54,18 @@ class _AllOrder extends State<AllOrder> {
     );
   }
 
-  Widget orderTable(){
-    return Expanded(child: BaseTable(getOrderByData(currentSelectedDate), onRowPress: (data) async {
-      await Routes.goToDetailPage(context, data.getID(), data.getType());
-      setState(() {});
-    },));
+  Widget orderTable() {
+    return Expanded(
+        child: TestTable(
+      getOrderByData(currentSelectedDate),
+      onRowPress: (data) async {
+        await BaseRouter.goToDetailPage(context, data.getID(), data.getType());
+        setState(() {});
+      },
+    ));
   }
 
-  Future<void >addOrderData(BaseResponse response) async{
+  Future<void> addOrderData(BaseResponse response) async {
     List<Dangerous_Goods_Order> dangerous_goods_order_list =
         response.data["Dangerous_Goods_Order"].map<Dangerous_Goods_Order>((f) {
       return new Dangerous_Goods_Order.fromJSON(f);
@@ -113,14 +119,49 @@ class _AllOrder extends State<AllOrder> {
     });
   }
 
-  List<OrderInterface> getOrderByData(DateTime date){
-    switch(currentType){
+  List<OrderInterface> getOrderByData(DateTime date) {
+    switch (currentType) {
       case DeliveryType.ChemicalWaste:
-        return BaseDataBase().getAll<Chemical_Waste_Order>().where((element) => Global.dateFormat(element.po_date) == Global.dateFormat(this.currentSelectedDate)).toList();
+        return BaseDataBase()
+            .getAll<Chemical_Waste_Order>()
+            .where((element) =>
+                Global.dateFormat(element.po_date) ==
+                Global.dateFormat(this.currentSelectedDate))
+            .toList();
       case DeliveryType.LiquidNitrogen:
-        return BaseDataBase().getAll<Liquid_Nitrogen_Order>().where((element) => Global.dateFormat(element.po_date) == Global.dateFormat(this.currentSelectedDate)).toList();
+        return BaseDataBase()
+            .getAll<Liquid_Nitrogen_Order>()
+            .where((element) =>
+                Global.dateFormat(element.po_date) ==
+                Global.dateFormat(this.currentSelectedDate))
+            .toList();
       case DeliveryType.DangerousGoods:
-        return BaseDataBase().getAll<Dangerous_Goods_Order>().where((element) => Global.dateFormat(element.po_date) == Global.dateFormat(this.currentSelectedDate)).toList();
+        return BaseDataBase()
+            .getAll<Dangerous_Goods_Order>()
+            .where((element) =>
+                Global.dateFormat(element.po_date) ==
+                Global.dateFormat(this.currentSelectedDate))
+            .toList();
+    }
+  }
+
+  OrderInterface getOrderByRefNo(String ref_no) {
+    OrderInterface result = null;
+    try {
+      result = BaseDataBase()
+          .getAll<Chemical_Waste_Order>()
+          .firstWhere((element) => element.ref_no == ref_no);
+      if (result != null) return result;
+      result = BaseDataBase()
+          .getAll<Liquid_Nitrogen_Order>()
+          .firstWhere((element) => element.ref_no == ref_no);
+      if (result != null) return result;
+      result = BaseDataBase()
+          .getAll<Dangerous_Goods_Order>()
+          .firstWhere((element) => element.ref_no == ref_no);
+      if (result != null) return result;
+    } catch (e) {
+      throw Exception("Order Not Found");
     }
   }
 
@@ -177,12 +218,36 @@ class _AllOrder extends State<AllOrder> {
         title: Text(
           currentType.value,
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.qr_code_scanner),
+            onPressed: () async {
+              try {
+                String ref_no = await BaseRouter.goToPage(context, Pages.QRCodeScanPage);
+                OrderInterface orderInterface = getOrderByRefNo(ref_no);
+                BaseRouter.goToDetailPage(context, orderInterface.getID(), orderInterface.getType());
+              } catch (e) {
+                Global.showAlertDialog(context, e.toString());
+              }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.fact_check),
+            onPressed: (){
+              BaseRouter.goToPage(context, Pages.StockTakePage);
+            }
+          )
+        ],
       ),
       body: Column(
         children: [
           _dateSelectField(),
           BaseFutureBuilder(
-            future: Request().get(action: "mobile_duty_sheet", queryParameters: {"date": Global.dateFormat(this.currentSelectedDate)}),
+            future: Request().get(
+                action: "mobile_duty_sheet",
+                queryParameters: {
+                  "date": Global.dateFormat(this.currentSelectedDate)
+                }),
             loadingCallback: () {
               return orderTable();
             },
@@ -190,7 +255,7 @@ class _AllOrder extends State<AllOrder> {
               addOrderData(response);
               return orderTable();
             },
-            onErrorCallback: (e){
+            onErrorCallback: (e) {
               return orderTable();
             },
           ),

@@ -53,7 +53,7 @@ class BaseDataBase<T extends BaseModel> {
   }
 
   Future<void> save<T extends BaseModel>(T model) async{
-    await model.save();
+    await _baseDataBase.box_map[T.toString()].put(model.getID(), model);
   }
 
   Future<void> deleteAll<T extends BaseModel>() async{
@@ -61,7 +61,7 @@ class BaseDataBase<T extends BaseModel> {
   }
 
   Future<void> delete<T extends BaseModel>(T model) async{
-    await model.delete();
+    await _baseDataBase.box_map[T.toString()].delete(model.getID());
   }
 
 
