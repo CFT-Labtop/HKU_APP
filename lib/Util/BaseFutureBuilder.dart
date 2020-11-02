@@ -6,7 +6,7 @@ class BaseFutureBuilder extends StatelessWidget {
   final Future future;
   final Widget Function() loadingCallback;
   final Widget Function(BaseResponse response) onSuccessCallback;
-  final Widget Function(DioError error) onErrorCallback;
+  final Widget Function(Exception error) onErrorCallback;
   
 
   BaseFutureBuilder({
@@ -21,16 +21,20 @@ class BaseFutureBuilder extends StatelessWidget {
     Widget loadingWidget = Center(child: CircularProgressIndicator());
     switch (snapshot.connectionState) {
       case ConnectionState.none:
-        return this.loadingCallback()?? loadingWidget;
+        return (this.loadingCallback == null)?loadingWidget: loadingCallback();
       case ConnectionState.active:
-        return this.loadingCallback()?? loadingWidget;
+        return (this.loadingCallback == null)?loadingWidget: loadingCallback();
       case ConnectionState.waiting:
-        return this.loadingCallback()?? loadingWidget;
+        return (this.loadingCallback == null)?loadingWidget: loadingCallback();
       case ConnectionState.done:
-        if (snapshot.hasError)
+        if (snapshot.hasError){
+          if(this.onErrorCallback == null) return SizedBox();
           return this.onErrorCallback(snapshot.error);
-        else
+        }
+        else{
+          if(this.onSuccessCallback == null) return SizedBox();
           return this.onSuccessCallback(snapshot.data);
+        }
         break;
       default:
         return null;

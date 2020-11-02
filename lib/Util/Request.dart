@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
+import 'package:hku_app/Model/Location.dart';
+import 'package:hku_app/Model/Version.dart';
+import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -123,6 +126,18 @@ class Request {
           "status": 1,
           "type": type.value
       });
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<BaseResponse> getStockTake() async {
+    try {
+      BaseResponse response = await this.get(action: "mobile_get_stock_take");
+      await BaseDataBase().add<Version>(Version.fromJSON(response.data["Version"][0]));
+      List<Location> locationList = (response.data["Location"] as List<dynamic>).map((e) => Location.fromJSON(e)).toList();
+      await Future.forEach(locationList, (e) async => await BaseDataBase().add<Location>(e));
       return response;
     } catch (e) {
       throw e;

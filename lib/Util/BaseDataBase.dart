@@ -7,12 +7,16 @@ import 'package:hku_app/Model/Dangerous_Goods_Order_Detail.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
 import 'package:hku_app/Model/LocalPhoto.dart';
+import 'package:hku_app/Model/Location.dart';
+import 'package:hku_app/Model/Version.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
 class BaseDataBase<T extends BaseModel> {
   static final BaseDataBase _baseDataBase = BaseDataBase._internal();
   Map<String, Box> box_map = new Map();
+
   BaseDataBase._internal();
+
   factory BaseDataBase() => _baseDataBase;
 
   Future<void> init() async {
@@ -24,6 +28,8 @@ class BaseDataBase<T extends BaseModel> {
     Hive.registerAdapter(ChemicalWasteOrderAdapter());
     Hive.registerAdapter(ChemicalWasteOrderDetailAdapter());
     Hive.registerAdapter(LocalPhotoAdapter());
+    Hive.registerAdapter(LocationAdapter());
+    Hive.registerAdapter(VersionAdapter());
     _baseDataBase.box_map["Dangerous_Goods_Order"] =
         await Hive.openBox("Dangerous_Goods_Order");
     _baseDataBase.box_map["Dangerous_Goods_Order_Detail"] =
@@ -36,8 +42,9 @@ class BaseDataBase<T extends BaseModel> {
         await Hive.openBox("Liquid_Nitrogen_Order");
     _baseDataBase.box_map["Liquid_Nitrogen_Order_Detail"] =
         await Hive.openBox("Liquid_Nitrogen_Order_Detail");
-    _baseDataBase.box_map["LocalPhoto"] =
-      await Hive.openBox("LocalPhoto");
+    _baseDataBase.box_map["LocalPhoto"] = await Hive.openBox("LocalPhoto");
+    _baseDataBase.box_map["Location"] = await Hive.openBox("Location");
+    _baseDataBase.box_map["Version"] = await Hive.openBox("Version");
   }
 
   List<T> getAll<T extends BaseModel>() {
@@ -48,21 +55,19 @@ class BaseDataBase<T extends BaseModel> {
     return _baseDataBase.box_map[T.toString()].get(ID);
   }
 
-  Future<void> add<T extends BaseModel>(T model) async{
+  Future<void> add<T extends BaseModel>(T model) async {
     await _baseDataBase.box_map[T.toString()].put(model.getID(), model);
   }
 
-  Future<void> save<T extends BaseModel>(T model) async{
+  Future<void> save<T extends BaseModel>(T model) async {
     await _baseDataBase.box_map[T.toString()].put(model.getID(), model);
   }
 
-  Future<void> deleteAll<T extends BaseModel>() async{
+  Future<void> deleteAll<T extends BaseModel>() async {
     await _baseDataBase.box_map[T.toString()].deleteFromDisk();
   }
 
-  Future<void> delete<T extends BaseModel>(T model) async{
+  Future<void> delete<T extends BaseModel>(T model) async {
     await _baseDataBase.box_map[T.toString()].delete(model.getID());
   }
-
-
 }

@@ -15,9 +15,7 @@ import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
 import 'package:hku_app/Util/BaseRouter.dart';
-import 'package:hku_app/Widget/BaseTable.dart';
-import 'package:hku_app/Widget/BaseTableTemp.dart';
-import 'package:hku_app/Widget/TestTable.dart';
+import 'package:hku_app/Widget/OrderTable.dart';
 import 'package:hku_app/Widget/Unicorndial.dart';
 
 class AllOrder extends StatefulWidget {
@@ -56,7 +54,7 @@ class _AllOrder extends State<AllOrder> {
 
   Widget orderTable() {
     return Expanded(
-        child: TestTable(
+        child: OrderTable(
       getOrderByData(currentSelectedDate),
       onRowPress: (data) async {
         await BaseRouter.goToDetailPage(context, data.getID(), data.getType());

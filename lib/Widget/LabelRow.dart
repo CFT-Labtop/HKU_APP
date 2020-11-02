@@ -13,7 +13,7 @@ class LabelRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(this.label??"", style: TextStyle(fontSize: Global.responsiveSize(context, 16.0, ), fontWeight: FontWeight.bold),).tr(),
-        Text(" : ").tr(),
+        Text(" : "),
         Text(this.value??"", style: TextStyle(fontSize: Global.responsiveSize(context, 16.0, )) ).tr(),
       ],
     );
