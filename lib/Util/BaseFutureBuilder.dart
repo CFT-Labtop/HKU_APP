@@ -21,11 +21,11 @@ class BaseFutureBuilder extends StatelessWidget {
     Widget loadingWidget = Center(child: CircularProgressIndicator());
     switch (snapshot.connectionState) {
       case ConnectionState.none:
-        return (this.loadingCallback == null)?loadingWidget: loadingCallback();
+        return (this.loadingCallback == null)?loadingWidget: this.loadingCallback();
       case ConnectionState.active:
-        return (this.loadingCallback == null)?loadingWidget: loadingCallback();
+        return (this.loadingCallback == null)?loadingWidget: this.loadingCallback();
       case ConnectionState.waiting:
-        return (this.loadingCallback == null)?loadingWidget: loadingCallback();
+        return (this.loadingCallback == null)?loadingWidget: this.loadingCallback();
       case ConnectionState.done:
         if (snapshot.hasError){
           if(this.onErrorCallback == null) return SizedBox();

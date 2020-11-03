@@ -3,15 +3,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
 import 'package:hku_app/Model/Chemical_Waste_Order.dart';
-import 'package:hku_app/Model/Chemical_Waste_Order_Detail.dart';
 import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
-import 'package:hku_app/Model/Dangerous_Goods_Order_Detail.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
-import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
 import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseFutureBuilder.dart';
-import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
 import 'package:hku_app/Util/BaseRouter.dart';
@@ -63,69 +59,10 @@ class _AllOrder extends State<AllOrder> {
     ));
   }
 
-  Future<void> addOrderData(BaseResponse response) async {
-    List<Dangerous_Goods_Order> dangerous_goods_order_list =
-        response.data["Dangerous_Goods_Order"].map<Dangerous_Goods_Order>((f) {
-      return new Dangerous_Goods_Order.fromJSON(f);
-    }).toList();
-    List<Dangerous_Goods_Order_Detail> dangerous_goods_order_detail_list =
-        response.data["Dangerous_Goods_Order_Detail"]
-            .map<Dangerous_Goods_Order_Detail>((f) {
-      return new Dangerous_Goods_Order_Detail.fromJSON(f);
-    }).toList();
-    List<Liquid_Nitrogen_Order> liquid_nitrogen_order_list =
-        response.data["Liquid_Nitrogen_Order"].map<Liquid_Nitrogen_Order>((f) {
-      return new Liquid_Nitrogen_Order.fromJSON(f);
-    }).toList();
-    List<Liquid_Nitrogen_Order_Detail> liquid_nitrogen_order_detail_list =
-        response.data["Liquid_Nitrogen_Order_Detail"]
-            .map<Liquid_Nitrogen_Order_Detail>((f) {
-      return new Liquid_Nitrogen_Order_Detail.fromJSON(f);
-    }).toList();
-    List<Chemical_Waste_Order> chemical_waste_order_list =
-        response.data["Chemical_Waste_Order"].map<Chemical_Waste_Order>((f) {
-      return new Chemical_Waste_Order.fromJSON(f);
-    }).toList();
-    List<Chemical_Waste_Order_Detail> chemical_waste_order_detail_list =
-        response.data["Chemical_Waste_Order_Detail"]
-            .map<Chemical_Waste_Order_Detail>((f) {
-      return new Chemical_Waste_Order_Detail.fromJSON(f);
-    }).toList();
-    dangerous_goods_order_list
-        .where((element) => element.status == 0)
-        .forEach((element) async {
-      await BaseDataBase().add<Dangerous_Goods_Order>(element);
-    });
-    liquid_nitrogen_order_list
-        .where((element) => element.status == 0)
-        .forEach((element) {
-      BaseDataBase().add<Liquid_Nitrogen_Order>(element);
-    });
-    chemical_waste_order_list
-        .where((element) => element.status == 0)
-        .forEach((element) async {
-      await BaseDataBase().add<Chemical_Waste_Order>(element);
-    });
-    dangerous_goods_order_detail_list.forEach((element) async {
-      await BaseDataBase().add<Dangerous_Goods_Order_Detail>(element);
-    });
-    liquid_nitrogen_order_detail_list.forEach((element) async {
-      await BaseDataBase().add<Liquid_Nitrogen_Order_Detail>(element);
-    });
-    chemical_waste_order_detail_list.forEach((element) async {
-      await BaseDataBase().add<Chemical_Waste_Order_Detail>(element);
-    });
-  }
-
   List<OrderInterface> getOrderByData(DateTime date) {
     switch (currentType) {
       case DeliveryType.ChemicalWaste:
-        return BaseDataBase()
-            .getAll<Chemical_Waste_Order>()
-            .where((element) =>
-                Global.dateFormat(element.po_date) ==
-                Global.dateFormat(this.currentSelectedDate))
-            .toList();
+        return BaseDataBase().getAll<Chemical_Waste_Order>().where((element) => Global.dateFormat(element.po_date) == Global.dateFormat(this.currentSelectedDate)).toList();
       case DeliveryType.LiquidNitrogen:
         return BaseDataBase()
             .getAll<Liquid_Nitrogen_Order>()
@@ -241,16 +178,11 @@ class _AllOrder extends State<AllOrder> {
         children: [
           _dateSelectField(),
           BaseFutureBuilder(
-            future: Request().get(
-                action: "mobile_duty_sheet",
-                queryParameters: {
-                  "date": Global.dateFormat(this.currentSelectedDate)
-                }),
+            future: Request().getOrder(this.currentSelectedDate),
             loadingCallback: () {
               return orderTable();
             },
             onSuccessCallback: (response) {
-              addOrderData(response);
               return orderTable();
             },
             onErrorCallback: (e) {

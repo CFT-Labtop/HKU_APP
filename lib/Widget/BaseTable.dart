@@ -2,54 +2,70 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hku_app/Util/Global.dart';
 
- abstract class BaseTableTemp<T> extends StatefulWidget {
+abstract class BaseTable<T> extends StatefulWidget {
   List<T> data = [];
+  bool showCheckBox;
   Future<dynamic> Function(T data) onRowPress;
-  BaseTableTemp( this.data, {Key key, this.onRowPress}) :super(key: key);
+  BaseTable(this.data, {Key key, this.onRowPress, this.showCheckBox = false}) : super(key: key);
+
   List<ColumnObject<T>> getColumnObject();
+
   @override
-  _BaseTableTempState<T> createState() => _BaseTableTempState<T>();
+  BaseTableState<T> createState() => BaseTableState<T>();
 }
 
-class _BaseTableTempState<T> extends State<BaseTableTemp<T>> {
+class BaseTableState<T> extends State<BaseTable<T>> {
   List<SortStatus> sortStatusList = [];
   int sortIndex;
 
-  List<HeaderCell> generateHeaderView(){
-    return List<HeaderCell>.generate(getColumnNumber(), (int index) => HeaderCell(
-      title: widget.getColumnObject()[index].title,
-      isSortIndex: (sortIndex == index),
-      sortStatus: sortStatusList[index],
-      columnIndex: index,
-      onPressed: (columnIndex, sortStatus)
-      {
-        setState(() {
-          sortIndex = columnIndex;
-          sortStatusList[columnIndex] = sortStatus;
-          if (sortStatusList[columnIndex] ==
-              SortStatus.ASCENDINNG)
-            widget.data.sort((a, b) => (widget.getColumnObject()[index].getCellValue(b)).compareTo(widget.getColumnObject()[index].getCellValue(a)));
-          else
-            widget.data.sort((a, b) => (widget.getColumnObject()[index].getCellValue(a)).compareTo(widget.getColumnObject()[index].getCellValue(b)));
-        });
-      },
-    ));
+  List<HeaderCell> generateHeaderView() {
+    return List<HeaderCell>.generate(
+        getColumnNumber(),
+        (int index) => HeaderCell(
+              title: Text(
+                widget.getColumnObject()[index].title,
+                style: TextStyle(color: Colors.white),
+              ),
+              isSortIndex: (sortIndex == index),
+              sortStatus: sortStatusList[index],
+              columnIndex: index,
+              onPressed: (columnIndex, sortStatus) {
+                setState(() {
+                  sortIndex = columnIndex;
+                  sortStatusList[columnIndex] = sortStatus;
+                  if (sortStatusList[columnIndex] == SortStatus.ASCENDINNG)
+                    widget.data.sort((a, b) => (widget
+                            .getColumnObject()[index]
+                            .getCellValue(b))
+                        .compareTo(
+                            widget.getColumnObject()[index].getCellValue(a)));
+                  else
+                    widget.data.sort((a, b) => (widget
+                            .getColumnObject()[index]
+                            .getCellValue(a))
+                        .compareTo(
+                            widget.getColumnObject()[index].getCellValue(b)));
+                });
+              },
+            ));
   }
 
-  List<TableCell> generateTableCell(int index){
-    return List<TableCell>.generate(getColumnNumber(), (index) => new TableCell(title:  widget.getColumnObject()[index].getCellValue(widget.data[0]) ?? ""));
+  List<TableCell> generateTableCell(int index) {
+    return List<TableCell>.generate(
+        getColumnNumber(),
+        (index) => new TableCell(
+            title:
+                widget.getColumnObject()[index].getCellValue(widget.data[0]) ??
+                    ""));
   }
 
-  int getColumnNumber(){
+  int getColumnNumber() {
     return widget.getColumnObject().length;
   }
 
-  ColumnObject getColumnByIndex(index){
-    return widget.getColumnObject()[index];
-  }
-
-  void initSortStatus(){
-    this.sortStatusList = List<SortStatus>.generate(getColumnNumber(), (index) => SortStatus.DESCENDINNG);
+  void initSortStatus() {
+    this.sortStatusList = List<SortStatus>.generate(
+        getColumnNumber(), (index) => SortStatus.DESCENDINNG);
     this.sortStatusList[0] = SortStatus.ASCENDINNG;
     this.sortIndex = 0;
   }
@@ -59,14 +75,40 @@ class _BaseTableTempState<T> extends State<BaseTableTemp<T>> {
     super.initState();
     this.initSortStatus();
   }
+
+  List<Widget> _generateRow(int index) {
+    if (widget.showCheckBox) {
+      List<Widget> widgetList = List<Widget>.generate(
+          getColumnNumber(),
+          (columnIndex) => TableCell(
+              title: widget
+                  .getColumnObject()[columnIndex]
+                  .getCellValue(widget.data[index])));
+      widgetList.insert(
+          0,
+          Checkbox(
+            value: true,
+            onChanged: (isChecked) {
+
+            },
+          ));
+      return widgetList;
+    } else
+      return List<Widget>.generate(
+          getColumnNumber(),
+          (columnIndex) => TableCell(
+              title: widget
+                  .getColumnObject()[columnIndex]
+                  .getCellValue(widget.data[index])));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: generateHeaderView()
-        ),
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: generateHeaderView()),
         Expanded(
           child: new ListView.builder(
             itemCount: widget.data.length,
@@ -79,7 +121,7 @@ class _BaseTableTempState<T> extends State<BaseTableTemp<T>> {
                   actionPane: SlidableDrawerActionPane(),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List<TableCell>.generate(getColumnNumber(), (columnIndex) => TableCell(title: widget.getColumnObject()[columnIndex].getCellValue(widget.data[index]))),
+                    children: _generateRow(index),
                   ),
                 ),
               );
@@ -92,18 +134,19 @@ class _BaseTableTempState<T> extends State<BaseTableTemp<T>> {
 }
 
 class HeaderCell extends StatefulWidget {
-  final String title;
+  final Widget title;
   final void Function(int columnIndex, SortStatus sortStatus) onPressed;
   final int columnIndex;
   final bool isSortIndex;
   SortStatus sortStatus;
+
   HeaderCell(
       {Key key,
-        @required this.title,
-        @required this.onPressed,
-        this.sortStatus = SortStatus.ASCENDINNG,
-        this.columnIndex,
-        this.isSortIndex = false})
+      @required this.title,
+      @required this.onPressed,
+      this.sortStatus = SortStatus.ASCENDINNG,
+      this.columnIndex,
+      this.isSortIndex = false})
       : super(key: key);
 
   @override
@@ -131,17 +174,14 @@ class _HeaderCellState extends State<HeaderCell> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                this.widget.title,
-                style: TextStyle(color: Colors.white),
-              ),
+              this.widget.title,
               (this.widget.isSortIndex)
                   ? (this.widget.sortStatus == SortStatus.ASCENDINNG)
-                  ? Icon(
-                Icons.keyboard_arrow_up,
-                color: Colors.white,
-              )
-                  : Icon(Icons.keyboard_arrow_down, color: Colors.white)
+                      ? Icon(
+                          Icons.keyboard_arrow_up,
+                          color: Colors.white,
+                        )
+                      : Icon(Icons.keyboard_arrow_down, color: Colors.white)
                   : SizedBox()
             ],
           ),
@@ -153,7 +193,9 @@ class _HeaderCellState extends State<HeaderCell> {
 
 class TableCell extends StatelessWidget {
   final String title;
+
   TableCell({Key key, @required this.title}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return new Expanded(
@@ -174,8 +216,9 @@ class TableCell extends StatelessWidget {
 
 enum SortStatus { ASCENDINNG, DESCENDINNG }
 
-class ColumnObject<T>{
-   String title;
-   String Function(T data) getCellValue;
-   ColumnObject({@required this.title, @required this.getCellValue});
+class ColumnObject<T> {
+  String title;
+  String Function(T data) getCellValue;
+
+  ColumnObject({@required this.title, @required this.getCellValue});
 }

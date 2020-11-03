@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:hku_app/Util/Checkable.dart';
 
 part 'Location.g.dart';
 
 @HiveType(typeId: 10)
-class Location extends BaseModel {
+class Location extends BaseModel with Checkable{
   @HiveField(0)
   int ID;
   @HiveField(1)

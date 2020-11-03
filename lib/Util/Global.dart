@@ -28,6 +28,14 @@ class Global {
       return size * padRate;
   }
 
+  static double ratioHeight(BuildContext context, double ratio){
+    return MediaQuery.of(context).size.height * ratio;
+  }
+
+  static double ratioWidth(BuildContext context, double ratio){
+    return MediaQuery.of(context).size.width * ratio;
+  }
+
   static String dateFormat(DateTime date) {
     return DateFormat('yyyy-MM-dd').format(date);
   }

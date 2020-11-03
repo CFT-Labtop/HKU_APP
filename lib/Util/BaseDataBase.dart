@@ -8,6 +8,8 @@ import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
 import 'package:hku_app/Model/LocalPhoto.dart';
 import 'package:hku_app/Model/Location.dart';
+import 'package:hku_app/Model/Stk_Qoh.dart';
+import 'package:hku_app/Model/Stk_Qoh_Detail.dart';
 import 'package:hku_app/Model/Version.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 
@@ -30,6 +32,8 @@ class BaseDataBase<T extends BaseModel> {
     Hive.registerAdapter(LocalPhotoAdapter());
     Hive.registerAdapter(LocationAdapter());
     Hive.registerAdapter(VersionAdapter());
+    Hive.registerAdapter(StkQohAdapter());
+    Hive.registerAdapter(StkQohDetailAdapter());
     _baseDataBase.box_map["Dangerous_Goods_Order"] =
         await Hive.openBox("Dangerous_Goods_Order");
     _baseDataBase.box_map["Dangerous_Goods_Order_Detail"] =
@@ -45,6 +49,8 @@ class BaseDataBase<T extends BaseModel> {
     _baseDataBase.box_map["LocalPhoto"] = await Hive.openBox("LocalPhoto");
     _baseDataBase.box_map["Location"] = await Hive.openBox("Location");
     _baseDataBase.box_map["Version"] = await Hive.openBox("Version");
+    _baseDataBase.box_map["Stk_Qoh"] = await Hive.openBox("Stk_Qoh");
+    _baseDataBase.box_map["Stk_Qoh_Detail"] = await Hive.openBox("Stk_Qoh_Detail");
   }
 
   List<T> getAll<T extends BaseModel>() {

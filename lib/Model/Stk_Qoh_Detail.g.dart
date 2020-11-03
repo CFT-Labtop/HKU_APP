@@ -1,50 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'Version.dart';
+part of 'Stk_Qoh_Detail.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class VersionAdapter extends TypeAdapter<Version> {
+class StkQohDetailAdapter extends TypeAdapter<Stk_Qoh_Detail> {
   @override
-  final int typeId = 11;
+  final int typeId = 13;
 
   @override
-  Version read(BinaryReader reader) {
+  Stk_Qoh_Detail read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Version(
+    return Stk_Qoh_Detail(
       ID: fields[0] as int,
-      version_name: fields[1] as String,
-      qoh_date: fields[2] as DateTime,
-      take_location: (fields[3] as List)?.cast<int>(),
-      complete_date: fields[4] as DateTime,
-      status: fields[5] as bool,
-      create_user: fields[6] as String,
+      ID_stk_qoh: fields[1] as int,
+      rfid_code: fields[2] as String,
+      qoh_qty: fields[3] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Version obj) {
+  void write(BinaryWriter writer, Stk_Qoh_Detail obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.ID)
       ..writeByte(1)
-      ..write(obj.version_name)
+      ..write(obj.ID_stk_qoh)
       ..writeByte(2)
-      ..write(obj.qoh_date)
+      ..write(obj.rfid_code)
       ..writeByte(3)
-      ..write(obj.take_location)
-      ..writeByte(4)
-      ..write(obj.complete_date)
-      ..writeByte(5)
-      ..write(obj.status)
-      ..writeByte(6)
-      ..write(obj.create_user);
+      ..write(obj.qoh_qty);
   }
 
   @override
@@ -53,7 +44,7 @@ class VersionAdapter extends TypeAdapter<Version> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is VersionAdapter &&
+      other is StkQohDetailAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

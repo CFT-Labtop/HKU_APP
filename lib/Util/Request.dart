@@ -3,6 +3,12 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
+import 'package:hku_app/Model/Chemical_Waste_Order.dart';
+import 'package:hku_app/Model/Chemical_Waste_Order_Detail.dart';
+import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
+import 'package:hku_app/Model/Dangerous_Goods_Order_Detail.dart';
+import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
+import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
 import 'package:hku_app/Model/Location.dart';
 import 'package:hku_app/Model/Version.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
@@ -121,11 +127,9 @@ class Request {
 
   Future<BaseResponse> completeDelivery({int ID, DeliveryType type}) async {
     try {
-      BaseResponse response = await this.post(action: "mobile_complete_delivery", data: {
-          "ID": ID,
-          "status": 1,
-          "type": type.value
-      });
+      BaseResponse response = await this.post(
+          action: "mobile_complete_delivery",
+          data: {"ID": ID, "status": 1, "type": type.value});
       return response;
     } catch (e) {
       throw e;
@@ -136,10 +140,86 @@ class Request {
     try {
       BaseResponse response = await this.get(action: "mobile_get_stock_take");
       await BaseDataBase().add<Version>(Version.fromJSON(response.data["Version"][0]));
-      List<Location> locationList = (response.data["Location"] as List<dynamic>).map((e) => Location.fromJSON(e)).toList();
-      await Future.forEach(locationList, (e) async => await BaseDataBase().add<Location>(e));
+      List<Location> locationList = (response.data["Location"] as List<dynamic>)
+          .map((e) => Location.fromJSON(e))
+          .toList();
+      await Future.forEach(
+          locationList, (e) async => await BaseDataBase().add<Location>(e));
       return response;
     } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<BaseResponse> getOrder(DateTime currentSelectedDate) async {
+    try {
+      BaseResponse response = await Request().get(
+          action: "mobile_duty_sheet",
+          queryParameters: {"date": Global.dateFormat(currentSelectedDate)});
+      List<Dangerous_Goods_Order> dangerous_goods_order_list =
+          response.data["Dangerous_Goods_Order"]
+              .map<Dangerous_Goods_Order>((f) {
+                return new Dangerous_Goods_Order.fromJSON(f);
+              })
+              .where((element) => element.status == 0)
+              .toList();
+      List<Dangerous_Goods_Order_Detail> dangerous_goods_order_detail_list =
+          response.data["Dangerous_Goods_Order_Detail"]
+              .map<Dangerous_Goods_Order_Detail>((f) {
+        return new Dangerous_Goods_Order_Detail.fromJSON(f);
+      }).toList();
+      List<Liquid_Nitrogen_Order> liquid_nitrogen_order_list =
+          response.data["Liquid_Nitrogen_Order"].map<Liquid_Nitrogen_Order>((f) {return new Liquid_Nitrogen_Order.fromJSON(f);}).where((element) => element.status == 0).toList();
+      List<Liquid_Nitrogen_Order_Detail> liquid_nitrogen_order_detail_list =
+          response.data["Liquid_Nitrogen_Order_Detail"]
+              .map<Liquid_Nitrogen_Order_Detail>((f) {
+        return new Liquid_Nitrogen_Order_Detail.fromJSON(f);
+      }).toList();
+      List<Chemical_Waste_Order> chemical_waste_order_list =
+          response.data["Chemical_Waste_Order"]
+              .map<Chemical_Waste_Order>((f) {
+                return new Chemical_Waste_Order.fromJSON(f);
+              })
+              .where((element) => element.status == 0)
+              .toList();
+      List<Chemical_Waste_Order_Detail> chemical_waste_order_detail_list =
+          response.data["Chemical_Waste_Order_Detail"]
+              .map<Chemical_Waste_Order_Detail>((f) {
+        return new Chemical_Waste_Order_Detail.fromJSON(f);
+      }).toList();
+      await Future.forEach(dangerous_goods_order_list, (element) async {
+        await BaseDataBase().add<Dangerous_Goods_Order>(element);
+      });
+      await Future.forEach(
+          liquid_nitrogen_order_list,
+          (element) async =>
+              await BaseDataBase().add<Liquid_Nitrogen_Order>(element));
+      await Future.forEach(
+          chemical_waste_order_list,
+          (element) async =>
+              await BaseDataBase().add<Chemical_Waste_Order>(element));
+      await Future.forEach(
+          dangerous_goods_order_detail_list,
+          (element) async =>
+              await BaseDataBase().add<Dangerous_Goods_Order_Detail>(element));
+      await Future.forEach(
+          liquid_nitrogen_order_detail_list,
+          (element) async =>
+              await BaseDataBase().add<Liquid_Nitrogen_Order_Detail>(element));
+      await Future.forEach(
+          chemical_waste_order_detail_list,
+          (element) async =>
+              await BaseDataBase().add<Chemical_Waste_Order_Detail>(element));
+    } catch (e) {
+      throw e;
+    }
+  }
+  Future<BaseResponse> getQoh(int versionID, List<int> locationIDList) async {
+    try{
+      BaseResponse response = await Request().get(action: "mobile_get_qoh", queryParameters: {"ID_Version": versionID, "ID_location_list": locationIDList});
+      print("Hello WOrld");
+      return response;
+    }catch(e){
       throw e;
     }
   }

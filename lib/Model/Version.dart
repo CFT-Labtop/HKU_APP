@@ -18,6 +18,8 @@ class Version extends BaseModel {
   DateTime complete_date;
   @HiveField(5)
   bool status;
+  @HiveField(6)
+  String create_user;
   @override
   int getID() => this.ID;
 
@@ -27,6 +29,7 @@ class Version extends BaseModel {
     List<int> this.take_location,
     DateTime this.complete_date,
     bool this.status,
+    String this.create_user,
   }) {}
 
   Version.fromJSON(Map<String, dynamic> json) {
@@ -36,11 +39,12 @@ class Version extends BaseModel {
     this.take_location = json["take_location"] != null? (json["take_location"] as List<dynamic>).map((e) => int.parse(e)).toList() :null;
     this.complete_date = json["complete_date"] != null ? DateTime.parse(json["complete_date"]) : null;
     this.status = json["status"] == 1 ?true: false;
+    this.create_user = json["create_user"] ?? null;
   }
 
   static Version getLatestVersion(){
     Version version = null;
-    BaseDataBase().getAll().forEach((element) {
+    BaseDataBase().getAll<Version>().forEach((element) {
       if(version == null) version = element;
       else if(version.getID() < element.getID())
         version = element;

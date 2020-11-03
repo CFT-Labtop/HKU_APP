@@ -6,6 +6,7 @@ import 'package:hku_app/Screen/AllOrder.dart';
 import 'package:hku_app/Screen/LoginPage.dart';
 import 'package:hku_app/Screen/OrderDetail.dart';
 import 'package:hku_app/Screen/QRCodeScanPage.dart';
+import 'package:hku_app/Screen/StockTakeDetailPage.dart';
 import 'package:hku_app/Screen/StockTakePage.dart';
 
 class BaseRouter {
@@ -33,6 +34,7 @@ class BaseRouter {
     router.define("/" + Pages.AllOrder.toString(), handler: Handler(handlerFunc: (context, params) => AllOrder()));
     router.define("/" + Pages.QRCodeScanPage.toString(), handler: Handler(handlerFunc: (context, params) => QRCodeScanPage()));
     router.define("/" + Pages.StockTakePage.toString(), handler: Handler(handlerFunc: (context, params) => StockTakePage()));
+    router.define("/" + Pages.StockTakeDetailPage.toString(), handler: Handler(handlerFunc: (context, params) => StockTakeDetailPage()));
     BaseRouter.router = router;
   }
 
@@ -54,5 +56,6 @@ enum Pages {
   OrderDetail,
   AllOrder,
   QRCodeScanPage,
-  StockTakePage
+  StockTakePage,
+  StockTakeDetailPage,
 }
