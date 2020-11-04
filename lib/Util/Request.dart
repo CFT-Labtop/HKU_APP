@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
 import 'package:hku_app/Model/Chemical_Waste_Order.dart';
 import 'package:hku_app/Model/Chemical_Waste_Order_Detail.dart';
@@ -10,6 +12,10 @@ import 'package:hku_app/Model/Dangerous_Goods_Order_Detail.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order.dart';
 import 'package:hku_app/Model/Liquid_Nitrogen_Order_Detail.dart';
 import 'package:hku_app/Model/Location.dart';
+import 'package:hku_app/Model/Stk_Qoh.dart';
+import 'package:hku_app/Model/Stk_Qoh_Detail.dart';
+import 'package:hku_app/Model/Stk_Tk.dart';
+import 'package:hku_app/Model/Stk_Tk_Detail.dart';
 import 'package:hku_app/Model/Version.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
@@ -21,7 +27,6 @@ class Request {
   String baseURL;
   Dio dio;
   static final Request _request = Request._internal();
-
   Request._internal();
 
   factory Request.init(String url) {
@@ -42,15 +47,14 @@ class Request {
 
   Future<BaseResponse> run(context,
       {String action,
-      Map<String, dynamic> queryParameters = const {},
+      Map<String, dynamic> data = const {},
       isDismissible = false,
       VoidCallback onDissmissPress}) async {
     ProgressDialog pr = ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: isDismissible);
     try {
       await pr.show();
-      BaseResponse res =
-          await this.get(action: action, queryParameters: queryParameters);
+      BaseResponse res = await this.post(action: action, data: data);
       await pr.hide();
       return res;
     } catch (e) {
@@ -214,10 +218,28 @@ class Request {
       throw e;
     }
   }
-  Future<BaseResponse> getQoh(int versionID, List<int> locationIDList) async {
+  Future<BaseResponse> getQoh(BuildContext context, {int versionID, List<int> locationIDList}) async {
     try{
-      BaseResponse response = await Request().get(action: "mobile_get_qoh", queryParameters: {"ID_Version": versionID, "ID_location_list": locationIDList});
-      print("Hello WOrld");
+      BaseResponse response = await Request().run(context, action: "mobile_get_qoh", data: {"ID_version": versionID, "ID_location_list": locationIDList});
+      await Future.forEach(response.data["Stk_Qoh"].map<Stk_Qoh>((f) {return new Stk_Qoh.fromJSON(f);}).toList(), (element) async => await BaseDataBase().add<Stk_Qoh>(element));
+      await Future.forEach(response.data["Stk_Qoh_Detail"].map<Stk_Qoh_Detail>((f) {return new Stk_Qoh_Detail.fromJSON(f);}).toList(), (element) async => await BaseDataBase().add<Stk_Qoh_Detail>(element));
+      return response;
+    }catch(e){
+      throw e;
+    }
+  }
+  Future<BaseResponse> uploadStockTake(BuildContext context, {List<Stk_Tk> stk_tk_list, List<Stk_Tk_Detail> detail_List}) async {
+    try{
+      BaseResponse response = await Request().run(context, action: "mobile_upload_stock_take", data: {"stk_tk_list": stk_tk_list.map((e) => e.toJSON()).toList(), "detail_list": detail_List.map((e) => e.toJSON()).toList()});
+      List<int> id_qoh_list = stk_tk_list.map((e) => e.ID_qoh).toList();
+      List<Stk_Qoh_Detail> qoh_detail_list = BaseDataBase().getAll<Stk_Qoh_Detail>();
+      BaseDataBase().getAll<Stk_Qoh>().forEach((element) {
+        if(id_qoh_list.contains(element.ID)){
+          qoh_detail_list.where((qoh_detail) => qoh_detail.ID_stk_qoh == element.ID).forEach((qoh_detail) {
+            BaseDataBase().delete<Stk_Qoh_Detail>(qoh_detail);
+          });
+        }
+      });
       return response;
     }catch(e){
       throw e;

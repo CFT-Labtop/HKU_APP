@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:hku_app/Model/Location.dart';
+import 'package:hku_app/Model/Stk_Tk.dart';
+import 'package:hku_app/Model/Stk_Tk_Detail.dart';
 import 'package:hku_app/Model/Version.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseFutureBuilder.dart';
+import 'package:hku_app/Util/BaseRouter.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
 import 'package:hku_app/Widget/LabelRow.dart';
@@ -58,10 +61,9 @@ class _StockTakePageState extends State<StockTakePage> {
   }
 
   List<Location> getLocation() {
-    return BaseDataBase()
-        .getAll<Location>()
-        .where((element) => currentVersion.take_location.contains(element.ID))
-        .toList();
+    if(currentVersion != null)
+      return BaseDataBase().getAll<Location>().where((element) => currentVersion.take_location.contains(element.ID)).toList();
+    return [];
   }
 
   Widget _contentWidget() {
@@ -69,7 +71,9 @@ class _StockTakePageState extends State<StockTakePage> {
       return Column(children: [
         _stockTakeHeader(),
         Expanded(
-          child: StockTakeTable(getLocation(), onRowPress: (data) async {}),
+          child: StockTakeTable(getLocation(), onRowPress: (data) async {
+            BaseRouter.goToStockDetailPage(context, data.ID, currentVersion.ID);
+          }),
         )
       ]);
     } catch (e) {
@@ -80,6 +84,7 @@ class _StockTakePageState extends State<StockTakePage> {
   @override
   Widget build(BuildContext context) {
     try {
+
       return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -87,13 +92,21 @@ class _StockTakePageState extends State<StockTakePage> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.cloud_download),
+              icon: Icon(Icons.sync),
+              onPressed: (currentVersion == null)? null: () async {
+                  List<Stk_Tk> stk_list = BaseDataBase().getAll<Stk_Tk>();
+                  List<Stk_Tk_Detail> stk_detail_list = BaseDataBase().getAll<Stk_Tk_Detail>();
+                  await Request().uploadStockTake(context, stk_tk_list: stk_list, detail_List: stk_detail_list);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text('Upload Successfully').tr(),
+                    duration: const Duration(seconds: 2),
+                  ));
 
-              onPressed: (currentVersion.ID == null)? null: () async {},
+              },
             ),
             IconButton(
-                icon: Icon(Icons.sync),
-                onPressed: (currentVersion.ID == null)? null: () {
+                icon: Icon(Icons.cloud_download),
+                onPressed: (currentVersion == null)? null: () {
                   List<Location> locationList = getLocation();
                   showDialog(
                       context: context,
@@ -131,8 +144,13 @@ class _StockTakePageState extends State<StockTakePage> {
                                     child: new Text("Cancel"),
                                   ),
                                   new FlatButton(
-                                    onPressed: () {
-                                      Request().getQoh(currentVersion.ID, locationList.where((element) => (element.isCheck) as bool).map((e) => e.ID).toList());
+                                    onPressed: () async{
+                                      await Request().getQoh(context, versionID: currentVersion.ID, locationIDList: locationList.where((element) => (element.isCheck) as bool).map((e) => e.ID).toList());
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        content: const Text('Download Successfully').tr(),
+                                        duration: const Duration(seconds: 2),
+                                      ));
                                     },
                                     child: new Text("Confirm"),
                                   ),
@@ -146,7 +164,9 @@ class _StockTakePageState extends State<StockTakePage> {
         body: BaseFutureBuilder(
           future: Request().getStockTake(),
           loadingCallback: () => _contentWidget(),
-          onSuccessCallback: (response) => _contentWidget(),
+          onSuccessCallback: (response) {
+            return _contentWidget();
+          } ,
           onErrorCallback: (error) => _contentWidget(),
         ),
       );

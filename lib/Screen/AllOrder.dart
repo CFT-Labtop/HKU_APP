@@ -53,7 +53,7 @@ class _AllOrder extends State<AllOrder> {
         child: OrderTable(
       getOrderByData(currentSelectedDate),
       onRowPress: (data) async {
-        await BaseRouter.goToDetailPage(context, data.getID(), data.getType());
+        await BaseRouter.goToOrderDetailPage(context, data.getID(), data.getType());
         setState(() {});
       },
     ));
@@ -83,17 +83,15 @@ class _AllOrder extends State<AllOrder> {
   OrderInterface getOrderByRefNo(String ref_no) {
     OrderInterface result = null;
     try {
-      result = BaseDataBase()
-          .getAll<Chemical_Waste_Order>()
-          .firstWhere((element) => element.ref_no == ref_no);
+      result = BaseDataBase().getAll<Chemical_Waste_Order>().firstWhere((element) => element.ref_no == ref_no, orElse: () => null);
       if (result != null) return result;
       result = BaseDataBase()
           .getAll<Liquid_Nitrogen_Order>()
-          .firstWhere((element) => element.ref_no == ref_no);
+          .firstWhere((element) => element.ref_no == ref_no, orElse: () => null);
       if (result != null) return result;
       result = BaseDataBase()
           .getAll<Dangerous_Goods_Order>()
-          .firstWhere((element) => element.ref_no == ref_no);
+          .firstWhere((element) => element.ref_no == ref_no, orElse: () => null);
       if (result != null) return result;
     } catch (e) {
       throw Exception("Order Not Found");
@@ -160,7 +158,7 @@ class _AllOrder extends State<AllOrder> {
               try {
                 String ref_no = await BaseRouter.goToPage(context, Pages.QRCodeScanPage);
                 OrderInterface orderInterface = getOrderByRefNo(ref_no);
-                BaseRouter.goToDetailPage(context, orderInterface.getID(), orderInterface.getType());
+                BaseRouter.goToOrderDetailPage(context, orderInterface.getID(), orderInterface.getType());
               } catch (e) {
                 Global.showAlertDialog(context, e.toString());
               }

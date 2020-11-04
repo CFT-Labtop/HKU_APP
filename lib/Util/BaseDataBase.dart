@@ -10,8 +10,11 @@ import 'package:hku_app/Model/LocalPhoto.dart';
 import 'package:hku_app/Model/Location.dart';
 import 'package:hku_app/Model/Stk_Qoh.dart';
 import 'package:hku_app/Model/Stk_Qoh_Detail.dart';
+import 'package:hku_app/Model/Stk_Tk.dart';
+import 'package:hku_app/Model/Stk_Tk_Detail.dart';
 import 'package:hku_app/Model/Version.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:hku_app/Util/Global.dart';
 
 class BaseDataBase<T extends BaseModel> {
   static final BaseDataBase _baseDataBase = BaseDataBase._internal();
@@ -34,6 +37,8 @@ class BaseDataBase<T extends BaseModel> {
     Hive.registerAdapter(VersionAdapter());
     Hive.registerAdapter(StkQohAdapter());
     Hive.registerAdapter(StkQohDetailAdapter());
+    Hive.registerAdapter(StkTkAdapter());
+    Hive.registerAdapter(StkTkDetailAdapter());
     _baseDataBase.box_map["Dangerous_Goods_Order"] =
         await Hive.openBox("Dangerous_Goods_Order");
     _baseDataBase.box_map["Dangerous_Goods_Order_Detail"] =
@@ -51,6 +56,8 @@ class BaseDataBase<T extends BaseModel> {
     _baseDataBase.box_map["Version"] = await Hive.openBox("Version");
     _baseDataBase.box_map["Stk_Qoh"] = await Hive.openBox("Stk_Qoh");
     _baseDataBase.box_map["Stk_Qoh_Detail"] = await Hive.openBox("Stk_Qoh_Detail");
+    _baseDataBase.box_map["Stk_Tk"] = await Hive.openBox("Stk_Tk");
+    _baseDataBase.box_map["Stk_Tk_Detail"] = await Hive.openBox("Stk_Tk_Detail");
   }
 
   List<T> getAll<T extends BaseModel>() {
@@ -75,5 +82,14 @@ class BaseDataBase<T extends BaseModel> {
 
   Future<void> delete<T extends BaseModel>(T model) async {
     await _baseDataBase.box_map[T.toString()].delete(model.getID());
+  }
+
+  int getHighestID<T extends BaseModel>(){
+    int id = 0;
+    BaseDataBase().getAll<T>().forEach((element) {
+      if(element.getID() > id)
+        id = element.getID();
+    });
+    return id;
   }
 }
