@@ -160,7 +160,7 @@ class _AllOrder extends State<AllOrder> {
                 OrderInterface orderInterface = getOrderByRefNo(ref_no);
                 BaseRouter.goToOrderDetailPage(context, orderInterface.getID(), orderInterface.getType());
               } catch (e) {
-                Global.showAlertDialog(context, e.toString());
+                Global.showAlertDialog(context, "Order Not Found Or Delivered");
               }
             },
           ),

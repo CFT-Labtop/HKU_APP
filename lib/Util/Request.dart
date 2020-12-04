@@ -144,11 +144,8 @@ class Request {
     try {
       BaseResponse response = await this.get(action: "mobile_get_stock_take");
       await BaseDataBase().add<Version>(Version.fromJSON(response.data["Version"][0]));
-      List<Location> locationList = (response.data["Location"] as List<dynamic>)
-          .map((e) => Location.fromJSON(e))
-          .toList();
-      await Future.forEach(
-          locationList, (e) async => await BaseDataBase().add<Location>(e));
+      List<Location> locationList = (response.data["Location"] as List<dynamic>).map((e) => Location.fromJSON(e)).toList();
+      await Future.forEach(locationList, (e) async => await BaseDataBase().add<Location>(e));
       return response;
     } catch (e) {
       throw e;
@@ -229,7 +226,7 @@ class Request {
     }
   }
   Future<BaseResponse> uploadStockTake(BuildContext context, {List<Stk_Tk> stk_tk_list, List<Stk_Tk_Detail> detail_List}) async {
-    try{
+//    try{
       BaseResponse response = await Request().run(context, action: "mobile_upload_stock_take", data: {"stk_tk_list": stk_tk_list.map((e) => e.toJSON()).toList(), "detail_list": detail_List.map((e) => e.toJSON()).toList()});
       List<int> id_qoh_list = stk_tk_list.map((e) => e.ID_qoh).toList();
       List<Stk_Qoh_Detail> qoh_detail_list = BaseDataBase().getAll<Stk_Qoh_Detail>();
@@ -241,8 +238,8 @@ class Request {
         }
       });
       return response;
-    }catch(e){
-      throw e;
-    }
+//    }catch(e){
+//      throw e;
+//    }
   }
 }

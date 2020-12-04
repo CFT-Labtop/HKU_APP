@@ -61,8 +61,11 @@ class _StockTakePageState extends State<StockTakePage> {
   }
 
   List<Location> getLocation() {
-    if(currentVersion != null)
-      return BaseDataBase().getAll<Location>().where((element) => currentVersion.take_location.contains(element.ID)).toList();
+    if (currentVersion != null)
+      return BaseDataBase()
+          .getAll<Location>()
+          .where((element) => currentVersion.take_location.contains(element.ID))
+          .toList();
     return [];
   }
 
@@ -84,7 +87,6 @@ class _StockTakePageState extends State<StockTakePage> {
   @override
   Widget build(BuildContext context) {
     try {
-
       return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -93,72 +95,95 @@ class _StockTakePageState extends State<StockTakePage> {
           actions: [
             IconButton(
               icon: Icon(Icons.sync),
-              onPressed: (currentVersion == null)? null: () async {
-                  List<Stk_Tk> stk_list = BaseDataBase().getAll<Stk_Tk>();
-                  List<Stk_Tk_Detail> stk_detail_list = BaseDataBase().getAll<Stk_Tk_Detail>();
-                  await Request().uploadStockTake(context, stk_tk_list: stk_list, detail_List: stk_detail_list);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Upload Successfully').tr(),
-                    duration: const Duration(seconds: 2),
-                  ));
-
-              },
+              onPressed: (currentVersion == null)
+                  ? null
+                  : () async {
+                      try {
+                        List<Stk_Tk> stk_list = BaseDataBase().getAll<Stk_Tk>();
+                        List<Stk_Tk_Detail> stk_detail_list = BaseDataBase().getAll<Stk_Tk_Detail>();
+                        await Request().uploadStockTake(context, stk_tk_list: stk_list, detail_List: stk_detail_list);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text('Upload Successfully').tr(),
+                          duration: const Duration(seconds: 2),
+                        ));
+                      } catch (e) {
+                        Global.showAlertDialog(context, e.toString());
+                      }
+                    },
             ),
             IconButton(
                 icon: Icon(Icons.cloud_download),
-                onPressed: (currentVersion == null)? null: () {
-                  List<Location> locationList = getLocation();
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return StatefulBuilder(
-                          builder: (BuildContext context,
-                              void Function(void Function()) setState) {
-                            return AlertDialog(
-                                title: Text("Download Selected Location").tr(),
-                                content: Container(
-                                  height: Global.ratioHeight(context, 0.8),
-                                  width: Global.ratioWidth(context, 0.8),
-                                  child: ListView.builder(
-                                    itemCount: locationList.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return CheckboxListTile(
-                                          title: Text(locationList[index]
-                                              .location_name),
-                                          value: locationList[index].isCheck,
-                                          onChanged: (isCheck) {
-                                            setState(() {
-                                              locationList[index].isCheck =
-                                                  isCheck;
-                                            });
-                                          });
-                                    },
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  new FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: new Text("Cancel"),
-                                  ),
-                                  new FlatButton(
-                                    onPressed: () async{
-                                      await Request().getQoh(context, versionID: currentVersion.ID, locationIDList: locationList.where((element) => (element.isCheck) as bool).map((e) => e.ID).toList());
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                        content: const Text('Download Successfully').tr(),
-                                        duration: const Duration(seconds: 2),
-                                      ));
-                                    },
-                                    child: new Text("Confirm"),
-                                  ),
-                                ]);
-                          },
-                        );
-                      });
-                })
+                onPressed: (currentVersion == null)
+                    ? null
+                    : () {
+                        List<Location> locationList = getLocation();
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return StatefulBuilder(
+                                builder: (BuildContext context,
+                                    void Function(void Function()) setState) {
+                                  return AlertDialog(
+                                      title: Text("Download Selected Location")
+                                          .tr(),
+                                      content: Container(
+                                        height:
+                                            Global.ratioHeight(context, 0.8),
+                                        width: Global.ratioWidth(context, 0.8),
+                                        child: ListView.builder(
+                                          itemCount: locationList.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return CheckboxListTile(
+                                                title: Text(locationList[index]
+                                                        .location_code +
+                                                    " " +
+                                                    locationList[index]
+                                                        .store_no),
+                                                value:
+                                                    locationList[index].isCheck,
+                                                onChanged: (isCheck) {
+                                                  setState(() {
+                                                    locationList[index]
+                                                        .isCheck = isCheck;
+                                                  });
+                                                });
+                                          },
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        new FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: new Text("Cancel"),
+                                        ),
+                                        new FlatButton(
+                                          onPressed: () async {
+                                            await Request().getQoh(context,
+                                                versionID: currentVersion.ID,
+                                                locationIDList: locationList
+                                                    .where((element) => (element
+                                                        .isCheck) as bool)
+                                                    .map((e) => e.ID)
+                                                    .toList());
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: const Text(
+                                                      'Download Successfully')
+                                                  .tr(),
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            ));
+                                          },
+                                          child: new Text("Confirm"),
+                                        ),
+                                      ]);
+                                },
+                              );
+                            });
+                      })
           ],
         ),
         body: BaseFutureBuilder(
@@ -166,7 +191,7 @@ class _StockTakePageState extends State<StockTakePage> {
           loadingCallback: () => _contentWidget(),
           onSuccessCallback: (response) {
             return _contentWidget();
-          } ,
+          },
           onErrorCallback: (error) => _contentWidget(),
         ),
       );

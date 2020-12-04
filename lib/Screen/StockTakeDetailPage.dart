@@ -130,10 +130,10 @@ class _StockTakeDetailPageState extends State<StockTakeDetailPage> {
                         ),
                         PlatformDialogAction(
                           child: PlatformText('Confirm'.tr()),
-                          onPressed: () {
-                            setState(() {
-                              insertStkTakeDetail(data, int.parse(quantityTextController.text));
-                            });
+                          onPressed: () async {
+                              await insertStkTakeDetail(data, int.parse(quantityTextController.text));
+                              quantityTextController.text = "";
+                              setState(() {});
                           },
                         ),
                       ],
