@@ -87,3 +87,51 @@ class StkQohAdapter extends TypeAdapter<Stk_Qoh> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Stk_Qoh _$Stk_QohFromJson(Map<String, dynamic> json) {
+  return Stk_Qoh(
+    ID: json['ID'] as int,
+    ID_version: json['ID_version'] as int,
+    AsOf_date: json['AsOf_date'] == null
+        ? null
+        : DateTime.parse(json['AsOf_date'] as String),
+    ID_location: json['ID_location'] as int,
+    location_code: json['location_code'] as String,
+    location_name: json['location_name'] as String,
+    store_no: json['store_no'] as String,
+    shelf: json['shelf'] as String,
+    ID_department: json['ID_department'] as int,
+    department_code: json['department_code'] as String,
+    department_name: json['department_name'] as String,
+    ID_dangerous_goods: json['ID_dangerous_goods'] as int,
+    product_name: json['product_name'] as String,
+    article_no: json['article_no'] as String,
+    qoh_total_qty: json['qoh_total_qty'] as int,
+    create_user: json['create_user'] as String,
+    modify_user: json['modify_user'] as String,
+  );
+}
+
+Map<String, dynamic> _$Stk_QohToJson(Stk_Qoh instance) => <String, dynamic>{
+      'ID': instance.ID,
+      'ID_version': instance.ID_version,
+      'AsOf_date': instance.AsOf_date?.toIso8601String(),
+      'ID_location': instance.ID_location,
+      'location_code': instance.location_code,
+      'location_name': instance.location_name,
+      'store_no': instance.store_no,
+      'shelf': instance.shelf,
+      'ID_department': instance.ID_department,
+      'department_code': instance.department_code,
+      'department_name': instance.department_name,
+      'ID_dangerous_goods': instance.ID_dangerous_goods,
+      'product_name': instance.product_name,
+      'article_no': instance.article_no,
+      'qoh_total_qty': instance.qoh_total_qty,
+      'create_user': instance.create_user,
+      'modify_user': instance.modify_user,
+    };

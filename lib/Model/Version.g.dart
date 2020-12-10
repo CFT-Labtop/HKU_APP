@@ -24,13 +24,14 @@ class VersionAdapter extends TypeAdapter<Version> {
       complete_date: fields[4] as DateTime,
       status: fields[5] as bool,
       create_user: fields[6] as String,
+      downloaded_location: (fields[7] as List)?.cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Version obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.ID)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class VersionAdapter extends TypeAdapter<Version> {
       ..writeByte(5)
       ..write(obj.status)
       ..writeByte(6)
-      ..write(obj.create_user);
+      ..write(obj.create_user)
+      ..writeByte(7)
+      ..write(obj.downloaded_location);
   }
 
   @override

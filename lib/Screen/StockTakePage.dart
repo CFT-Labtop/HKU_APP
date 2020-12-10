@@ -20,6 +20,7 @@ class StockTakePage extends StatefulWidget {
 
 class _StockTakePageState extends State<StockTakePage> {
   Version currentVersion = null;
+  List<int> download_id_list = [];
 
   @override
   void initState() {
@@ -65,6 +66,11 @@ class _StockTakePageState extends State<StockTakePage> {
       return BaseDataBase()
           .getAll<Location>()
           .where((element) => currentVersion.take_location.contains(element.ID))
+          .map((element){
+            element.isCheck = currentVersion.downloaded_location.contains(element.ID);
+            download_id_list = currentVersion.downloaded_location;
+            return element;
+          })
           .toList();
     return [];
   }
@@ -102,10 +108,7 @@ class _StockTakePageState extends State<StockTakePage> {
                         List<Stk_Tk> stk_list = BaseDataBase().getAll<Stk_Tk>();
                         List<Stk_Tk_Detail> stk_detail_list = BaseDataBase().getAll<Stk_Tk_Detail>();
                         await Request().uploadStockTake(context, stk_tk_list: stk_list, detail_List: stk_detail_list);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text('Upload Successfully').tr(),
-                          duration: const Duration(seconds: 2),
-                        ));
+                        Global.showToast("Upload Successfully");
                       } catch (e) {
                         Global.showAlertDialog(context, e.toString());
                       }
@@ -124,30 +127,22 @@ class _StockTakePageState extends State<StockTakePage> {
                                 builder: (BuildContext context,
                                     void Function(void Function()) setState) {
                                   return AlertDialog(
-                                      title: Text("Download Selected Location")
-                                          .tr(),
+                                      title: Text("Download Selected Location").tr(),
                                       content: Container(
-                                        height:
-                                            Global.ratioHeight(context, 0.8),
+                                        height:Global.ratioHeight(context, 0.8),
                                         width: Global.ratioWidth(context, 0.8),
                                         child: ListView.builder(
                                           itemCount: locationList.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
+                                          itemBuilder: (BuildContext context,int index) {
                                             return CheckboxListTile(
-                                                title: Text(locationList[index]
-                                                        .location_code +
-                                                    " " +
-                                                    locationList[index]
-                                                        .store_no),
-                                                value:
-                                                    locationList[index].isCheck,
-                                                onChanged: (isCheck) {
+                                                title: Text(locationList[index].location_code + " " +locationList[index].store_no),
+                                                value:locationList[index].isCheck,
+                                                onChanged: download_id_list.contains(locationList[index].ID)?null: (isCheck) {
                                                   setState(() {
-                                                    locationList[index]
-                                                        .isCheck = isCheck;
+                                                    locationList[index].isCheck = isCheck;
                                                   });
-                                                });
+                                                }
+                                              );
                                           },
                                         ),
                                       ),
@@ -160,22 +155,18 @@ class _StockTakePageState extends State<StockTakePage> {
                                         ),
                                         new FlatButton(
                                           onPressed: () async {
-                                            await Request().getQoh(context,
+                                            try{
+                                              await Request().getQoh(context,
                                                 versionID: currentVersion.ID,
-                                                locationIDList: locationList
-                                                    .where((element) => (element
-                                                        .isCheck) as bool)
-                                                    .map((e) => e.ID)
-                                                    .toList());
-                                            Navigator.pop(context);
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: const Text(
-                                                      'Download Successfully')
-                                                  .tr(),
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                            ));
+                                                locationIDList: locationList.where((element) => (element.isCheck && !download_id_list.contains(element.ID)) as bool).map((e) => e.ID).toList()
+                                              );
+                                              Navigator.pop(context);
+                                              currentVersion.downloaded_location = locationList.where((element) => element.isCheck).map((e) => e.ID).toList();
+                                              await BaseDataBase().save(currentVersion);
+                                              Global.showToast('Download Successfully');
+                                            }catch(e){
+                                              Global.showAlertDialog(context, e.toString());
+                                            }
                                           },
                                           child: new Text("Confirm"),
                                         ),

@@ -3,10 +3,13 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Global {
   static const Color mainColor = Color.fromRGBO(0, 179, 141, 1);
@@ -17,6 +20,7 @@ class Global {
   static double phoneRate = 1;
   static double smallPadRate = 1.2;
   static double padRate = 1.5;
+  static SharedPreferences sharedPreferences;
 
   static double responsiveSize(BuildContext context, double size) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -28,11 +32,11 @@ class Global {
       return size * padRate;
   }
 
-  static double ratioHeight(BuildContext context, double ratio){
+  static double ratioHeight(BuildContext context, double ratio) {
     return MediaQuery.of(context).size.height * ratio;
   }
 
-  static double ratioWidth(BuildContext context, double ratio){
+  static double ratioWidth(BuildContext context, double ratio) {
     return MediaQuery.of(context).size.width * ratio;
   }
 
@@ -41,11 +45,12 @@ class Global {
   }
 
   static PlatformAlertDialog showAlertDialog(
-      BuildContext context, String content, {String title}) {
+      BuildContext context, String content,
+      {String title}) {
     showPlatformDialog(
         context: context,
         builder: (_) => PlatformAlertDialog(
-              title: Text(title??"Error").tr(),
+              title: Text(title ?? "Error").tr(),
               content: Text(content).tr(),
               actions: <Widget>[
                 PlatformDialogAction(
@@ -74,7 +79,7 @@ class Global {
           ),
           PlatformDialogAction(
             child: PlatformText('Confirm'.tr()),
-            onPressed: (){
+            onPressed: () {
               Navigator.pop(context);
               onPress();
             },
@@ -84,14 +89,17 @@ class Global {
     );
   }
 
-  static Future<File> createFileFromString(String encodedStr, String ext) async {
-    try{
+  static Future<File> createFileFromString(
+      String encodedStr, String ext) async {
+    try {
       Uint8List bytes = base64.decode(encodedStr);
       String dir = (await getApplicationDocumentsDirectory()).path;
-      File file = File(
-          "$dir/" + DateTime.now().millisecondsSinceEpoch.toString() + "." + ext);
+      File file = File("$dir/" +
+          DateTime.now().millisecondsSinceEpoch.toString() +
+          "." +
+          ext);
       return await file.writeAsBytes(bytes);
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -103,5 +111,20 @@ class Global {
 
     return String.fromCharCodes(Iterable.generate(
         numCharacter, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  }
+
+  static showToast(String text) {
+    Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Global.mainColor,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+  static hashPassword(String password){
+    return sha256.convert(utf8.encode(password));
   }
 }

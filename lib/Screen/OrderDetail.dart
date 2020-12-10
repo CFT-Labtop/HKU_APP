@@ -189,10 +189,7 @@ class _OrderDetail extends State<OrderDetail> {
                     }
                     await pr.hide();
                     Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: const Text('Upload Successfully').tr(),
-                      duration: const Duration(seconds: 2),
-                    ));
+                    Global.showToast("Upload Successfully");
                   } catch (e) {
                     await pr.hide();
                     Global.showAlertDialog(context, e.message);

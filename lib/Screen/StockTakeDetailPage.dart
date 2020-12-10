@@ -17,9 +17,7 @@ class StockTakeDetailPage extends StatefulWidget {
   int versionID;
   int locationID;
 
-  StockTakeDetailPage(
-      {Key key, @required this.versionID, @required this.locationID})
-      : super(key: key);
+  StockTakeDetailPage({Key key, @required this.versionID, @required this.locationID}): super(key: key);
 
   @override
   _StockTakeDetailPageState createState() => _StockTakeDetailPageState();
@@ -67,10 +65,7 @@ class _StockTakeDetailPageState extends State<StockTakeDetailPage> {
       await stk_tk.updateQuantity();
       await pr.hide();
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Text('Successfully').tr(),
-        duration: const Duration(seconds: 2),
-      ));
+      Global.showToast("Successfully");
     }catch(e){
       await pr.hide();
       Global.showAlertDialog(context, e.toString());
@@ -82,9 +77,15 @@ class _StockTakeDetailPageState extends State<StockTakeDetailPage> {
     try {
       return Scaffold(
         appBar: AppBar(
-            title: Text(
-          "Stock Take Detail".tr(),
-        )),
+            title: Text("Stock Take Detail".tr()),
+            actions: [
+              IconButton(icon: Icon(Icons.edit),
+              onPressed: () {
+                setState(() {
+                  
+                });
+              },)
+            ]),
         body: Column(
           children: [
             StandardBox(

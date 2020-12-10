@@ -20,6 +20,8 @@ class Version extends BaseModel {
   bool status;
   @HiveField(6)
   String create_user;
+  @HiveField(7)
+  List<int> downloaded_location;
   @override
   int getID() => this.ID;
 
@@ -30,6 +32,7 @@ class Version extends BaseModel {
     DateTime this.complete_date,
     bool this.status,
     String this.create_user,
+    List<int> this.downloaded_location,
   }) {}
 
   Version.fromJSON(Map<String, dynamic> json) {
@@ -40,6 +43,7 @@ class Version extends BaseModel {
     this.complete_date = json["complete_date"] != null ? DateTime.parse(json["complete_date"]) : null;
     this.status = json["status"] == 1 ?true: false;
     this.create_user = json["create_user"] ?? null;
+    this.downloaded_location = [];
   }
 
   static Version getLatestVersion(){

@@ -169,6 +169,12 @@ class _AllOrder extends State<AllOrder> {
             onPressed: (){
               BaseRouter.goToPage(context, Pages.StockTakePage);
             }
+          ),
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: (){
+              BaseRouter.goToPage(context, Pages.LoginPage, clear: true);
+            }
           )
         ],
       ),

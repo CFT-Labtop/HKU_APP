@@ -7,10 +7,12 @@ class StandardEditText extends StatelessWidget {
   final String title;
   final double fontSize;
   final bool obscureText;
+  final TextEditingController controller;
   final Color focusedOutlineColor;
   StandardEditText(
       {Key key,
       @required this.title,
+      this.controller,
       this.fontSize = 48,
       this.obscureText = false,
       this.focusedOutlineColor = Global.mainColor})
@@ -29,6 +31,7 @@ class StandardEditText extends StatelessWidget {
         ).tr(),
         TextField(
             obscureText: obscureText,
+            controller: this.controller,
             style: TextStyle(fontSize: 24, color: Colors.white),
             decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(

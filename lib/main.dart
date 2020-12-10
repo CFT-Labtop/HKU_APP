@@ -9,11 +9,13 @@ import 'package:hku_app/Util/Config.dart';
 import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
 import 'package:hku_app/Util/BaseRouter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   final router = new FluroRouter();
   BaseRouter.configureRoutes(router);
   Request.init(Config.baseURL);
   await BaseDataBase().init();
+  Global.sharedPreferences = await SharedPreferences.getInstance();
   runApp(EasyLocalization(
       supportedLocales: [
         Locale('en', 'US'),

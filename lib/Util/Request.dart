@@ -45,22 +45,19 @@ class Request {
 
   factory Request() => _request;
 
-  Future<BaseResponse> run(context,
-      {String action,
-      Map<String, dynamic> data = const {},
-      isDismissible = false,
-      VoidCallback onDissmissPress}) async {
-    ProgressDialog pr = ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: isDismissible);
+  Future<BaseResponse> run(context,{String action,Map<String, dynamic> data = const {},isDismissible = false,VoidCallback onDissmissPress}) async {
+    ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: isDismissible);
     try {
       await pr.show();
       BaseResponse res = await this.post(action: action, data: data);
       await pr.hide();
       return res;
-    } catch (e) {
-      await pr.hide();
+    } 
+    catch (e) {
       Global.showAlertDialog(context, e.error);
       throw e;
+    }finally{
+      await pr.hide();
     }
   }
 
@@ -71,7 +68,12 @@ class Request {
           .dio
           .get(this.baseURL + action, queryParameters: queryParameters);
       return BaseResponse(response.data);
-    } catch (e) {
+    } on DioError catch(e) {
+      if(e.error.message == "Connection failed")
+        throw Exception("Coonection Failed, please ensure the hosting is active");
+      else
+        throw e;
+    }catch (e) {
       throw e;
     }
   }
@@ -79,12 +81,16 @@ class Request {
   Future<BaseResponse> post(
       {String action, Map<String, dynamic> data = const {}}) async {
     try {
-      Response response =
-          await this.dio.post(this.baseURL + action, data: data);
+      Response response =await this.dio.post(this.baseURL + action, data: data);
       BaseResponse baseResponse = BaseResponse(response.data);
       if (baseResponse.code != 200)
         throw new Exception(baseResponse.errorMessage);
       return baseResponse;
+    }on DioError catch(e) {
+      if(e.error.message == "Connection failed")
+        throw Exception("Coonection Failed, please ensure the hosting is active");
+      else
+        throw e;
     } catch (e) {
       throw e;
     }
@@ -226,7 +232,7 @@ class Request {
     }
   }
   Future<BaseResponse> uploadStockTake(BuildContext context, {List<Stk_Tk> stk_tk_list, List<Stk_Tk_Detail> detail_List}) async {
-//    try{
+   try{
       BaseResponse response = await Request().run(context, action: "mobile_upload_stock_take", data: {"stk_tk_list": stk_tk_list.map((e) => e.toJSON()).toList(), "detail_list": detail_List.map((e) => e.toJSON()).toList()});
       List<int> id_qoh_list = stk_tk_list.map((e) => e.ID_qoh).toList();
       List<Stk_Qoh_Detail> qoh_detail_list = BaseDataBase().getAll<Stk_Qoh_Detail>();
@@ -238,8 +244,17 @@ class Request {
         }
       });
       return response;
-//    }catch(e){
-//      throw e;
-//    }
+   }catch(e){
+     throw e;
+   }
+  }
+
+  Future<BaseResponse> login(BuildContext context, {String loginName, String password}) async {
+    try{
+      BaseResponse response = await Request().run(context, action: "user_login", data: {"loginName": loginName, "password": password});
+      return response;
+    }catch(e){
+     throw e;
+   }
   }
 }

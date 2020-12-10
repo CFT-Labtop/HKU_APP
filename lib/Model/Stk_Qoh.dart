@@ -1,9 +1,10 @@
 import 'package:hive/hive.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 import 'package:hku_app/Util/Checkable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Stk_Qoh.g.dart';
-
+@JsonSerializable()
 @HiveType(typeId: 12)
 class Stk_Qoh extends BaseModel{
   @HiveField(0)
@@ -84,4 +85,7 @@ class Stk_Qoh extends BaseModel{
     this.create_user = json["create_user"] ?? null;
     this.modify_user = json["modify_user"] ?? null;
   }
+
+  factory Stk_Qoh.fromJson(Map<String, dynamic> json) => _$Stk_QohFromJson(json);
+  Map<String, dynamic> toJson() => _$Stk_QohToJson(this);
 }
