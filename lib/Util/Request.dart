@@ -165,17 +165,8 @@ class Request {
           action: "mobile_duty_sheet",
           queryParameters: {"date": Global.dateFormat(currentSelectedDate)});
       List<Dangerous_Goods_Order> dangerous_goods_order_list =
-          response.data["Dangerous_Goods_Order"]
-              .map<Dangerous_Goods_Order>((f) {
-                return new Dangerous_Goods_Order.fromJson(f);
-              })
-              .where((element) => element.status == 0)
-              .toList();
-      List<Dangerous_Goods_Order_Detail> dangerous_goods_order_detail_list =
-          response.data["Dangerous_Goods_Order_Detail"]
-              .map<Dangerous_Goods_Order_Detail>((f) {
-        return new Dangerous_Goods_Order_Detail.fromJson(f);
-      }).toList();
+          response.data["Dangerous_Goods_Order"].map<Dangerous_Goods_Order>((f) {return new Dangerous_Goods_Order.fromJson(f);}).where((element) => element.status == 0).toList();
+      List<Dangerous_Goods_Order_Detail> dangerous_goods_order_detail_list =response.data["Dangerous_Goods_Order_Detail"].map<Dangerous_Goods_Order_Detail>((f) {return new Dangerous_Goods_Order_Detail.fromJson(f);}).toList();
       List<Liquid_Nitrogen_Order> liquid_nitrogen_order_list =
           response.data["Liquid_Nitrogen_Order"].map<Liquid_Nitrogen_Order>((f) {return new Liquid_Nitrogen_Order.fromJson(f);}).where((element) => element.status == 0).toList();
       List<Liquid_Nitrogen_Order_Detail> liquid_nitrogen_order_detail_list =

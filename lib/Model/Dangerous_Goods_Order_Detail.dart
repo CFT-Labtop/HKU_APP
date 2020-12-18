@@ -19,7 +19,8 @@ class Dangerous_Goods_Order_Detail extends BaseModel implements OrderDetailInter
   @HiveField(3)
   int ID_stock_inventory;
   @HiveField(4)
-  String ID_stock_inventory_detail;
+  @JsonKey(fromJson: BaseModel.fromJsonIntList)
+  List<int> ID_stock_inventory_detail;
   @HiveField(5)
   String article_no;
   @HiveField(6)
@@ -53,7 +54,7 @@ class Dangerous_Goods_Order_Detail extends BaseModel implements OrderDetailInter
       int this.ID_dangerous_goods_order,
       int this.ID_dangerous_goods,
       int this.ID_stock_inventory,
-      String this.ID_stock_inventory_detail,
+      List<int> this.ID_stock_inventory_detail,
       String this.article_no,
       String this.location,
       String this.shelf,

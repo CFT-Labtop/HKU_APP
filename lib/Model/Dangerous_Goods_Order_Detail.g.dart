@@ -22,7 +22,7 @@ class DangerousGoodsOrderDetailAdapter
       ID_dangerous_goods_order: fields[1] as int,
       ID_dangerous_goods: fields[2] as int,
       ID_stock_inventory: fields[3] as int,
-      ID_stock_inventory_detail: fields[4] as String,
+      ID_stock_inventory_detail: (fields[4] as List)?.cast<int>(),
       article_no: fields[5] as String,
       location: fields[6] as String,
       shelf: fields[7] as String,
@@ -103,7 +103,8 @@ Dangerous_Goods_Order_Detail _$Dangerous_Goods_Order_DetailFromJson(
     ID_dangerous_goods_order: json['ID_dangerous_goods_order'] as int,
     ID_dangerous_goods: json['ID_dangerous_goods'] as int,
     ID_stock_inventory: json['ID_stock_inventory'] as int,
-    ID_stock_inventory_detail: json['ID_stock_inventory_detail'] as String,
+    ID_stock_inventory_detail:
+        BaseModel.fromJsonIntList(json['ID_stock_inventory_detail'] as List),
     article_no: json['article_no'] as String,
     location: json['location'] as String,
     shelf: json['shelf'] as String,
