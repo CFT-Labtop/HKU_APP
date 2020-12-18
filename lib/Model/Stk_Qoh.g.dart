@@ -96,9 +96,7 @@ Stk_Qoh _$Stk_QohFromJson(Map<String, dynamic> json) {
   return Stk_Qoh(
     ID: json['ID'] as int,
     ID_version: json['ID_version'] as int,
-    AsOf_date: json['AsOf_date'] == null
-        ? null
-        : DateTime.parse(json['AsOf_date'] as String),
+    AsOf_date: BaseModel.fromJsonDateTime(json['AsOf_date'] as String),
     ID_location: json['ID_location'] as int,
     location_code: json['location_code'] as String,
     location_name: json['location_name'] as String,
@@ -119,7 +117,7 @@ Stk_Qoh _$Stk_QohFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$Stk_QohToJson(Stk_Qoh instance) => <String, dynamic>{
       'ID': instance.ID,
       'ID_version': instance.ID_version,
-      'AsOf_date': instance.AsOf_date?.toIso8601String(),
+      'AsOf_date': BaseModel.toJsonDateTime(instance.AsOf_date),
       'ID_location': instance.ID_location,
       'location_code': instance.location_code,
       'location_name': instance.location_name,

@@ -63,8 +63,7 @@ class _StockTakePageState extends State<StockTakePage> {
 
   List<Location> getLocation() {
     if (currentVersion != null)
-      return BaseDataBase()
-          .getAll<Location>()
+      return BaseDataBase().getAll<Location>()
           .where((element) => currentVersion.take_location.contains(element.ID))
           .map((element){
             element.isCheck = currentVersion.downloaded_location.contains(element.ID);
@@ -156,10 +155,7 @@ class _StockTakePageState extends State<StockTakePage> {
                                         new FlatButton(
                                           onPressed: () async {
                                             try{
-                                              await Request().getQoh(context,
-                                                versionID: currentVersion.ID,
-                                                locationIDList: locationList.where((element) => (element.isCheck && !download_id_list.contains(element.ID)) as bool).map((e) => e.ID).toList()
-                                              );
+                                              await Request().getQoh(context,versionID: currentVersion.ID,locationIDList: locationList.where((element) => (element.isCheck && !download_id_list.contains(element.ID)) as bool).map((e) => e.ID).toList());
                                               Navigator.pop(context);
                                               currentVersion.downloaded_location = locationList.where((element) => element.isCheck).map((e) => e.ID).toList();
                                               await BaseDataBase().save(currentVersion);

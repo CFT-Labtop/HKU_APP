@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
-import 'package:hku_app/Model/Dangerous_Goods_Order.dart';
 import 'package:hku_app/Screen/LoginPage.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/Config.dart';

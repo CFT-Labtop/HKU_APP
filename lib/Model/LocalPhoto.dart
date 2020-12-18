@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:hive/hive.dart';
-import 'package:hku_app/Enums/DeliveryType.dart';
-import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'LocalPhoto.g.dart';
-
+@JsonSerializable()
 @HiveType(typeId: 9)
 class LocalPhoto extends BaseModel {
   @HiveField(0)
@@ -39,4 +36,7 @@ class LocalPhoto extends BaseModel {
     });
     return number + 1;
   }
+
+  factory LocalPhoto.fromJson(Map<String, dynamic> json) => _$LocalPhotoFromJson(json);
+  Map<String, dynamic> toJson() => _$LocalPhotoToJson(this);
 }

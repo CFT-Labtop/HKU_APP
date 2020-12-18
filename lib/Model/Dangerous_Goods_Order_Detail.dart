@@ -3,9 +3,11 @@ import 'dart:ffi';
 import 'package:hive/hive.dart';
 import 'package:hku_app/Model/OrderDetailInterface.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Dangerous_Goods_Order_Detail.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 3)
 class Dangerous_Goods_Order_Detail extends BaseModel implements OrderDetailInterface {
   @HiveField(0)
@@ -41,6 +43,7 @@ class Dangerous_Goods_Order_Detail extends BaseModel implements OrderDetailInter
   @HiveField(15)
   String unit;
   @HiveField(16)
+  @JsonKey(fromJson: BaseModel.fromJsonBool, toJson: BaseModel.toJsonBool)
   bool amount;
   @HiveField(17)
   String product_brand;
@@ -67,31 +70,12 @@ class Dangerous_Goods_Order_Detail extends BaseModel implements OrderDetailInter
   @override
   int getID() => this.ID;
 
-  Dangerous_Goods_Order_Detail.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"].toInt() ?? null;
-    this.ID_dangerous_goods_order =
-        json["ID_dangerous_goods_order"] ?? null;
-    this.ID_dangerous_goods = json["ID_dangerous_goods"] ?? null;
-    this.ID_stock_inventory = json["ID_stock_inventory"] ?? null;
-    // this.ID_stock_inventory_detail = json["ID_stock_inventory_detail"] ?? null;
-    this.article_no = json["article_no"] ?? null;
-    this.location = json["location"] ?? null;
-    this.shelf = json["shelf"] ?? null;
-    this.rfid_code = json["rfid_code"] ?? null;
-    this.pick_dept_code = json["pick_dept_code"] ?? null;
-    this.product_name = json["product_name"] ?? null;
-    this.unit_price = json["unit_price"].toDouble() ?? null;
-    this.quantity = json["quantity"].toDouble() ?? null;
-    this.pickedQuantity = json["pickedQuantity"] ?? null;
-    this.volume = json["volume"].toDouble() ?? null;
-    this.unit = json["unit"] ?? null;
-    this.amount = json["amount"] == 1 ?true: false;
-    this.product_brand = json["product_brand"] ?? null;
-  }
-
   @override
   String getProductName() => this.product_name;
 
   @override
   double getQuantity() => this.quantity;
+
+  factory Dangerous_Goods_Order_Detail.fromJson(Map<String, dynamic> json) => _$Dangerous_Goods_Order_DetailFromJson(json);
+  Map<String, dynamic> toJson() => _$Dangerous_Goods_Order_DetailToJson(this);
 }

@@ -91,3 +91,54 @@ class DangerousGoodsOrderDetailAdapter
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Dangerous_Goods_Order_Detail _$Dangerous_Goods_Order_DetailFromJson(
+    Map<String, dynamic> json) {
+  return Dangerous_Goods_Order_Detail(
+    ID: json['ID'] as int,
+    ID_dangerous_goods_order: json['ID_dangerous_goods_order'] as int,
+    ID_dangerous_goods: json['ID_dangerous_goods'] as int,
+    ID_stock_inventory: json['ID_stock_inventory'] as int,
+    ID_stock_inventory_detail: json['ID_stock_inventory_detail'] as String,
+    article_no: json['article_no'] as String,
+    location: json['location'] as String,
+    shelf: json['shelf'] as String,
+    rfid_code: json['rfid_code'] as String,
+    pick_dept_code: json['pick_dept_code'] as String,
+    product_name: json['product_name'] as String,
+    unit_price: (json['unit_price'] as num)?.toDouble(),
+    quantity: (json['quantity'] as num)?.toDouble(),
+    pickedQuantity: json['pickedQuantity'] as int,
+    volume: (json['volume'] as num)?.toDouble(),
+    unit: json['unit'] as String,
+    amount: BaseModel.fromJsonBool(json['amount'] as int),
+    product_brand: json['product_brand'] as String,
+  );
+}
+
+Map<String, dynamic> _$Dangerous_Goods_Order_DetailToJson(
+        Dangerous_Goods_Order_Detail instance) =>
+    <String, dynamic>{
+      'ID': instance.ID,
+      'ID_dangerous_goods_order': instance.ID_dangerous_goods_order,
+      'ID_dangerous_goods': instance.ID_dangerous_goods,
+      'ID_stock_inventory': instance.ID_stock_inventory,
+      'ID_stock_inventory_detail': instance.ID_stock_inventory_detail,
+      'article_no': instance.article_no,
+      'location': instance.location,
+      'shelf': instance.shelf,
+      'rfid_code': instance.rfid_code,
+      'pick_dept_code': instance.pick_dept_code,
+      'product_name': instance.product_name,
+      'unit_price': instance.unit_price,
+      'quantity': instance.quantity,
+      'pickedQuantity': instance.pickedQuantity,
+      'volume': instance.volume,
+      'unit': instance.unit,
+      'amount': BaseModel.toJsonBool(instance.amount),
+      'product_brand': instance.product_brand,
+    };

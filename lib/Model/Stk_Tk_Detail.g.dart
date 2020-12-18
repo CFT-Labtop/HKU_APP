@@ -51,3 +51,26 @@ class StkTkDetailAdapter extends TypeAdapter<Stk_Tk_Detail> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Stk_Tk_Detail _$Stk_Tk_DetailFromJson(Map<String, dynamic> json) {
+  return Stk_Tk_Detail(
+    ID: json['ID'] as int,
+    ID_stk_tk: json['ID_stk_tk'] as int,
+    rfid_code: json['rfid_code'] as String,
+    stk_tk_qty: json['stk_tk_qty'] as int,
+    newRecord: BaseModel.fromJsonBool(json['newRecord'] as int),
+  );
+}
+
+Map<String, dynamic> _$Stk_Tk_DetailToJson(Stk_Tk_Detail instance) =>
+    <String, dynamic>{
+      'ID': instance.ID,
+      'ID_stk_tk': instance.ID_stk_tk,
+      'rfid_code': instance.rfid_code,
+      'stk_tk_qty': instance.stk_tk_qty,
+      'newRecord': BaseModel.toJsonBool(instance.newRecord),
+    };

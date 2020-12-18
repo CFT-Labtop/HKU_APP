@@ -93,3 +93,56 @@ class DangerousGoodsOrderAdapter extends TypeAdapter<Dangerous_Goods_Order> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Dangerous_Goods_Order _$Dangerous_Goods_OrderFromJson(
+    Map<String, dynamic> json) {
+  return Dangerous_Goods_Order(
+    ID: json['ID'] as int,
+    department_code: json['department_code'] as String,
+    department_name: json['department_name'] as String,
+    ac_name: json['ac_name'] as String,
+    ID_department: json['ID_department'] as int,
+    hospital_price: json['hospital_price'] as int,
+    ref_no: json['ref_no'] as String,
+    po_date: BaseModel.fromJsonDateTime(json['po_date'] as String),
+    requested_by: json['requested_by'] as String,
+    telephone_no: json['telephone_no'] as String,
+    ID_account: json['ID_account'] as int,
+    ac_no: json['ac_no'] as String,
+    user: json['user'] as String,
+    building: json['building'] as String,
+    issued_by: json['issued_by'] as String,
+    voucher: json['voucher'] as int,
+    remarks: json['remarks'] as String,
+    status: json['status'] as int,
+    dn_file: json['dn_file'] as String,
+  );
+}
+
+Map<String, dynamic> _$Dangerous_Goods_OrderToJson(
+        Dangerous_Goods_Order instance) =>
+    <String, dynamic>{
+      'ID': instance.ID,
+      'department_code': instance.department_code,
+      'department_name': instance.department_name,
+      'ac_name': instance.ac_name,
+      'ID_department': instance.ID_department,
+      'hospital_price': instance.hospital_price,
+      'ref_no': instance.ref_no,
+      'po_date': BaseModel.toJsonDateTime(instance.po_date),
+      'requested_by': instance.requested_by,
+      'telephone_no': instance.telephone_no,
+      'ID_account': instance.ID_account,
+      'ac_no': instance.ac_no,
+      'user': instance.user,
+      'building': instance.building,
+      'issued_by': instance.issued_by,
+      'voucher': instance.voucher,
+      'remarks': instance.remarks,
+      'status': instance.status,
+      'dn_file': instance.dn_file,
+    };

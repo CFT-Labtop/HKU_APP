@@ -1,18 +1,13 @@
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:hku_app/Model/Stk_Qoh.dart';
-import 'package:hku_app/Model/Stk_Qoh_Detail.dart';
-import 'package:hku_app/Util/BaseDataBase.dart';
-import 'package:hku_app/Util/BaseResponse.dart';
-import 'package:hku_app/Util/Global.dart';
+import 'dart:convert';
+import 'package:hku_app/Model/User.dart';
 import 'package:hku_app/Util/BaseRouter.dart';
+import 'package:hku_app/Util/Global.dart';
 import 'package:hku_app/Util/Request.dart';
 import 'package:hku_app/Widget/StandardEditText.dart';
-import 'package:hku_app/Model/Location.dart';
+import 'package:hku_app/Util/SharedPreferenceExtension.dart';
+
 
 
 class LoginPage extends StatefulWidget {
@@ -78,8 +73,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               RaisedButton.icon(
                 onPressed: () async {
-                  BaseResponse response = await Request().login(context, loginName: loginNameController.text, password: Global.hashPassword(passwordController.text).toString());
-                  BaseRouter.goToPage(context, Pages.AllOrder);
+                  await Request().login(context, loginName: loginNameController.text, password: Global.hashPassword(passwordController.text).toString());
+                  if(Global.isAuthenticated()) BaseRouter.goToPage(context, Pages.AllOrder, clear: true);
                 },
                 color: Colors.white,
                 icon: Icon(Icons.send),

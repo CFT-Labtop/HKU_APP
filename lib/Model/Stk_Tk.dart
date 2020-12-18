@@ -5,9 +5,11 @@ import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 import 'package:hku_app/Util/Checkable.dart';
 import 'package:hku_app/Util/Global.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Stk_Tk.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 14)
 class Stk_Tk extends BaseModel{
   @HiveField(0)
@@ -15,6 +17,7 @@ class Stk_Tk extends BaseModel{
   @HiveField(1)
   int ID_qoh;
   @HiveField(2)
+  @JsonKey(fromJson: BaseModel.fromJsonDateTime, toJson: BaseModel.toJsonDateTime)
   DateTime stk_tk_date;
   @HiveField(3)
   int ID_location;
@@ -69,26 +72,6 @@ class Stk_Tk extends BaseModel{
 
   }) {}
 
-  Stk_Tk.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.ID_qoh = json["ID_qoh"] ?? null;
-    this.stk_tk_date = json["stk_tk_date"] != null ? DateTime.parse(json["stk_tk_date"]) : null;
-    this.ID_location = json["ID_location"] ?? null;
-    this.location_code = json["location_code"] ?? null;
-    this.location_name = json["location_name"] ?? null;
-    this.store_no = json["store_no"] ?? null;
-    this.shelf = json["shelf"] ?? null;
-    this.ID_department = json["ID_department"] ?? null;
-    this.department_code = json["department_code"] ?? null;
-    this.department_name = json["department_name"] ?? null;
-    this.ID_dangerous_goods = json["ID_dangerous_goods"] ?? null;
-    this.product_name = json["product_name"] ?? null;
-    this.article_no = json["article_no"] ?? null;
-    this.stk_tk_total_qty = json["stk_tk_total_qty"] ?? null;
-    this.create_user = json["create_user"] ?? null;
-    this.modify_user = json["modify_user"] ?? null;
-  }
-
   static Future<Stk_Tk> insertByQoh(Stk_Qoh qoh)async{
     int id = BaseDataBase().getHighestID<Stk_Tk>() + 1;
     await BaseDataBase().add<Stk_Tk>(new Stk_Tk(
@@ -137,4 +120,6 @@ class Stk_Tk extends BaseModel{
     });
     await BaseDataBase().save<Stk_Tk>(this);
   }
+  factory Stk_Tk.fromJson(Map<String, dynamic> json) => _$Stk_TkFromJson(json);
+  Map<String, dynamic> toJson() => _$Stk_TkToJson(this);
 }

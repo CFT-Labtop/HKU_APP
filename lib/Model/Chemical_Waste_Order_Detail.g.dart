@@ -70,3 +70,40 @@ class ChemicalWasteOrderDetailAdapter
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Chemical_Waste_Order_Detail _$Chemical_Waste_Order_DetailFromJson(
+    Map<String, dynamic> json) {
+  return Chemical_Waste_Order_Detail(
+    ID: json['ID'] as int,
+    ID_chemical_waste_order: json['ID_chemical_waste_order'] as int,
+    waste_code: json['waste_code'] as String,
+    waste_type: json['waste_type'] as String,
+    medical_waste: json['medical_waste'] as int,
+    container_no: json['container_no'] as int,
+    capacity: json['capacity'] as int,
+    capacity_unit: json['capacity_unit'] as String,
+    capacity_volume: json['capacity_volume'] as int,
+    collected_unit: json['collected_unit'] as String,
+    shortName: json['shortName'] as String,
+  );
+}
+
+Map<String, dynamic> _$Chemical_Waste_Order_DetailToJson(
+        Chemical_Waste_Order_Detail instance) =>
+    <String, dynamic>{
+      'ID': instance.ID,
+      'ID_chemical_waste_order': instance.ID_chemical_waste_order,
+      'waste_code': instance.waste_code,
+      'waste_type': instance.waste_type,
+      'medical_waste': instance.medical_waste,
+      'container_no': instance.container_no,
+      'capacity': instance.capacity,
+      'capacity_unit': instance.capacity_unit,
+      'capacity_volume': instance.capacity_volume,
+      'collected_unit': instance.collected_unit,
+      'shortName': instance.shortName,
+    };

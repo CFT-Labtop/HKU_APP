@@ -7,9 +7,11 @@ import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 import 'package:hku_app/Util/Global.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Chemical_Waste_Order.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 4)
 class Chemical_Waste_Order extends BaseModel with OrderInterface{
   @HiveField(0)
@@ -25,6 +27,7 @@ class Chemical_Waste_Order extends BaseModel with OrderInterface{
   @HiveField(5)
   String location;
   @HiveField(6)
+  @JsonKey(fromJson: BaseModel.fromJsonDateTime, toJson: BaseModel.toJsonDateTime)
   DateTime po_date;
   @HiveField(7)
   String requested_by;
@@ -59,23 +62,6 @@ class Chemical_Waste_Order extends BaseModel with OrderInterface{
 
   @override
   int getID() => this.ID;
-
-  Chemical_Waste_Order.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.ID_department = json["ID_department"] ?? null;
-    this.department_code = json["department_code"] ?? null;
-    this.department_name = json["department_name"] ?? null;
-    this.ref_no = json["ref_no"] ?? null;
-    this.location = json["location"] ?? null;
-    this.po_date = DateTime.parse(json["po_date"]) ?? null;
-    this.requested_by = json["requested_by"] ?? null;
-    this.name_one = json["name_one"] ?? null;
-    this.name_two = json["name_two"] ?? null;
-    this.telephone_no = json["telephone_no"] ?? null;
-    this.remarks = json["remarks"] ?? null;
-    this.status = json["status"] ?? null;
-    this.dn_file = json["dn_file"] ?? null;
-  }
 
   @override
   String getBuilding() => this.location;
@@ -147,4 +133,7 @@ class Chemical_Waste_Order extends BaseModel with OrderInterface{
     LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo());
     await BaseDataBase().delete<LocalPhoto>(localPhoto);
   }
+
+  factory Chemical_Waste_Order.fromJson(Map<String, dynamic> json) => _$Chemical_Waste_OrderFromJson(json);
+  Map<String, dynamic> toJson() => _$Chemical_Waste_OrderToJson(this);
 }

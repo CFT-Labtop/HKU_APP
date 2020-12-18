@@ -1,10 +1,11 @@
 import 'package:hive/hive.dart';
 import 'package:hku_app/Model/OrderDetailInterface.dart';
-import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Chemical_Waste_Order_Detail.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 5)
 class Chemical_Waste_Order_Detail extends BaseModel implements OrderDetailInterface  {
   @HiveField(0)
@@ -46,23 +47,12 @@ class Chemical_Waste_Order_Detail extends BaseModel implements OrderDetailInterf
       String this.collected_unit,
       String this.shortName}) {}
 
-  Chemical_Waste_Order_Detail.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.ID_chemical_waste_order = json["ID_chemical_waste_order"] ?? null;
-    this.waste_code = json["waste_code"] ?? null;
-    this.waste_type = json["waste_type"] ?? null;
-    this.medical_waste = json["medical_waste"] ?? null;
-    this.container_no = json["container_no"] ?? null;
-    this.capacity = json["capacity"] ?? null;
-    this.capacity_unit = json["capacity_unit"] ?? null;
-    this.capacity_volume = json["capacity_volume"] ?? null;
-    this.collected_unit = json["collected_unit"] ?? null;
-    this.shortName = json["shortName"] ?? null;
-  }
-
   @override
   String getProductName() => this.waste_type;
 
   @override
   double getQuantity() => this.container_no.toDouble();
+
+  factory Chemical_Waste_Order_Detail.fromJson(Map<String, dynamic> json) => _$Chemical_Waste_Order_DetailFromJson(json);
+  Map<String, dynamic> toJson() => _$Chemical_Waste_Order_DetailToJson(this);
 }

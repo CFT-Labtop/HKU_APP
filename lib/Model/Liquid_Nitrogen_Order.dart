@@ -8,9 +8,11 @@ import 'package:hku_app/Model/OrderInterface.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
 import 'package:hku_app/Util/Global.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Liquid_Nitrogen_Order.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 6)
 class Liquid_Nitrogen_Order extends BaseModel with OrderInterface {
   @HiveField(0)
@@ -26,6 +28,7 @@ class Liquid_Nitrogen_Order extends BaseModel with OrderInterface {
   @HiveField(5)
   String ref_no;
   @HiveField(6)
+  @JsonKey(fromJson: BaseModel.fromJsonDateTime, toJson: BaseModel.toJsonDateTime)
   DateTime po_date;
   @HiveField(7)
   String requested_by;
@@ -71,26 +74,6 @@ class Liquid_Nitrogen_Order extends BaseModel with OrderInterface {
     String this.remarks,
     int this.status,
     String this.dn_file}) {}
-
-  Liquid_Nitrogen_Order.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.department_code = json["department_code"] ?? null;
-    this.department_name = json["department_name"] ?? null;
-    this.ac_name = json["ac_name"] ?? null;
-    this.hospital_price = json["hospital_price"] ?? null;
-    this.ref_no = json["ref_no"] ?? null;
-    this.po_date = DateTime.parse(json["po_date"]) ?? null;
-    this.requested_by = json["requested_by"] ?? null;
-    this.telephone_no = json["telephone_no"] ?? null;
-    this.ac_no = json["ac_no"] ?? null;
-    this.user = json["user"] ?? null;
-    this.building = json["building"] ?? null;
-    this.delivered_by = json["delivered_by"] ?? null;
-    this.voucher = json["voucher"] ?? null;
-    this.remarks = json["remarks"] ?? null;
-    this.status = json["status"] ?? null;
-    this.dn_file = json["dn_file"] ?? null;
-  }
 
   @override
   String getBuilding() => this.building;
@@ -161,4 +144,7 @@ class Liquid_Nitrogen_Order extends BaseModel with OrderInterface {
     LocalPhoto localPhoto = BaseDataBase().getAll<LocalPhoto>().firstWhere((element) => element.ref_no == this.getRefNo());
     await BaseDataBase().delete<LocalPhoto>(localPhoto);
   }
+
+  factory Liquid_Nitrogen_Order.fromJson(Map<String, dynamic> json) => _$Liquid_Nitrogen_OrderFromJson(json);
+  Map<String, dynamic> toJson() => _$Liquid_Nitrogen_OrderToJson(this);
 }

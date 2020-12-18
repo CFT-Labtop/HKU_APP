@@ -1,41 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'Stk_Qoh_Detail.dart';
+part of 'User.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class StkQohDetailAdapter extends TypeAdapter<Stk_Qoh_Detail> {
+class UserAdapter extends TypeAdapter<User> {
   @override
-  final int typeId = 13;
+  final int typeId = 16;
 
   @override
-  Stk_Qoh_Detail read(BinaryReader reader) {
+  User read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Stk_Qoh_Detail(
+    return User(
       ID: fields[0] as int,
-      ID_stk_qoh: fields[1] as int,
-      rfid_code: fields[2] as String,
-      qoh_qty: fields[3] as int,
+      loginName: fields[3] as String,
+      password: fields[1] as String,
+      type: (fields[2] as List)?.cast<String>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Stk_Qoh_Detail obj) {
+  void write(BinaryWriter writer, User obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
       ..write(obj.ID)
       ..writeByte(1)
-      ..write(obj.ID_stk_qoh)
+      ..write(obj.password)
       ..writeByte(2)
-      ..write(obj.rfid_code)
+      ..write(obj.type)
       ..writeByte(3)
-      ..write(obj.qoh_qty);
+      ..write(obj.loginName);
   }
 
   @override
@@ -44,7 +44,7 @@ class StkQohDetailAdapter extends TypeAdapter<Stk_Qoh_Detail> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is StkQohDetailAdapter &&
+      other is UserAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -53,19 +53,18 @@ class StkQohDetailAdapter extends TypeAdapter<Stk_Qoh_Detail> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Stk_Qoh_Detail _$Stk_Qoh_DetailFromJson(Map<String, dynamic> json) {
-  return Stk_Qoh_Detail(
+User _$UserFromJson(Map<String, dynamic> json) {
+  return User(
     ID: json['ID'] as int,
-    ID_stk_qoh: json['ID_stk_qoh'] as int,
-    rfid_code: json['rfid_code'] as String,
-    qoh_qty: json['qoh_qty'] as int,
+    loginName: json['loginName'] as String,
+    password: json['password'] as String,
+    type: BaseModel.fromJsonStringList(json['type'] as List),
   );
 }
 
-Map<String, dynamic> _$Stk_Qoh_DetailToJson(Stk_Qoh_Detail instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'ID': instance.ID,
-      'ID_stk_qoh': instance.ID_stk_qoh,
-      'rfid_code': instance.rfid_code,
-      'qoh_qty': instance.qoh_qty,
+      'password': instance.password,
+      'type': instance.type,
+      'loginName': instance.loginName,
     };

@@ -51,3 +51,26 @@ class LocalPhotoAdapter extends TypeAdapter<LocalPhoto> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+LocalPhoto _$LocalPhotoFromJson(Map<String, dynamic> json) {
+  return LocalPhoto(
+    ID: json['ID'] as int,
+    type: json['type'] as String,
+    photoList: (json['photoList'] as List)?.map((e) => e as String)?.toList(),
+    orderID: json['orderID'] as int,
+    ref_no: json['ref_no'] as String,
+  );
+}
+
+Map<String, dynamic> _$LocalPhotoToJson(LocalPhoto instance) =>
+    <String, dynamic>{
+      'ID': instance.ID,
+      'type': instance.type,
+      'photoList': instance.photoList,
+      'orderID': instance.orderID,
+      'ref_no': instance.ref_no,
+    };

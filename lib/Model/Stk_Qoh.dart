@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 import 'package:hku_app/Util/BaseModel.dart';
-import 'package:hku_app/Util/Checkable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'Stk_Qoh.g.dart';
@@ -12,6 +11,7 @@ class Stk_Qoh extends BaseModel{
   @HiveField(1)
   int ID_version;
   @HiveField(2)
+  @JsonKey(fromJson: BaseModel.fromJsonDateTime, toJson: BaseModel.toJsonDateTime)
   DateTime AsOf_date;
   @HiveField(3)
   int ID_location;
@@ -65,27 +65,6 @@ class Stk_Qoh extends BaseModel{
     String this.modify_user,
 
   }) {}
-
-  Stk_Qoh.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.ID_version = json["ID_version"] ?? null;
-    this.AsOf_date = json["AsOf_date"] != null ? DateTime.parse(json["AsOf_date"]) : null;
-    this.ID_location = json["ID_location"] ?? null;
-    this.location_code = json["location_code"] ?? null;
-    this.location_name = json["location_name"] ?? null;
-    this.store_no = json["store_no"] ?? null;
-    this.shelf = json["shelf"] ?? null;
-    this.ID_department = json["ID_department"] ?? null;
-    this.department_code = json["department_code"] ?? null;
-    this.department_name = json["department_name"] ?? null;
-    this.ID_dangerous_goods = json["ID_dangerous_goods"] ?? null;
-    this.product_name = json["product_name"] ?? null;
-    this.article_no = json["article_no"] ?? null;
-    this.qoh_total_qty = json["qoh_total_qty"] ?? null;
-    this.create_user = json["create_user"] ?? null;
-    this.modify_user = json["modify_user"] ?? null;
-  }
-
   factory Stk_Qoh.fromJson(Map<String, dynamic> json) => _$Stk_QohFromJson(json);
   Map<String, dynamic> toJson() => _$Stk_QohToJson(this);
 }

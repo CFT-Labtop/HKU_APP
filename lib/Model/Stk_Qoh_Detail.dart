@@ -1,8 +1,10 @@
 import 'package:hive/hive.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Stk_Qoh_Detail.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 13)
 class Stk_Qoh_Detail extends BaseModel{
   @HiveField(0)
@@ -26,11 +28,6 @@ class Stk_Qoh_Detail extends BaseModel{
 
   }) {}
 
-  Stk_Qoh_Detail.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.ID_stk_qoh = json["ID_stk_qoh"] ?? null;
-    this.rfid_code = json["rfid_code"] ?? null;
-    this.qoh_qty = json["qoh_qty"] ?? null;
-
-  }
+  factory Stk_Qoh_Detail.fromJson(Map<String, dynamic> json) => _$Stk_Qoh_DetailFromJson(json);
+  Map<String, dynamic> toJson() => _$Stk_Qoh_DetailToJson(this);
 }

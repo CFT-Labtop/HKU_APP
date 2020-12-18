@@ -3,9 +3,11 @@ import 'package:hku_app/Model/Stk_Qoh_Detail.dart';
 import 'package:hku_app/Model/Stk_Tk.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Stk_Tk_Detail.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 15)
 class Stk_Tk_Detail extends BaseModel {
   @HiveField(0)
@@ -17,6 +19,7 @@ class Stk_Tk_Detail extends BaseModel {
   @HiveField(3)
   int stk_tk_qty;
   @HiveField(4)
+  @JsonKey(fromJson: BaseModel.fromJsonBool, toJson: BaseModel.toJsonBool)
   bool newRecord;
 
   @override
@@ -29,14 +32,6 @@ class Stk_Tk_Detail extends BaseModel {
     int this.stk_tk_qty,
     bool this.newRecord,
   }) {}
-
-  Stk_Tk_Detail.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.ID_stk_tk = json["ID_stk_tk"] ?? null;
-    this.rfid_code = json["rfid_code"] ?? null;
-    this.stk_tk_qty = json["stk_tk_qty"] ?? null;
-    this.newRecord = json["newRecord"] == 1 ? true : false;
-  }
 
   Map<String, dynamic> toJSON()=>{
     "ID": this.ID,
@@ -64,4 +59,7 @@ class Stk_Tk_Detail extends BaseModel {
     this.stk_tk_qty = quantity;
     BaseDataBase().save<Stk_Tk_Detail>(this);
   }
+
+  factory Stk_Tk_Detail.fromJson(Map<String, dynamic> json) => _$Stk_Tk_DetailFromJson(json);
+  Map<String, dynamic> toJson() => _$Stk_Tk_DetailToJson(this);
 }

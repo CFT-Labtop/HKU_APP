@@ -58,3 +58,32 @@ class LiquidNitrogenOrderDetailAdapter
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Liquid_Nitrogen_Order_Detail _$Liquid_Nitrogen_Order_DetailFromJson(
+    Map<String, dynamic> json) {
+  return Liquid_Nitrogen_Order_Detail(
+    ID: json['ID'] as int,
+    ID_liquid_nitrogen_order: json['ID_liquid_nitrogen_order'] as int,
+    article_no: json['article_no'] as String,
+    product_name: json['product_name'] as String,
+    volume: json['volume'] as int,
+    unit_price: (json['unit_price'] as num)?.toDouble(),
+    stock_data_entered: json['stock_data_entered'] as String,
+  );
+}
+
+Map<String, dynamic> _$Liquid_Nitrogen_Order_DetailToJson(
+        Liquid_Nitrogen_Order_Detail instance) =>
+    <String, dynamic>{
+      'ID': instance.ID,
+      'ID_liquid_nitrogen_order': instance.ID_liquid_nitrogen_order,
+      'article_no': instance.article_no,
+      'product_name': instance.product_name,
+      'volume': instance.volume,
+      'unit_price': instance.unit_price,
+      'stock_data_entered': instance.stock_data_entered,
+    };

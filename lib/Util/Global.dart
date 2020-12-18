@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hku_app/Util/SharedPreferenceExtension.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -126,5 +127,14 @@ class Global {
 
   static hashPassword(String password){
     return sha256.convert(utf8.encode(password));
+  }
+
+  static bool isAuthenticated(){
+    return Global.sharedPreferences.getObject("currentUser") != null;
+  }
+
+  static void clearUser() async{
+    await Global.sharedPreferences.setString("currentUser", null);
+    await Global.sharedPreferences.setString("token", null);
   }
 }

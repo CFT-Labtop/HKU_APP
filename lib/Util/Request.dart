@@ -16,10 +16,12 @@ import 'package:hku_app/Model/Stk_Qoh.dart';
 import 'package:hku_app/Model/Stk_Qoh_Detail.dart';
 import 'package:hku_app/Model/Stk_Tk.dart';
 import 'package:hku_app/Model/Stk_Tk_Detail.dart';
+import 'package:hku_app/Model/User.dart';
 import 'package:hku_app/Model/Version.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseResponse.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:hku_app/Util/SharedPreferenceExtension.dart';
 
 import 'Global.dart';
 
@@ -54,16 +56,16 @@ class Request {
       return res;
     } 
     catch (e) {
-      Global.showAlertDialog(context, e.error);
-      throw e;
-    }finally{
       await pr.hide();
+      Global.showAlertDialog(context, e.message);
+      throw e;
     }
   }
 
   Future<BaseResponse> get(
       {String action, Map<String, dynamic> queryParameters = const {}}) async {
     try {
+      this.dio.options.headers["token"] = Global.sharedPreferences.getString("token");
       Response response = await this
           .dio
           .get(this.baseURL + action, queryParameters: queryParameters);
@@ -81,6 +83,7 @@ class Request {
   Future<BaseResponse> post(
       {String action, Map<String, dynamic> data = const {}}) async {
     try {
+      this.dio.options.headers["token"] = Global.sharedPreferences.getString("token");
       Response response =await this.dio.post(this.baseURL + action, data: data);
       BaseResponse baseResponse = BaseResponse(response.data);
       if (baseResponse.code != 200)
@@ -91,8 +94,6 @@ class Request {
         throw Exception("Coonection Failed, please ensure the hosting is active");
       else
         throw e;
-    } catch (e) {
-      throw e;
     }
   }
 
@@ -149,8 +150,8 @@ class Request {
   Future<BaseResponse> getStockTake() async {
     try {
       BaseResponse response = await this.get(action: "mobile_get_stock_take");
-      await BaseDataBase().add<Version>(Version.fromJSON(response.data["Version"][0]));
-      List<Location> locationList = (response.data["Location"] as List<dynamic>).map((e) => Location.fromJSON(e)).toList();
+      await BaseDataBase().add<Version>(Version.fromJson(response.data["Version"][0]));
+      List<Location> locationList = (response.data["Location"] as List<dynamic>).map((e) => Location.fromJson(e)).toList();
       await Future.forEach(locationList, (e) async => await BaseDataBase().add<Location>(e));
       return response;
     } catch (e) {
@@ -166,33 +167,33 @@ class Request {
       List<Dangerous_Goods_Order> dangerous_goods_order_list =
           response.data["Dangerous_Goods_Order"]
               .map<Dangerous_Goods_Order>((f) {
-                return new Dangerous_Goods_Order.fromJSON(f);
+                return new Dangerous_Goods_Order.fromJson(f);
               })
               .where((element) => element.status == 0)
               .toList();
       List<Dangerous_Goods_Order_Detail> dangerous_goods_order_detail_list =
           response.data["Dangerous_Goods_Order_Detail"]
               .map<Dangerous_Goods_Order_Detail>((f) {
-        return new Dangerous_Goods_Order_Detail.fromJSON(f);
+        return new Dangerous_Goods_Order_Detail.fromJson(f);
       }).toList();
       List<Liquid_Nitrogen_Order> liquid_nitrogen_order_list =
-          response.data["Liquid_Nitrogen_Order"].map<Liquid_Nitrogen_Order>((f) {return new Liquid_Nitrogen_Order.fromJSON(f);}).where((element) => element.status == 0).toList();
+          response.data["Liquid_Nitrogen_Order"].map<Liquid_Nitrogen_Order>((f) {return new Liquid_Nitrogen_Order.fromJson(f);}).where((element) => element.status == 0).toList();
       List<Liquid_Nitrogen_Order_Detail> liquid_nitrogen_order_detail_list =
           response.data["Liquid_Nitrogen_Order_Detail"]
               .map<Liquid_Nitrogen_Order_Detail>((f) {
-        return new Liquid_Nitrogen_Order_Detail.fromJSON(f);
+        return new Liquid_Nitrogen_Order_Detail.fromJson(f);
       }).toList();
       List<Chemical_Waste_Order> chemical_waste_order_list =
           response.data["Chemical_Waste_Order"]
               .map<Chemical_Waste_Order>((f) {
-                return new Chemical_Waste_Order.fromJSON(f);
+                return new Chemical_Waste_Order.fromJson(f);
               })
               .where((element) => element.status == 0)
               .toList();
       List<Chemical_Waste_Order_Detail> chemical_waste_order_detail_list =
           response.data["Chemical_Waste_Order_Detail"]
               .map<Chemical_Waste_Order_Detail>((f) {
-        return new Chemical_Waste_Order_Detail.fromJSON(f);
+        return new Chemical_Waste_Order_Detail.fromJson(f);
       }).toList();
       await Future.forEach(dangerous_goods_order_list, (element) async {
         await BaseDataBase().add<Dangerous_Goods_Order>(element);
@@ -224,8 +225,8 @@ class Request {
   Future<BaseResponse> getQoh(BuildContext context, {int versionID, List<int> locationIDList}) async {
     try{
       BaseResponse response = await Request().run(context, action: "mobile_get_qoh", data: {"ID_version": versionID, "ID_location_list": locationIDList});
-      await Future.forEach(response.data["Stk_Qoh"].map<Stk_Qoh>((f) {return new Stk_Qoh.fromJSON(f);}).toList(), (element) async => await BaseDataBase().add<Stk_Qoh>(element));
-      await Future.forEach(response.data["Stk_Qoh_Detail"].map<Stk_Qoh_Detail>((f) {return new Stk_Qoh_Detail.fromJSON(f);}).toList(), (element) async => await BaseDataBase().add<Stk_Qoh_Detail>(element));
+      await Future.forEach(response.data["Stk_Qoh"].map<Stk_Qoh>((f) {return new Stk_Qoh.fromJson(f);}).toList(), (element) async => await BaseDataBase().add<Stk_Qoh>(element));
+      await Future.forEach(response.data["Stk_Qoh_Detail"].map<Stk_Qoh_Detail>((f) {return new Stk_Qoh_Detail.fromJson(f);}).toList(), (element) async => await BaseDataBase().add<Stk_Qoh_Detail>(element));
       return response;
     }catch(e){
       throw e;
@@ -250,11 +251,13 @@ class Request {
   }
 
   Future<BaseResponse> login(BuildContext context, {String loginName, String password}) async {
-    try{
-      BaseResponse response = await Request().run(context, action: "user_login", data: {"loginName": loginName, "password": password});
+      BaseResponse response = await Request().run(context, action: "mobile_login", data: {"loginName": loginName, "password": password});
+      Global.sharedPreferences.setObject("currentUser", User.fromJson(response.data["user"]));
+      Global.sharedPreferences.setString("token", response.data["token"]);
       return response;
-    }catch(e){
-     throw e;
-   }
+  }
+
+  Future<BaseResponse> logout(BuildContext context, String token) async {
+    return await Request().run(context, action: "user_logout", data: {"token": token});
   }
 }

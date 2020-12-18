@@ -78,3 +78,45 @@ class ChemicalWasteOrderAdapter extends TypeAdapter<Chemical_Waste_Order> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Chemical_Waste_Order _$Chemical_Waste_OrderFromJson(Map<String, dynamic> json) {
+  return Chemical_Waste_Order(
+    ID: json['ID'] as int,
+    ID_department: json['ID_department'] as int,
+    department_code: json['department_code'] as String,
+    department_name: json['department_name'] as String,
+    ref_no: json['ref_no'] as String,
+    location: json['location'] as String,
+    po_date: BaseModel.fromJsonDateTime(json['po_date'] as String),
+    requested_by: json['requested_by'] as String,
+    name_one: json['name_one'] as String,
+    name_two: json['name_two'] as String,
+    telephone_no: json['telephone_no'] as String,
+    remarks: json['remarks'] as String,
+    status: json['status'] as int,
+    dn_file: json['dn_file'] as String,
+  );
+}
+
+Map<String, dynamic> _$Chemical_Waste_OrderToJson(
+        Chemical_Waste_Order instance) =>
+    <String, dynamic>{
+      'ID': instance.ID,
+      'ID_department': instance.ID_department,
+      'department_code': instance.department_code,
+      'department_name': instance.department_name,
+      'ref_no': instance.ref_no,
+      'location': instance.location,
+      'po_date': BaseModel.toJsonDateTime(instance.po_date),
+      'requested_by': instance.requested_by,
+      'name_one': instance.name_one,
+      'name_two': instance.name_two,
+      'telephone_no': instance.telephone_no,
+      'remarks': instance.remarks,
+      'status': instance.status,
+      'dn_file': instance.dn_file,
+    };

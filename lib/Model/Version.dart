@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
 import 'package:hku_app/Util/BaseDataBase.dart';
 import 'package:hku_app/Util/BaseModel.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'Version.g.dart';
 
+@JsonSerializable()
 @HiveType(typeId: 11)
 class Version extends BaseModel {
   @HiveField(0)
@@ -11,17 +13,23 @@ class Version extends BaseModel {
   @HiveField(1)
   String version_name;
   @HiveField(2)
+  @JsonKey(fromJson: BaseModel.fromJsonDateTime, toJson: BaseModel.toJsonDateTime)
   DateTime qoh_date;
   @HiveField(3)
+  @JsonKey(fromJson: BaseModel.fromJsonIntList)
   List<int> take_location;
   @HiveField(4)
+  @JsonKey(fromJson: BaseModel.fromJsonDateTime, toJson: BaseModel.toJsonDateTime)
   DateTime complete_date;
   @HiveField(5)
+  @JsonKey(fromJson: BaseModel.fromJsonBool, toJson: BaseModel.toJsonBool)
+  
   bool status;
   @HiveField(6)
   String create_user;
   @HiveField(7)
-  List<int> downloaded_location;
+  @JsonKey(fromJson: BaseModel.fromJsonIntList)
+  List<int> downloaded_location = [];
   @override
   int getID() => this.ID;
 
@@ -32,19 +40,8 @@ class Version extends BaseModel {
     DateTime this.complete_date,
     bool this.status,
     String this.create_user,
-    List<int> this.downloaded_location,
+    List<int> this.downloaded_location = const [],
   }) {}
-
-  Version.fromJSON(Map<String, dynamic> json) {
-    this.ID = json["ID"] ?? null;
-    this.version_name = json["version_name"] ?? null;
-    this.qoh_date = DateTime.parse(json["qoh_date"]) ?? null;
-    this.take_location = json["take_location"] != null? (json["take_location"] as List<dynamic>).map((e) => int.parse(e)).toList() :null;
-    this.complete_date = json["complete_date"] != null ? DateTime.parse(json["complete_date"]) : null;
-    this.status = json["status"] == 1 ?true: false;
-    this.create_user = json["create_user"] ?? null;
-    this.downloaded_location = [];
-  }
 
   static Version getLatestVersion(){
     Version version = null;
@@ -55,4 +52,7 @@ class Version extends BaseModel {
     });
     return version;
   }
+
+  factory Version.fromJson(Map<String, dynamic> json) => _$VersionFromJson(json);
+  Map<String, dynamic> toJson() => _$VersionToJson(this);
 }

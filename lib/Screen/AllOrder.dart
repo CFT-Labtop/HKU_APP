@@ -172,7 +172,8 @@ class _AllOrder extends State<AllOrder> {
           ),
           IconButton(
             icon: Icon(Icons.exit_to_app),
-            onPressed: (){
+            onPressed: () async{
+              await Request().logout(context, Global.sharedPreferences.getString('token'));
               BaseRouter.goToPage(context, Pages.LoginPage, clear: true);
             }
           )

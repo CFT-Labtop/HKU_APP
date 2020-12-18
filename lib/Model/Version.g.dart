@@ -60,3 +60,32 @@ class VersionAdapter extends TypeAdapter<Version> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Version _$VersionFromJson(Map<String, dynamic> json) {
+  return Version(
+    ID: json['ID'] as int,
+    version_name: json['version_name'] as String,
+    qoh_date: BaseModel.fromJsonDateTime(json['qoh_date'] as String),
+    take_location: BaseModel.fromJsonIntList(json['take_location'] as List),
+    complete_date: BaseModel.fromJsonDateTime(json['complete_date'] as String),
+    status: BaseModel.fromJsonBool(json['status'] as int),
+    create_user: json['create_user'] as String,
+    downloaded_location:
+        BaseModel.fromJsonIntList(json['downloaded_location'] as List),
+  );
+}
+
+Map<String, dynamic> _$VersionToJson(Version instance) => <String, dynamic>{
+      'ID': instance.ID,
+      'version_name': instance.version_name,
+      'qoh_date': BaseModel.toJsonDateTime(instance.qoh_date),
+      'take_location': instance.take_location,
+      'complete_date': BaseModel.toJsonDateTime(instance.complete_date),
+      'status': BaseModel.toJsonBool(instance.status),
+      'create_user': instance.create_user,
+      'downloaded_location': instance.downloaded_location,
+    };
