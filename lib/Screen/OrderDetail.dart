@@ -17,6 +17,7 @@ import 'package:hku_app/Util/Request.dart';
 import 'package:hku_app/Widget/StandardBox.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:camera_camera/camera_camera.dart';
 
 class OrderDetail extends StatefulWidget {
   int orderID;
@@ -32,6 +33,7 @@ class _OrderDetail extends State<OrderDetail> {
   OrderInterface orderData;
   List<OrderDetailInterface> orderDetailList;
   final picker = ImagePicker();
+
 
   String orderTitle() {
     return this.widget.type.value + " Order";
@@ -61,11 +63,42 @@ class _OrderDetail extends State<OrderDetail> {
     return Image.file(file);
   }
 
+  Future<void> getLostData() async {
+  final LostDataResponse response =
+      await picker.retrieveLostData();
+  if (response.isEmpty) {
+    return;
+  }
+  if (response.files != null) {
+    for(final XFile file in response.files) {
+      imageList[0] = File(file.path);
+      await orderData.updatePhotoList(imageList);
+    }
+  } else {
+
+  }
+}
+
+  // Future<void> getImage(int index) async {
+  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  //   getLostData();
+  //   imageList[index] = File(pickedFile.path);
+  //   await orderData.updatePhotoList(imageList);
+  //   setState(() {});
+  // }
   Future<void> getImage(int index) async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-    imageList[index] = File(pickedFile.path);
-    await orderData.updatePhotoList(imageList);
-    setState(() {});
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => CameraCamera(
+              onFile: (file) async{
+                //When take foto you should close camera
+                imageList[index] = file;
+                await orderData.updatePhotoList(imageList);
+                Navigator.pop(context);
+                setState(() {});
+              },
+            )));
   }
 
   @override
@@ -199,9 +232,7 @@ class _OrderDetail extends State<OrderDetail> {
             )
           ],
         ),
-        body: (false)
-            ? SizedBox()
-            : ListView(
+        body: ListView(
                 children: <Widget>[
                   Padding(
                       padding:
@@ -224,7 +255,8 @@ class _OrderDetail extends State<OrderDetail> {
                     )
                   ])
                 ],
-              ));
+              ),
+    );
   }
 
   Row halfRow(String title1, String value1,
