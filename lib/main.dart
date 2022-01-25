@@ -15,6 +15,7 @@ Future<void> main() async {
   Request.init(Config.baseURL);
   await BaseDataBase().init();
   Global.sharedPreferences = await SharedPreferences.getInstance();
+  await EasyLocalization.ensureInitialized();
   runApp(EasyLocalization(
       supportedLocales: [
         Locale('en', 'US'),
