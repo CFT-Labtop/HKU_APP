@@ -16,6 +16,8 @@ class Global {
   static const Color mainColor = Color.fromRGBO(0, 179, 141, 1);
   static const Color outlineColor = Colors.white;
   static const Color focusedOutlineColor = Colors.white;
+  static const Color secondOutlineColor = Colors.black;
+  static const Color secondFocusedOutlineColor = Colors.black;
   static double smallPadSize = 768;
   static double padSize = 1024;
   static double phoneRate = 1;
@@ -125,15 +127,15 @@ class Global {
         fontSize: 16.0);
   }
 
-  static hashPassword(String password){
+  static hashPassword(String password) {
     return sha256.convert(utf8.encode(password));
   }
 
-  static bool isAuthenticated(){
+  static bool isAuthenticated() {
     return Global.sharedPreferences.getObject("currentUser") != null;
   }
 
-  static void clearUser() async{
+  static void clearUser() async {
     await Global.sharedPreferences.setString("currentUser", null);
     await Global.sharedPreferences.setString("token", null);
   }

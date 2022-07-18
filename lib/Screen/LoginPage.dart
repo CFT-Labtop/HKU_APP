@@ -8,8 +8,6 @@ import 'package:hku_app/Util/Request.dart';
 import 'package:hku_app/Widget/StandardEditText.dart';
 import 'package:hku_app/Util/SharedPreferenceExtension.dart';
 
-
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -50,7 +48,8 @@ class _LoginPageState extends State<LoginPage> {
                 height: Global.responsiveSize(context, 48.0),
               ),
               Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Global.responsiveSize(context, 24.0)),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Global.responsiveSize(context, 24.0)),
                   child: StandardEditText(
                     title: "User Code".tr(),
                     controller: loginNameController,
@@ -73,13 +72,32 @@ class _LoginPageState extends State<LoginPage> {
               ),
               RaisedButton.icon(
                 onPressed: () async {
-                  await Request().login(context, loginName: loginNameController.text, password: Global.hashPassword(passwordController.text).toString());
-                  if(Global.isAuthenticated()) BaseRouter.goToPage(context, Pages.AllOrder, clear: true);
+                  await Request().login(context,
+                      loginName: loginNameController.text,
+                      password: Global.hashPassword(passwordController.text)
+                          .toString());
+                  if (Global.isAuthenticated())
+                    BaseRouter.goToPage(context, Pages.AllOrder, clear: true);
                 },
                 color: Colors.white,
                 icon: Icon(Icons.send),
-                label: Text("Login".tr(),style:TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                label: Text("Login".tr(),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+              ),
+              RaisedButton.icon(
+                onPressed: () async {
+                  BaseRouter.goToPage(context, Pages.SystemConfig);
+                },
+                color: Colors.white,
+                icon: Icon(Icons.settings),
+                label: Text("Config".tr(),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
               ),
             ])),
       ),

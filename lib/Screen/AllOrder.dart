@@ -53,7 +53,8 @@ class _AllOrder extends State<AllOrder> {
         child: OrderTable(
       getOrderByData(currentSelectedDate),
       onRowPress: (data) async {
-        await BaseRouter.goToOrderDetailPage(context, data.getID(), data.getType());
+        await BaseRouter.goToOrderDetailPage(
+            context, data.getID(), data.getType());
         setState(() {});
       },
     ));
@@ -62,7 +63,12 @@ class _AllOrder extends State<AllOrder> {
   List<OrderInterface> getOrderByData(DateTime date) {
     switch (currentType) {
       case DeliveryType.ChemicalWaste:
-        return BaseDataBase().getAll<Chemical_Waste_Order>().where((element) => Global.dateFormat(element.po_date) == Global.dateFormat(this.currentSelectedDate)).toList();
+        return BaseDataBase()
+            .getAll<Chemical_Waste_Order>()
+            .where((element) =>
+                Global.dateFormat(element.po_date) ==
+                Global.dateFormat(this.currentSelectedDate))
+            .toList();
       case DeliveryType.LiquidNitrogen:
         return BaseDataBase()
             .getAll<Liquid_Nitrogen_Order>()
@@ -83,15 +89,17 @@ class _AllOrder extends State<AllOrder> {
   OrderInterface getOrderByRefNo(String ref_no) {
     OrderInterface result = null;
     try {
-      result = BaseDataBase().getAll<Chemical_Waste_Order>().firstWhere((element) => element.ref_no == ref_no, orElse: () => null);
+      result = BaseDataBase().getAll<Chemical_Waste_Order>().firstWhere(
+          (element) => element.ref_no == ref_no,
+          orElse: () => null);
       if (result != null) return result;
-      result = BaseDataBase()
-          .getAll<Liquid_Nitrogen_Order>()
-          .firstWhere((element) => element.ref_no == ref_no, orElse: () => null);
+      result = BaseDataBase().getAll<Liquid_Nitrogen_Order>().firstWhere(
+          (element) => element.ref_no == ref_no,
+          orElse: () => null);
       if (result != null) return result;
-      result = BaseDataBase()
-          .getAll<Dangerous_Goods_Order>()
-          .firstWhere((element) => element.ref_no == ref_no, orElse: () => null);
+      result = BaseDataBase().getAll<Dangerous_Goods_Order>().firstWhere(
+          (element) => element.ref_no == ref_no,
+          orElse: () => null);
       if (result != null) return result;
     } catch (e) {
       throw Exception("Order Not Found");
@@ -156,27 +164,28 @@ class _AllOrder extends State<AllOrder> {
             icon: Icon(Icons.qr_code_scanner),
             onPressed: () async {
               try {
-                String ref_no = await BaseRouter.goToPage(context, Pages.QRCodeScanPage);
+                String ref_no =
+                    await BaseRouter.goToPage(context, Pages.QRCodeScanPage);
                 OrderInterface orderInterface = getOrderByRefNo(ref_no);
-                BaseRouter.goToOrderDetailPage(context, orderInterface.getID(), orderInterface.getType());
+                BaseRouter.goToOrderDetailPage(
+                    context, orderInterface.getID(), orderInterface.getType());
               } catch (e) {
                 Global.showAlertDialog(context, "Order Not Found Or Delivered");
               }
             },
           ),
           IconButton(
-            icon: Icon(Icons.fact_check),
-            onPressed: (){
-              BaseRouter.goToPage(context, Pages.StockTakePage);
-            }
-          ),
+              icon: Icon(Icons.fact_check),
+              onPressed: () {
+                BaseRouter.goToPage(context, Pages.StockTakePage);
+              }),
           IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () async{
-              await Request().logout(context, Global.sharedPreferences.getString('token'));
-              BaseRouter.goToPage(context, Pages.LoginPage, clear: true);
-            }
-          )
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () async {
+                await Request().logout(
+                    context, Global.sharedPreferences.getString('token'));
+                BaseRouter.goToPage(context, Pages.LoginPage, clear: true);
+              })
         ],
       ),
       body: Column(

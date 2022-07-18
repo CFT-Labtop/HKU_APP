@@ -34,7 +34,6 @@ class _OrderDetail extends State<OrderDetail> {
   List<OrderDetailInterface> orderDetailList;
   final picker = ImagePicker();
 
-
   String orderTitle() {
     return this.widget.type.value + " Order";
   }
@@ -64,20 +63,17 @@ class _OrderDetail extends State<OrderDetail> {
   }
 
   Future<void> getLostData() async {
-  final LostDataResponse response =
-      await picker.retrieveLostData();
-  if (response.isEmpty) {
-    return;
-  }
-  if (response.files != null) {
-    for(final XFile file in response.files) {
-      imageList[0] = File(file.path);
-      await orderData.updatePhotoList(imageList);
+    final LostDataResponse response = await picker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
     }
-  } else {
-
+    if (response.files != null) {
+      for (final XFile file in response.files) {
+        imageList[0] = File(file.path);
+        await orderData.updatePhotoList(imageList);
+      }
+    } else {}
   }
-}
 
   // Future<void> getImage(int index) async {
   //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -91,14 +87,14 @@ class _OrderDetail extends State<OrderDetail> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraCamera(
-              onFile: (file) async{
-                //When take foto you should close camera
-                imageList[index] = file;
-                await orderData.updatePhotoList(imageList);
-                Navigator.pop(context);
-                setState(() {});
-              },
-            )));
+                  onFile: (file) async {
+                    //When take foto you should close camera
+                    imageList[index] = file;
+                    await orderData.updatePhotoList(imageList);
+                    Navigator.pop(context);
+                    setState(() {});
+                  },
+                )));
   }
 
   @override
@@ -178,84 +174,83 @@ class _OrderDetail extends State<OrderDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(orderTitle()),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.cloud_upload),
-              onPressed: () async {
-                Global.showConfirmDialog(context,
-                    title: "Confirmation".tr(),
-                    content: "Confirm to complete?", onPress: () async {
-                  ProgressDialog pr = ProgressDialog(context,
-                      type: ProgressDialogType.Normal, isDismissible: false);
-                  try {
-                    await pr.show();
-                    await Future.forEach(this.imageList, (element) async {
-                      if (element != null)
-                        await Request().uploadDNPhoto(
-                            ID: this.orderData.getID(),
-                            type: this.orderData.getType(),
-                            ref_no: this.orderData.getRefNo(),
-                            seq: Global.generateRandomString(10),
-                            file: element);
-                    });
-                    await Request().completeDelivery(
-                        ID: this.orderData.getID(),
-                        type: this.orderData.getType());
-                    switch (this.orderData.getType()) {
-                      case DeliveryType.ChemicalWaste:
-                        await this.orderData.deleteLocalPhoto();
-                        await BaseDataBase()
-                            .delete<Chemical_Waste_Order>(this.orderData);
-                        break;
-                      case DeliveryType.LiquidNitrogen:
-                        await this.orderData.deleteLocalPhoto();
-                        await BaseDataBase()
-                            .delete<Liquid_Nitrogen_Order>(this.orderData);
-                        break;
-                      case DeliveryType.DangerousGoods:
-                        await this.orderData.deleteLocalPhoto();
-                        await BaseDataBase()
-                            .delete<Dangerous_Goods_Order>(this.orderData);
-                        break;
-                    }
-                    await pr.hide();
-                    Navigator.pop(context);
-                    Global.showToast("Upload Successfully");
-                  } catch (e) {
-                    await pr.hide();
-                    Global.showAlertDialog(context, e.message);
+      appBar: AppBar(
+        title: Text(orderTitle()),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.cloud_upload),
+            onPressed: () async {
+              Global.showConfirmDialog(context,
+                  title: "Confirmation".tr(),
+                  content: "Confirm to complete?", onPress: () async {
+                ProgressDialog pr = ProgressDialog(context,
+                    type: ProgressDialogType.Normal, isDismissible: false);
+                try {
+                  await pr.show();
+                  await Future.forEach(this.imageList, (element) async {
+                    if (element != null)
+                      await Request().uploadDNPhoto(
+                          ID: this.orderData.getID(),
+                          type: this.orderData.getType(),
+                          ref_no: this.orderData.getRefNo(),
+                          seq: Global.generateRandomString(10),
+                          file: element);
+                  });
+                  await Request().completeDelivery(
+                      ID: this.orderData.getID(),
+                      type: this.orderData.getType());
+                  switch (this.orderData.getType()) {
+                    case DeliveryType.ChemicalWaste:
+                      await this.orderData.deleteLocalPhoto();
+                      await BaseDataBase()
+                          .delete<Chemical_Waste_Order>(this.orderData);
+                      break;
+                    case DeliveryType.LiquidNitrogen:
+                      await this.orderData.deleteLocalPhoto();
+                      await BaseDataBase()
+                          .delete<Liquid_Nitrogen_Order>(this.orderData);
+                      break;
+                    case DeliveryType.DangerousGoods:
+                      await this.orderData.deleteLocalPhoto();
+                      await BaseDataBase()
+                          .delete<Dangerous_Goods_Order>(this.orderData);
+                      break;
                   }
-                });
-              },
-            )
-          ],
-        ),
-        body: ListView(
-                children: <Widget>[
-                  Padding(
-                      padding:
-                          EdgeInsets.all(Global.responsiveSize(context, 8)),
-                      child: orderInformationWidget()),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: Global.responsiveSize(context, 8)),
-                    child: orderDetailWidget(),
-                  ),
-                  Column(children: [
-                    Center(
-                      child: Column(
-                        children: [
-                          imageBox(imageList[0], 0),
-                          imageBox(imageList[1], 1),
-                          imageBox(imageList[2], 2),
-                        ],
-                      ),
-                    )
-                  ])
+                  await pr.hide();
+                  Navigator.pop(context);
+                  Global.showToast("Upload Successfully");
+                } catch (e) {
+                  await pr.hide();
+                  Global.showAlertDialog(context, e.message);
+                }
+              });
+            },
+          )
+        ],
+      ),
+      body: ListView(
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(Global.responsiveSize(context, 8)),
+              child: orderInformationWidget()),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: Global.responsiveSize(context, 8)),
+            child: orderDetailWidget(),
+          ),
+          Column(children: [
+            Center(
+              child: Column(
+                children: [
+                  imageBox(imageList[0], 0),
+                  imageBox(imageList[1], 1),
+                  imageBox(imageList[2], 2),
                 ],
               ),
+            )
+          ])
+        ],
+      ),
     );
   }
 

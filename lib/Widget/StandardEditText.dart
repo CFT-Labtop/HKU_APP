@@ -8,15 +8,19 @@ class StandardEditText extends StatelessWidget {
   final double fontSize;
   final bool obscureText;
   final TextEditingController controller;
+  final Color textColor;
   final Color focusedOutlineColor;
-  StandardEditText(
-      {Key key,
-      @required this.title,
-      this.controller,
-      this.fontSize = 48,
-      this.obscureText = false,
-      this.focusedOutlineColor = Global.mainColor})
-      : super(key: key);
+  final Color outlineColor;
+  StandardEditText({
+    Key key,
+    @required this.title,
+    this.controller,
+    this.fontSize = 48,
+    this.obscureText = false,
+    this.textColor = Colors.white,
+    this.focusedOutlineColor = Global.mainColor,
+    this.outlineColor = Global.outlineColor,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,20 +30,20 @@ class StandardEditText extends StatelessWidget {
           title,
           style: TextStyle(
             fontSize: 24,
-            color: Colors.white,
+            color: textColor,
           ),
         ).tr(),
         TextField(
             obscureText: obscureText,
             controller: this.controller,
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            style: TextStyle(fontSize: 24, color: textColor),
             decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                   borderSide:
                       BorderSide(color: focusedOutlineColor, width: 2.0),
                   borderRadius: BorderRadius.circular(12.0)),
               enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white, width: 2.0),
+                  borderSide: BorderSide(color: outlineColor, width: 2.0),
                   borderRadius: BorderRadius.circular(12.0)),
             )),
       ],

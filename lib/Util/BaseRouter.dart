@@ -1,5 +1,4 @@
 import 'package:fluro/fluro.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:hku_app/Enums/DeliveryType.dart';
 import 'package:hku_app/Screen/AllOrder.dart';
@@ -8,6 +7,7 @@ import 'package:hku_app/Screen/OrderDetail.dart';
 import 'package:hku_app/Screen/QRCodeScanPage.dart';
 import 'package:hku_app/Screen/StockTakeDetailPage.dart';
 import 'package:hku_app/Screen/StockTakePage.dart';
+import 'package:hku_app/Screen/SystemConfig.dart';
 
 class BaseRouter {
   static FluroRouter router;
@@ -39,10 +39,10 @@ class BaseRouter {
         handler: Handler(handlerFunc: (context, params) => AllOrder()));
     router.define("/" + Pages.QRCodeScanPage.toString(),
         handler: Handler(handlerFunc: (context, params) => QRCodeScanPage()));
-    router.define(
-        "/" + Pages.StockTakePage.toString(),
+    router.define("/" + Pages.StockTakePage.toString(),
         handler: Handler(handlerFunc: (context, params) => StockTakePage()));
-    router.define("/" + Pages.StockTakeDetailPage.toString() + "/:locationID/:versionID",
+    router.define(
+        "/" + Pages.StockTakeDetailPage.toString() + "/:locationID/:versionID",
         handler: Handler(handlerFunc: (context, params) {
       int locationID = int.parse(params["locationID"][0]);
       int versionID = int.parse(params["versionID"][0]);
@@ -51,6 +51,8 @@ class BaseRouter {
         versionID: versionID,
       );
     }));
+    router.define("/" + Pages.SystemConfig.toString(),
+        handler: Handler(handlerFunc: (context, params) => SystemConfig()));
     BaseRouter.router = router;
   }
 
@@ -83,4 +85,5 @@ enum Pages {
   QRCodeScanPage,
   StockTakePage,
   StockTakeDetailPage,
+  SystemConfig
 }
