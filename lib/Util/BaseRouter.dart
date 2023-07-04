@@ -37,8 +37,8 @@ class BaseRouter {
     }));
     router.define("/" + Pages.AllOrder.toString(),
         handler: Handler(handlerFunc: (context, params) => AllOrder()));
-    router.define("/" + Pages.QRCodeScanPage.toString(),
-        handler: Handler(handlerFunc: (context, params) => QRCodeScanPage()));
+    // router.define("/" + Pages.QRCodeScanPage.toString(),
+    //     handler: Handler(handlerFunc: (context, params) => QRCodeScanPage()));
     router.define("/" + Pages.StockTakePage.toString(),
         handler: Handler(handlerFunc: (context, params) => StockTakePage()));
     router.define(
@@ -82,7 +82,7 @@ enum Pages {
   LoginPage,
   OrderDetail,
   AllOrder,
-  QRCodeScanPage,
+  // QRCodeScanPage,
   StockTakePage,
   StockTakeDetailPage,
   SystemConfig
