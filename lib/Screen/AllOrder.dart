@@ -160,20 +160,20 @@ class _AllOrder extends State<AllOrder> {
           currentType.value,
         ),
         actions: [
-          // IconButton(
-          //   icon: Icon(Icons.qr_code_scanner),
-          //   onPressed: () async {
-          //     try {
-          //       String ref_no =
-          //           await BaseRouter.goToPage(context, Pages.QRCodeScanPage);
-          //       OrderInterface orderInterface = getOrderByRefNo(ref_no);
-          //       BaseRouter.goToOrderDetailPage(
-          //           context, orderInterface.getID(), orderInterface.getType());
-          //     } catch (e) {
-          //       Global.showAlertDialog(context, "Order Not Found Or Delivered");
-          //     }
-          //   },
-          // ),
+          IconButton(
+            icon: Icon(Icons.qr_code_scanner),
+            onPressed: () async {
+              try {
+                String ref_no =
+                    await BaseRouter.goToPage(context, Pages.QRCodeScanPage);
+                OrderInterface orderInterface = getOrderByRefNo(ref_no);
+                BaseRouter.goToOrderDetailPage(
+                    context, orderInterface.getID(), orderInterface.getType());
+              } catch (e) {
+                Global.showAlertDialog(context, "Order Not Found Or Delivered");
+              }
+            },
+          ),
           IconButton(
               icon: Icon(Icons.fact_check),
               onPressed: () {
