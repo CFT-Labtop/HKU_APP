@@ -116,7 +116,9 @@ Dangerous_Goods_Order_Detail _$Dangerous_Goods_Order_DetailFromJson(
     pickedQuantity: json['pickedQuantity'] as int,
     volume: (json['volume'] as num)?.toDouble(),
     unit: json['unit'] as String,
-    amount: BaseModel.fromJsonBool(json['amount'] as int),
+    amount: json['amount'] is String
+        ? (json['amount'] == '1')
+        : (json['amount'] as int == 1),
     product_brand: json['product_brand'] as String,
   );
 }

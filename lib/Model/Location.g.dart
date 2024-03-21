@@ -71,9 +71,13 @@ Location _$LocationFromJson(Map<String, dynamic> json) {
     location_code: json['location_code'] as String,
     location_name: json['location_name'] as String,
     store_no: json['store_no'] as String,
-    licensed_qty1: json['licensed_qty1'] as int,
+    licensed_qty1: json['licensed_qty1'] is String
+        ? int.parse(json['licensed_qty1'])
+        : json['licensed_qty1'] as int,
     licensed_unit1: json['licensed_unit1'] as String,
-    licensed_qty2: json['licensed_qty2'] as int,
+    licensed_qty2: json['licensed_qty2'] is String
+        ? int.parse(json['licensed_qty2'])
+        : json['licensed_qty2'] as int,
     licensed_unit2: json['licensed_unit2'] as String,
   )..isCheck = json['isCheck'] as bool;
 }

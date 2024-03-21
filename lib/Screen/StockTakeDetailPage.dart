@@ -17,7 +17,9 @@ class StockTakeDetailPage extends StatefulWidget {
   int versionID;
   int locationID;
 
-  StockTakeDetailPage({Key key, @required this.versionID, @required this.locationID}): super(key: key);
+  StockTakeDetailPage(
+      {Key key, @required this.versionID, @required this.locationID})
+      : super(key: key);
 
   @override
   _StockTakeDetailPageState createState() => _StockTakeDetailPageState();
@@ -50,23 +52,28 @@ class _StockTakeDetailPageState extends State<StockTakeDetailPage> {
         .toList();
   }
 
-  Future<void> insertStkTakeDetail(Stk_Qoh_Detail qoh_detail, int quantity) async {
-    ProgressDialog pr = ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false);
-    try{
+  Future<void> insertStkTakeDetail(
+      Stk_Qoh_Detail qoh_detail, int quantity) async {
+    ProgressDialog pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    try {
       await pr.show();
       Stk_Qoh qoh = BaseDataBase().get<Stk_Qoh>(qoh_detail.ID_stk_qoh);
-      Stk_Tk stk_tk = BaseDataBase().getAll<Stk_Tk>().firstWhere((element) => element.ID_qoh == qoh.ID, orElse: () => null);
+      Stk_Tk stk_tk = BaseDataBase().getAll<Stk_Tk>().firstWhere(
+          (element) => element.ID_qoh == qoh.ID,
+          orElse: () => null);
       if (stk_tk == null) stk_tk = await Stk_Tk.insertByQoh(qoh);
-      Stk_Tk_Detail stk_detail = Stk_Tk_Detail.getDetailByRfid(qoh_detail.rfid_code);
-      if(stk_detail == null)
-        await Stk_Tk_Detail.insertByQOHDetail(stk_tk,qoh_detail, quantity);
+      Stk_Tk_Detail stk_detail =
+          Stk_Tk_Detail.getDetailByRfid(qoh_detail.rfid_code);
+      if (stk_detail == null)
+        await Stk_Tk_Detail.insertByQOHDetail(stk_tk, qoh_detail, quantity);
       else
         stk_detail.updateQuantity(quantity);
       await stk_tk.updateQuantity();
       await pr.hide();
       Navigator.pop(context);
       Global.showToast("Successfully");
-    }catch(e){
+    } catch (e) {
       await pr.hide();
       Global.showAlertDialog(context, e.toString());
     }
@@ -76,16 +83,14 @@ class _StockTakeDetailPageState extends State<StockTakeDetailPage> {
   Widget build(BuildContext context) {
     try {
       return Scaffold(
-        appBar: AppBar(
-            title: Text("Stock Take Detail".tr()),
-            actions: [
-              IconButton(icon: Icon(Icons.edit),
-              onPressed: () {
-                setState(() {
-                  
-                });
-              },)
-            ]),
+        appBar: AppBar(title: Text("Stock Take Detail".tr()), actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              setState(() {});
+            },
+          )
+        ]),
         body: Column(
           children: [
             StandardBox(
@@ -132,9 +137,10 @@ class _StockTakeDetailPageState extends State<StockTakeDetailPage> {
                         PlatformDialogAction(
                           child: PlatformText('Confirm'.tr()),
                           onPressed: () async {
-                              await insertStkTakeDetail(data, int.parse(quantityTextController.text));
-                              quantityTextController.text = "";
-                              setState(() {});
+                            await insertStkTakeDetail(
+                                data, int.parse(quantityTextController.text));
+                            quantityTextController.text = "";
+                            setState(() {});
                           },
                         ),
                       ],

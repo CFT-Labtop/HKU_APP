@@ -7,7 +7,6 @@ class BaseFutureBuilder extends StatelessWidget {
   final Widget Function() loadingCallback;
   final Widget Function(BaseResponse response) onSuccessCallback;
   final Widget Function(Exception error) onErrorCallback;
-  
 
   BaseFutureBuilder({
     Key key,
@@ -21,18 +20,28 @@ class BaseFutureBuilder extends StatelessWidget {
     Widget loadingWidget = Center(child: CircularProgressIndicator());
     switch (snapshot.connectionState) {
       case ConnectionState.none:
-        return (this.loadingCallback == null)?loadingWidget: this.loadingCallback();
+        return (this.loadingCallback == null)
+            ? loadingWidget
+            : this.loadingCallback();
       case ConnectionState.active:
-        return (this.loadingCallback == null)?loadingWidget: this.loadingCallback();
+        return (this.loadingCallback == null)
+            ? loadingWidget
+            : this.loadingCallback();
       case ConnectionState.waiting:
-        return (this.loadingCallback == null)?loadingWidget: this.loadingCallback();
+        return (this.loadingCallback == null)
+            ? loadingWidget
+            : this.loadingCallback();
       case ConnectionState.done:
-        if (snapshot.hasError){
-          if(this.onErrorCallback == null) return SizedBox();
-          return this.onErrorCallback(snapshot.error);
-        }
-        else{
-          if(this.onSuccessCallback == null) return SizedBox();
+        if (snapshot.hasError) {
+          if (this.onErrorCallback == null) return SizedBox();
+          if (snapshot.error is DioError) {
+            DioError dioError = snapshot.error;
+            return this.onErrorCallback(dioError);
+          } else {
+            return this.onErrorCallback(Exception(snapshot.error));
+          }
+        } else {
+          if (this.onSuccessCallback == null) return SizedBox();
           return this.onSuccessCallback(snapshot.data);
         }
         break;
