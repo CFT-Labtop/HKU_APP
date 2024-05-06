@@ -72,7 +72,9 @@ Version _$VersionFromJson(Map<String, dynamic> json) {
     qoh_date: BaseModel.fromJsonDateTime(json['qoh_date'] as String),
     take_location: BaseModel.fromJsonIntList(json['take_location'] as List),
     complete_date: BaseModel.fromJsonDateTime(json['complete_date'] as String),
-    status: BaseModel.fromJsonBool(json['status'] as int),
+    status: json['status'] is String
+        ? (json['status'] == '1')
+        : (json['status'] as int == 1),
     create_user: json['create_user'] as String,
     downloaded_location:
         BaseModel.fromJsonIntList(json['downloaded_location'] as List),

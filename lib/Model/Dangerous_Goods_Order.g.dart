@@ -116,7 +116,9 @@ Dangerous_Goods_Order _$Dangerous_Goods_OrderFromJson(
     user: json['user'] as String,
     building: json['building'] as String,
     issued_by: json['issued_by'] as String,
-    voucher: json['voucher'] as int,
+    voucher: json['voucher'] is String
+        ? int.parse(json['voucher'])
+        : json['voucher'] as int,
     remarks: json['remarks'] as String,
     status: json['status'] as int,
     dn_file: json['dn_file'] as String,

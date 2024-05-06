@@ -29,7 +29,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
         android:usesCleartextTraffic="true"
-        android:name="${applicationName}"
         android:label="hku_app"
         android:icon="@mipmap/ic_launcher">
         <activity
